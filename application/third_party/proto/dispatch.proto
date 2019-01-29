@@ -1,0 +1,25 @@
+message SwitchDispatchRequest
+{
+    required string ip = 1;
+    required int32 port = 2;
+}
+
+message SwitchDispatchResponse
+{
+    required int32 returncode = 1;  
+}
+
+message SetGameserverEnableReq
+{
+      required string ip = 1;
+      required int32 port = 2;
+      //0:disable,1:enable 
+      required int32 enable = 3;
+      required string key = 4;
+}
+
+message SetGameserverEnableRsp
+{
+  //0:成功，1：失败
+    required int32 returncode = 1;
+}

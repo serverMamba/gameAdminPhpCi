@@ -1,0 +1,2362 @@
+
+
+//package PB;
+
+//option optimize_for = LITE_RUNTIME;
+
+message Packet {
+    required int32         version      = 1;
+    required int32         command      = 2;
+    optional bytes          serialized   = 3;
+    optional int64         connectionid = 4;
+	optional int64         gameserverconnectionid = 5;
+	optional int32          targettype = 6;
+	optional int64 userID = 7;
+	optional int32          selftype = 8;
+}
+
+enum EnumFuncCardType
+{
+	enumFuncCardKickUserFromTable = 0;
+}
+
+enum EnumLanguageType
+{
+    enumLanguageTypeEnglish = 0;
+    enumLanguageTypeZhcn = 1;
+    enumLanguageTypeFrench = 2;
+    enumLanguageTypeItalian = 3;
+    enumLanguageTypeGerman = 4;
+    enumLanguageTypeSpanish = 5;
+    enumLanguageTypeRussian = 6;
+    enumLanguageTypeKorean = 7;
+	enumLanguageTypeZhtw = 8;
+}
+
+enum EnumSysNotificationType
+{
+    enumSysNotificationNormal = 0;
+    enumSysNotificationImportant = 1;
+}
+
+enum EnumSysActivityType
+{
+    enumActivityNormal = 0;
+    enumActivityImportant = 1;
+}
+
+enum EnumSysActivityExpiredType
+{
+    enumActivityNotExpired = 0;
+    enumActivityExpired = 1;
+}
+
+message FuncCard
+{
+	required EnumFuncCardType cardType = 1;
+	required int32 cardCount = 2;
+}
+
+enum EnumIdentity
+{
+	enumIdentityRose = 0;
+	enumIdentityTulip = 1;
+	enumIdentityPeony = 2;
+	enumIdentityBLUELOVER = 3;
+}
+
+enum EnumXiaoLaBaNotifyType
+{
+	enumXiaoLaBaNotifyTypePay = 0;
+	enumXiaoLaBaNotifyTypeCardType = 1;
+	enumXiaoLaBaNotifyTypePlayGame = 2;
+	enumXiaoLaBaNotifyTypePlayRoulette = 3;
+}
+
+enum EnumGameLevel
+{
+	enumGameLevelChuJi = 0;
+	enumGameLevelZhongJi = 1;
+	enumGameLevelGaoJi = 2;
+	enumGameLevelFuHao = 3;
+}
+//import "packet.proto";
+
+//package GameServer;
+
+//option optimize_for = LITE_RUNTIME;
+
+///////////////////data define begin///////////////////
+enum EnumLoginType
+{
+    enumLoginTypeToRegisterNewUser = 0;
+	enumLoginTypeGuestAccount = 1;
+	enumLoginTypeRegisterAccount = 2;
+}
+
+enum EnumVIPLevel
+{
+    enumVIPLevelNone = 0;
+    enumVIPLevelSilver = 1;
+	enumVIPLevelGold = 2;
+	enumVIPLevelPlatinum = 3;
+	enumVIPLevelDiamond = 4;
+}
+
+enum EnumGameType
+{
+	enumGameTypeUnknown = 0x0000;
+	enumGameTypeTexasPokerPuTong = 0x0001;
+	enumGameTypeTexasPokerJiaBei = 0x0002;
+	enumGameTypeTexasPokerHuanLe = 0x0003;
+	enumGameTypeNiuNiu = 0x0011;
+	enumGameTypeNiuNiuQiangZhuang = 0x0012;
+	enumGameTypeNiuNiuXueZhanDaoDi = 0x0013;
+	enumGameTypeBaccarat = 0x0021;
+	enumGameTypeZhaJinHua = 0x0031;
+	enumGameTypeSlots = 0x0041;
+	enumGameTypeRoulette = 0x0051;
+	enumGameTypeDouDiZhu = 0x0061;
+	enumGameTypeDouDiZhuHuanLe = 0x0062;
+	enumGameTypeBlackJack = 0x0071;
+	enumGameTypeStud = 0x0081;
+	enumGameTypeGuanDan = 0x0091;
+	enumGameTypeShiSanZhang = 0x00A1;
+}
+
+enum EnumGameTypeStatus
+{
+	enumGameTypeStatusAvailable  = 0;
+	enumGameTypeStatusComingSoon = 1;
+	enumGameTypeStatusComingHot  = 2;
+}
+
+enum EnumDeviceType
+{
+	enumDeviceTypeiPhone   = 0;
+	enumDeviceTypeiPad	   = 1;
+	enumDeviceTypeAndroid  = 2;
+	enumDeviceTypeWindows  = 3;
+}
+
+enum EnumGender
+{
+	enumGenderFemale = 0;
+	enumGenderMale = 1;
+	enumGenderUnknown = 2;
+}
+
+enum EnumResult
+{
+	enumResultSucc = 0;
+	enumResultFail = 1;
+}
+
+enum EnumExchangeStatus
+{
+	enumExchangeStatus_Submited = 0;
+	enumExchangeStatus_Done = 1;
+	enumExchangeStatus_Failed = 2;
+}
+
+enum EnumLoginResult
+{
+	enumLoginResultSucc             = 0;
+	enumLoginResultAccountNotExist  = 1;
+	enumLoginResultWrongPassword    = 2;
+	enumRegisterResultSucc          = 3;
+	enumRegisterResultAlreadyExist  = 4;
+	enumRegisterResultDatabaseError = 5;
+	enumBlackIP = 6;
+    enumBlackMac = 7;
+    enumBlackUserID = 8;
+    enumMax = 9;
+}
+
+enum EnumNewVersion
+{
+    enumUpdateTipNoNewVersion  = 0;
+	enumUpdateTipHasNewVersion = 1;
+	enumUpdateTipHasNewVersionMandatoryUpdate = 2;
+}
+
+enum EnumUserPurchaseCategory
+{
+    enumPurchaseChips    = 0;
+    enumPurchaseSpeaker  = 1;
+    enumPurchaseProperty = 2;
+}
+
+enum EnumUserPurchaseResult
+{
+    enumPurchaseSucceed = 0;
+    enumPurchaseFailed  = 1;
+}
+
+enum EnumChangeTotalScoreReason
+{
+	enumChangeTotalScoreReasonUnknown = 0;
+	enumChangeTotalScoreReasonPlayGame = 1;
+	enumChangeTotalScorePresentGift = 2;
+	enumChangeTotalScorePresentChips = 3;
+	enumChangeTotalScorePresentProperty = 4;
+	enumChangeTotalScoreBonus = 5;
+	enumChangeTotalScoreSellProperty = 6;
+	enumChangeTotalScoreShutdownOldConnection = 7;
+	enumChangeTotalScoreOnlineReward = 8;
+	enumChangeTotalScoreTableReward = 9;
+	enumRoulette = 10;
+	enumSlotsReward = 11;
+	enumChangeTotalScoreReasonZhaJinHuaXiQian = 12;
+	enumChangeTotalScoreBuySpeaker = 13;
+	enumChangeTotalScoreTax = 14;
+	enumChangeTotalScoreSetPaySucc = 15;
+	enumChangeTotalScoreSetQueryUserInfo = 16;
+	enumChangeTotalScoreSetRobot = 17;
+	enumChangeTotalScoreMinusPresentChipsInGameServer = 18;
+	enumChangeTotalScoreDisconnect = 19;
+	enumChangeTotalScoreLogin = 20;
+	enumChangeTotalScoreMissionReward = 21;
+}
+
+enum EnumBroadcastEventType
+{
+    enumBroadcastEventTypeAddNotification = 0;
+	enumBroadcastEventTypeDelNotification = 1;
+	enumBroadcastEventTypeAddActivity = 2;
+	enumBroadcastEventTypeDelActivity = 3;
+	enumBroadcastEventTypePopNotification = 4;
+	enumBroadcastEventTypePopActivity = 5;
+	enumBroadcastEventTypeFeedBackOpen = 6;
+	enumBroadcastEventTypeFeedBackClose = 7;
+	enumBroadcastEventTypeExchangeProductStockChange = 8;
+}
+
+enum EnumFeedBackOperation
+{
+	enumFeedBackOpen = 0;
+	enumFeedBackClose = 1;
+}
+
+enum EnumZhajinhuaCardType
+{
+    enumZhajinhuaCardTypeSingle = 1;
+    enumZhajinhuaCardTypeDouble = 2;
+    enumZhajinhuaCardTypeShunZi = 3;
+    enumZhajinhuaCardTypeJinHua = 4;
+    enumZhajinhuaCardTypeShunJin = 5;
+    enumZhajinhuaCardTypeBaoZi = 6;
+    enumZhajinhuaCardTypeSpecial = 7;	
+}
+
+enum EnumFeedBackSwitch
+{
+	enumFeedBackSwitch_Close = 0;
+	enumFeedBackSwitch_Open = 1;
+}
+
+enum EnumDailyMissionType
+{
+	enumDailyMissionType_GameTurnSum = 0;
+	enumDailyMissionType_EnterRoom = 1;
+	enumDailyMissionType_ContinuousWinTime = 2;
+}
+
+enum EnumExchangeProductType
+{
+	enumExchangeProductType_Card = 0;
+	enumExchangeProductType_Real = 1;
+	enumExchangeProductType_Game = 2;
+}
+
+enum EnumCardStatus
+{
+	enumCardStatus_NotUsed = 0;
+	enumCardStatus_Used = 1;
+}
+
+
+enum EnumSystemMissionType
+{
+	enumSystemMissionType_UploadPic = 0;
+	enumSystemMissionType_Buy = 1;
+	enumSystemMissionType_Competition = 2;
+	enumSystemMissionType_GameTurnSum = 3;
+	enumSystemMissionType_Exchange = 4;
+}
+
+enum EnumMissionStatus
+{
+	enumMissionStatus_Unfinished = 0;
+	enumMissionStatus_Finished = 1;
+	enumMissionStatus_Finished_And_Got_Reward = 2;
+}
+
+enum EnumProductFrontShow
+{
+	enumProductFrontShow_Not = 0;
+	enumProductFrontShow_Yes = 1;
+}
+
+enum EnumSelfExchangeProductType
+{
+	enumSelfExchangeProductType_Chip = 1;
+	enumSelfExchangeProductType_Speaker = 2;
+	enumSelfExchangeProductType_VIPSilver = 3;
+}
+
+enum EnumExchangeProductStatus
+{
+	enumExchangeProductStatus_Effective = 1;
+	enumExchangeProductStatus_Invalid = 2;
+}
+
+message FlagInfo
+{
+	required int32 flagID = 1;
+	required int32 flagPurview = 2;
+	required string flagImg = 3;
+	required string flagName = 4;
+	required int32 flagEffectiveDay = 5;
+    required int32 flagPrice = 6;
+    optional int32 timeAddedToUser = 7;
+	optional string flagImgInStore = 8;
+	optional int32 flagType = 9; 
+}
+
+message FlagInfos
+{
+	repeated FlagInfo flags = 11;
+}
+
+message BasicUserInfo
+{
+  required int64 userID = 1;
+  required string userNick = 2;
+  required string userAvatar = 3;
+  required EnumGender userGender = 4;
+  required int64 userScore = 5;
+  required int64 userExperience = 6;
+  optional EnumVIPLevel vipLevel = 7;
+  repeated FuncCard funcCards = 8;
+  optional int32 yuanBaoCount = 9;
+  repeated EnumIdentity identity = 10;//don't use this field, use the next one: flags
+  optional FlagInfos flags = 11;
+  optional int32 coupon = 12;
+  optional int32 gameTurnSum = 13;
+  optional int32 continuousWinTime = 14;
+  optional int32 totalBuy = 15;
+  optional int32 totalGameTurnSum = 16;
+  optional int32 rewardGameTurnSum = 17;
+}
+
+message DetailUserInfo
+{
+	required int64 userID = 1;
+	required int32 winCount = 2;
+	required int32 lostCount = 3;
+	required int32 drawCount = 4;
+	required string gift = 5;
+	required int32  speakerCount = 6;
+	optional string password = 7;
+    optional string user_email = 8;
+    optional string user_device_id = 9;
+    optional int32  wallet = 10;
+    optional string ip = 11;
+    optional string mac = 12;
+    optional int32  isblock = 13;
+    optional string channel_id = 14;
+    optional string activate_device = 15;
+    optional string uuid = 16;
+    optional string location = 17;
+    optional string officalgiftinfo = 18;
+    optional int32  consecutive_login = 19;
+	optional string registertime = 20;
+	optional string lastlogintime = 21;
+	optional string property = 22;
+	optional int64 lastlogintime_int = 23;
+	optional int64 gift_given_time = 24;
+	optional int64 viplasteffectivetime = 25;
+	optional int64 totalbuychips = 26;
+	optional int64 monthbuychips = 27;
+	optional int32 totalcompetitiontimes = 28;
+	optional string mobilenumber = 29;
+	optional int64 selfpooltotalwin = 30;
+	optional int64 selfpooltotalcost = 31;
+	optional int32 selfpooltotalgametime = 32;
+}
+
+message ChipsBonusInfo
+{
+    required bool isLoginBonus           = 1;
+    optional int32 consecutiveLoginDays = 2;
+    required int64 bonusChips           = 3;
+    required int64 totalChips           = 4;
+    optional int64 userID = 5;
+	optional EnumVIPLevel vipLevel = 6;
+	optional int64 vipBonusChips = 7;
+}
+
+message TableUserInfo
+{
+  required int32 seatID = 1;
+  required BasicUserInfo basicInfo = 2;
+  optional int64 takeInScore = 3;
+}
+
+message TableInfo
+{
+	required EnumGameType gameType = 1;
+	required int32 tableID = 2;
+	required int32 seatCount = 3;
+	repeated TableUserInfo tableUserInfo = 4;
+	optional bytes serialized = 100;
+}
+
+message GameInfo
+{
+	required EnumGameType gameType = 1;
+	required EnumGameTypeStatus gameTypeStatus = 2;
+}
+
+message UserInfoPair
+{
+	required string fieldName = 1;
+	required string fieldValue = 2;
+}
+
+enum EnumUserInfoFieldName
+{
+	enumUserInfoFieldNameNick = 1;
+	enumUserInfoFieldNameAvatar = 2;//only used for query 
+	enumUserInfoFieldNameGender = 3;
+	enumUserInfoFieldNameAvatarForModify = 4;//only used for modify
+	enumUserInfoFieldNameVIPLevel = 5;
+	enumUserInfoFieldNameMobileNumber = 6;
+}
+
+message PairIntString
+{
+	required EnumUserInfoFieldName fieldName = 1;
+	required string fieldValue = 2;
+}
+
+enum EnumChatType
+{
+	enumChatTypeText = 0;
+	enumChatTypeEmotion = 1;
+	enumChatTypeShortcut = 2;
+	enumChatTypeVoice = 3;
+}
+
+enum EnumMissionType
+{
+	enumMissionTypeDaily = 0;
+	enumMissionTypeSystem = 1;
+}
+
+///////////////////data define end///////////////////
+
+message ConnectGameServer
+{
+  required string ip = 1;
+  required int32 port = 2;
+}
+
+message LoginRequest
+{
+  required EnumLoginType loginType = 1;
+  required EnumGameType gameType = 2;
+  required string account = 3;//email,91account
+  required string password = 4;
+  required string nickname = 5;
+  required EnumGender gender = 6;
+  required EnumDeviceType deviceType = 7;
+  required string deviceID = 8;
+  optional string deviceToken = 9;//iOS device push token
+  required string macAddress = 10;
+  required string secureKey = 11;//avoid hacker attack
+  required string channel = 12;//marketing channel
+  required int32 version = 13;//current version
+  optional string loginipaddress = 14;//login ip address
+  optional int32 loginipport = 15;//login port
+  optional int32 gameserveripaddress = 16;
+  optional int32 gameserveripport = 17;
+  optional string mobilenumber = 18;
+  optional int32 channelid = 19;
+}
+
+message LoginResponse
+{
+    required EnumLoginResult result = 1;
+    optional BasicUserInfo basicUserInfo = 2;
+    repeated GameInfo gameInfo = 3;
+    optional EnumNewVersion update = 4;
+    optional string updateURL = 5;
+    optional string iOSUpdateURL = 6;
+    optional string latestVersion = 7;
+    optional string updateInfo = 8;
+	optional int32 gameserveripaddress = 16;
+    optional int32 gameserveripport = 17;
+	optional ChipsBonusInfo bonusinfo = 18;
+	optional int32  speakerCount = 19;
+	optional EnumFeedBackOperation feedback = 20;
+}
+
+message GameServerTableChat
+{
+	required int32 tableID = 1;
+	required int64 senderUserID = 2;
+	required int32 senderSeatID = 3;
+	required EnumChatType chatType = 4;
+	required string msg = 5;
+	optional string senderNick = 6;
+}
+
+message GameServerGetUserBasicInfoRequest
+{
+	required int64 userid = 1;
+}
+message GameServerGetUserBasicInfoResponse
+{
+	required EnumResult result = 1;
+	required BasicUserInfo basicInfo = 2;
+}
+
+message GameServerEnterGameRequest
+{
+	required EnumGameType gameType = 1; 
+}
+
+message GameServerEnterGameResponse
+{
+	required EnumResult result = 1;
+	required EnumGameType gameType = 2;
+	optional bytes serialized = 3;
+}
+
+message GameServerLeaveGameRequest
+{
+	required EnumGameType gameType = 1; 
+}
+
+message GameServerLeaveGameResponse
+{
+	required EnumResult result = 1;
+	required EnumGameType gameType = 2;
+}
+
+message GameServerGetTableListRequest
+{
+	required EnumGameType gameType = 1;
+	required bytes serialized = 2;
+}
+message GameServerGetTableListResponse	
+{
+	required EnumResult result = 1;
+	repeated TableInfo tableInfo = 2;
+}
+
+message GameServerEnterTableRequest
+{
+	required EnumGameType gameType = 1;
+	required int32 tableID = 2;
+}
+message GameServerEnterTableResponse
+{
+	required EnumResult result = 1;
+	optional TableInfo tableInfo = 2;
+}
+
+message GameServerModifyTakeInScoreRequest
+{
+	required int32 seatID = 1;
+	required int64 scoreTakeIn = 2;
+}
+
+message GameServerModifyTakeInScoreResponse
+{
+	required EnumResult result = 1;
+	required int32 seatID = 2;
+	required int64 scoreTakeIn = 3;
+}
+
+message GameServerModifyTakeInScoreBC
+{
+	required int32 seatID = 1;
+	required int64 scoreTakeIn = 2;
+}
+
+message GameServerEnterSeatRequest
+{
+	required int32 seatID = 1;
+	optional int64 scoreTakeIn = 2;
+}
+message GameServerEnterSeatResponse
+{
+	required EnumResult result = 1;
+	optional int32 tableID = 2;
+	optional int32 seatID = 3;
+	optional int64 scoreTakeIn = 4;
+}
+message GameServerEnterSeatBC
+{
+	required BasicUserInfo basicUserInfo = 1;
+	required int32 tableID = 2;
+	required int32 seatID = 3;
+	required int64 scoreTakeIn = 4;
+}
+
+message GameServerLeaveSeatRequest
+{
+	required int64 userID = 1;
+	required int32 tableID = 2;
+	required int32 seatID = 3;
+}
+message GameServerLeaveSeatResponse
+{
+	required EnumResult result = 1;
+	optional int64 userID = 2;
+	optional int32 tableID = 3;
+	optional int32 seatID = 4;
+}
+message GameServerLeaveSeatBC
+{
+	required int64 userID = 1;
+	required int32 tableID = 2;
+	required int32 seatID = 3;
+}
+
+message GameServerLogicData
+{
+	required int32 cmd = 1;
+	required bytes serialized = 100;
+}
+
+message GameServerLeaveTableRequest
+{
+	required int64 userID = 1;
+	required int32 tableID = 2;
+}
+message GameServerLeaveTableResponse
+{
+	required EnumResult result = 1;
+	optional int64 userID = 2;
+	optional int32 tableID = 3;
+}
+
+message GameServerGetGameListResponse
+{
+	repeated GameInfo gameInfo = 1;
+}
+
+message GameServerQuickStartRequest
+{
+	required EnumGameType gameType = 1;
+	optional int64 baseScore = 2;
+}
+
+message GameServerQuickStartResponse
+{
+	required EnumResult result = 1;
+	optional TableInfo tableInfo = 2;
+}
+
+message GameServerQueryUserInfoRequest
+{
+	required int64 userID = 1;
+}
+
+message GameServerQueryUserInfoResponse
+{
+	required EnumResult result = 1;
+	required BasicUserInfo basicUserInfo = 2;
+	required DetailUserInfo detailUserInfo = 3;
+}
+
+message GameServerSearchUserRequest
+{
+	required int64 userID = 1;
+}
+
+message GameServerSearchUserResponse
+{
+	required EnumResult result = 1;
+	required int64 userID = 2;
+	optional BasicUserInfo basicUserInfo = 3;
+}
+
+message GameServerModifyUserInfoRequest
+{
+	required int64 userid = 1;
+	repeated PairIntString kv = 2;
+}
+
+message GameServerModifyUserInfoResponse
+{
+	required EnumResult result = 1;
+	required int64 userid = 2;
+	repeated PairIntString kv = 3;
+}
+
+message GamerServerTotalScoreChanged
+{
+	required int64 userid = 1;
+	required int64 totalScoreChanged = 2;
+	required int64 totalScoreAfterChanged = 3;
+	required EnumChangeTotalScoreReason reason = 4;
+}
+
+message GamerServerChangeScoreWithOldConnection
+{
+	required int64 userid = 1;
+	required int64 totalScoreChanged = 2;
+}
+
+message GameServerSetBroadcast
+{
+	required bool open = 1;      //open broadcast or not
+	required int64 userid = 2;
+	required string username = 3;
+	required int32 broadcastid = 4; //the id of this msg
+	required int32 broadcasttype = 5;//overwrite previous? add to the queue? single broadcast?
+	required string content = 6;
+	required int32 interval = 7; //broadcast interval
+	required int64 countdown = 8;//countdown to broadcast this msg
+	optional int32  gamecode = 9;
+	optional int64 score = 10;
+}
+
+message GameServerDisconnectLoginServer
+{
+    required int32 time = 1;
+    required int32 code = 2;
+    required int64 check = 3;
+}
+
+message GameServerQueryOnlineUserAmount
+{
+    required int32 game = 1;//which game
+    required int64 blind = 2;//which blind table
+    required int64 online = 3; //online users
+}
+
+message AndroidJNIResponse
+{
+    required string key = 1;//which command type
+    optional string value1 = 2; //value 1
+    optional string value2 = 3; //value 2
+}
+
+message GameServerKickOnlineUser
+{
+    required int64 userid = 1;
+    required string key = 2;
+    required int64 token = 3;
+}
+
+message GameServerSwitchDB
+{
+    required string hash = 1;
+    required int64 token = 2;
+}
+
+message SwitchTarget
+{
+    required int64 keyone = 1;
+	required int64 keytwo = 2;
+    required string token = 3;
+}
+
+message GameServerAdWallAddChips
+{
+    required int64 userid = 1;
+    required int64  chips  = 2;
+    required string str    = 3;
+    required int64 token  = 4;
+}
+
+message GameServerUserPurchaseUpdate
+{
+    required EnumUserPurchaseCategory category    = 1;
+    required EnumUserPurchaseResult   result      = 2;
+    required int64                    finalamount = 3;
+}
+
+message ModifyUserInfoReq
+{
+    required BasicUserInfo basicUserInfo = 1;
+	required DetailUserInfo detailUserInfo = 2;
+}
+
+message ModifyUserInfoRsp
+{
+    //0:æˆåŠŸï¼?ï¼šå¤±è´?
+    required int32 returncode = 1;
+}
+
+
+
+
+message AddFriendRequest
+{
+	required int64 userIDAdd = 1;
+	required int64 userIDAdded = 2;
+	optional string reason = 3;
+	optional BasicUserInfo userInfoAdd = 4;
+	optional BasicUserInfo userInfoAdded = 5;
+}
+
+message AcceptFriendRequest
+{
+	required int64 userIDAccept = 1;
+	required int64 userIDAccepted = 2;
+	optional BasicUserInfo userInfoAccept = 3;
+	optional BasicUserInfo userInfoAccepted = 4;
+}
+
+message AcceptFriendResponse
+{
+	required EnumResult result = 1; 
+	required int64 userIDAccept = 2;
+	required int64 userIDAccepted = 3;
+	optional BasicUserInfo userInfoAccept = 4;
+	optional BasicUserInfo userInfoAccepted = 5;
+}
+
+message RejectFriendRequest
+{
+	required int64 userIDReject = 1;
+	required int64 userIDRejected = 2;
+	optional string reason = 3;
+	optional BasicUserInfo userInfoReject = 4;
+	optional BasicUserInfo userInfoRejected = 5;
+}
+
+message RemoveFriendRequest
+{
+	required int64 userIDRemove = 1;
+	required int64 userIDRemoved = 2;
+	optional BasicUserInfo userInfoRemove = 3;
+	optional BasicUserInfo userInfoRemoved = 4;
+}
+
+message RemoveFriendResponse
+{
+	required EnumResult result = 1;
+	optional int64 userIDRemove = 2;
+	optional int64 userIDRemoved = 3;
+	optional BasicUserInfo userInfoRemove = 4;
+	optional BasicUserInfo userInfoRemoved = 5;
+}
+
+message RemoveFriendBC
+{
+	required int64 userIDRemove = 1;
+	required int64 userIDRemoved = 2;
+	optional BasicUserInfo userInfoRemove = 3;
+	optional BasicUserInfo userInfoRemoved = 4;
+}
+
+message GetAddFriendRequestListRequest
+{
+	required int64 userID = 1;
+	optional int32 sessionID = 2;
+}
+
+message GetAddFriendRequestListResponse
+{
+	required EnumResult result = 1;
+	required int64 userID = 2;
+	optional int32 sessionID = 3;
+	repeated BasicUserInfo userInfos = 4;
+	optional bool end = 5;
+}
+
+message GetFriendListRequest
+{
+	required int64 userID = 1;
+	required int32 sessionID = 2;
+}
+
+message GetFriendListResponse
+{
+	required EnumResult result = 1;
+	required int64 userID = 2;
+	required int32 sessionID = 3;
+	repeated BasicUserInfo userInfos = 4;
+	optional bool end = 5;
+}
+
+message SingleChatMsg
+{
+	required int64 userIDFrom = 1;
+	required int64 userIDTo = 2;
+	required string msg = 3;
+	optional string timestamp = 4;
+	optional BasicUserInfo userInfoFrom = 5;
+	optional BasicUserInfo userInfoTo = 6;
+}
+
+message GetOfflineMsgRequest
+{
+	required int64 userID = 1;
+	required int32 sessionID = 2;
+}
+
+message GetOfflineMsgResponse
+{
+	required EnumResult result = 1;
+	required int64 userID = 2;
+	required int32 sessionID = 3;
+	repeated SingleChatMsg msgs = 4;
+	optional bool end = 5;
+}
+
+message AddSystemBroadcastReq
+{
+	required GameServerSetBroadcast broadcastinfo = 1;
+}
+
+message AddSystemBroadcastRsp
+{
+    required int32 returncode = 1;
+}
+
+message DeleteSystemBroadcastReq
+{
+	required int64 userid = 1;
+	required int32 broadcastid = 2;
+}
+
+message DeleteSystemBroadcastRsp
+{
+    required int32 returncode = 1;
+}
+
+message AddOnceBroadcastReq
+{
+	required GameServerSetBroadcast broadcastinfo = 1;
+}
+
+message AddOnceBroadcastRsp
+{
+    required int32 returncode = 1;
+}
+
+
+message GameServerPresentScoreRequest
+{
+	required int64 userIDFrom = 1;
+	required int64 userIDTo = 2;
+	required int64 score = 3;
+	optional EnumGameType gameType = 4;
+}
+
+message GameServerPresentScoreResponse
+{
+	required EnumResult result = 1;
+	required int64 userIDFrom = 2;
+	required int64 userIDTo = 3;
+	optional EnumGameType gameType = 4;	
+	required int64 scoreFrom = 5;
+	required int64 scoreTo = 6;
+}
+
+message PropertyInfo
+{
+    required int32 id = 1;
+	required string name = 2;
+	required int64 price = 3;
+	required string picurl = 4;
+	required int32 type = 5;
+	optional int32 sellpercentage = 6;
+}
+
+message QueryUserPropertyReq
+{
+	required int64 userID = 1;
+	required int32 sessionID = 2;
+}
+
+message QueryUserPropertyRsp
+{
+    required int32 returncode = 1;
+	required int32 sessionID = 2;
+	required int64 userID = 3;
+    repeated PropertyInfo properties = 4;
+	optional bool end = 5;
+}
+
+message BuyPropertyReq
+{
+	required int64 userIDFrom = 1;
+	required int64 userIDTo = 2;
+	required int32 propertyID = 3;
+	optional int64 price = 4;
+}
+
+message BuyPropertyRsp
+{
+    required int32 returncode = 1;
+    required int64 userIDFrom = 2;
+	required int64 userIDTo = 3;
+	optional int64 subscore = 4;
+	optional PropertyInfo properyInfo = 5;
+}
+
+message SellPropertyReq
+{
+	required int64 userID = 1;
+	required int32 propertyID = 2;
+}
+
+message SellPropertyRsp
+{
+    required int32 returncode = 1;
+	optional int64 userID = 2;
+	optional int64 addscore = 3;
+}
+
+message GiftInfo
+{
+    required int32 id = 1;
+	required string name = 2;
+	required int64 price = 3;
+	required string picurl = 4;
+	required int32 type = 5;
+}
+
+message BuyGiftRequest
+{
+	required int64 userIDFrom = 1;
+	required int64 userIDTo = 2;
+	required int32 giftID = 3;
+	optional int64 price = 4;
+}
+
+message BuyGiftResponse
+{
+	required EnumResult result = 1;
+	required int64 userIDFrom = 2;
+	required int64 userIDTo = 3;
+	optional GiftInfo giftInfo = 4;
+}
+
+message QueryGiftInfoByIDRequest
+{
+	required int32 giftID = 1;
+}
+
+message QueryGiftInfoByIDResponse
+{
+	required EnumResult result = 1;
+	required int32 giftID = 2;
+	optional GiftInfo giftInfo = 3;
+}
+
+message ModifyPropertyRequest
+{
+	required PropertyInfo property = 1;
+}
+
+message ModifyPropertyResponse
+{
+	required int32 returncode = 1;
+}
+
+message DelPropertyRequest
+{
+	required int32 propertyid = 1;
+}
+
+message DelPropertyResponse
+{
+	required int32 returncode = 1;
+}
+
+message ModifyGiftRequest
+{
+	required GiftInfo gift = 1;
+}
+
+message ModifyGiftResponse
+{
+	required int32 returncode = 1;
+}
+
+message DelGiftRequest
+{
+	required int32 giftid = 1;
+}
+
+message DelGiftResponse
+{
+	required int32 returncode = 1;
+}
+
+message SwitchDispatchRequest
+{
+	required string ip = 1;
+	required int32 port = 2;
+}
+
+message SwitchDispatchResponse
+{
+	required int32 returncode = 1;
+}
+
+message QuerytAllBroadcastRequest
+{
+	required int64 sessionID = 1;
+}
+
+message QuerytAllBroadcastResponse
+{
+    required int32 returncode = 1;
+	optional int64 sessionID = 2;
+	repeated GameServerSetBroadcast broadcasts = 3;
+	optional bool end = 4;
+}
+
+message OnlineRewardDefine
+{
+	required int32 time = 1;
+	required int64 reward = 2;
+}
+
+message OnlineRewardRequest
+{
+	required int64 userID = 1;
+}
+
+message OnlineRewardResponse
+{
+	required EnumResult result = 1; 
+	required int64 userID = 2;
+	required int64 reward = 3;
+}
+
+message TableRewardPoolInfo
+{
+	required int64 score = 1;
+}
+
+message TableReward
+{
+	required int64 userID = 1;
+	required int64 scoreAdd = 2;
+}
+
+message SubSpeakerRequest
+{
+	required int64 userID = 1;
+	required int64 speakernumtosub = 2;
+}
+
+message SubSpeakerResponse
+{
+	required int32 returncode = 1;
+}
+
+message StartRouletteRequest
+{
+	required int64 userID = 1;
+	required int64 costchips = 2;
+	optional int32 gamecode = 3;
+}
+
+message StartRouletteResponse
+{
+	required EnumResult returncode = 1;
+	required int64 costchips = 2;
+	required int64 winchips = 3;
+	optional int64 userID = 4;
+}
+
+message GetNotificationRequest
+{
+	required int32 sessionID = 1;
+	optional EnumSysNotificationType notificationType = 2;
+	optional EnumLanguageType notificationLanguageType = 3;
+}
+
+message SingleNotification
+{
+    required int64 notificationID = 1;
+	required string notificationTitle = 2;
+	required string notificationContent = 3;
+	required string notificationAddTime = 4;
+	optional EnumSysNotificationType notificationType = 5;
+	optional int32 notificationGamecode = 6;
+	optional EnumLanguageType notificationLanguageType = 7;
+	optional string notificationSummary = 8;
+	optional string notificationForcePopTime = 9;
+	optional int64 notificationForcePopTimeInt = 10;
+	optional int32 bNotified = 11;
+}
+
+message GetNotificationResponse
+{
+    required EnumResult result = 1;
+	required int32 sessionID = 2;
+	repeated SingleNotification notifications = 3;
+	optional bool end = 4;
+}
+
+message AddNotificationReq
+{
+	required SingleNotification notification = 1;
+}
+
+message AddNotificationRsp
+{
+    required int32 returncode = 1;
+}
+
+message DeleteNotificationReq
+{
+	required int64 notificationID = 1;
+}
+
+message DeleteNotificationRsp
+{
+    required int32 returncode = 1;
+}
+
+message AddNotificationNotify
+{
+    repeated SingleNotification notification = 1;
+}
+
+message DeleteNotificationNotify
+{
+	repeated int64 notificationID = 1;
+}
+
+message ForcePopNotificationNotify
+{
+	repeated int64 notificationID = 1;
+}
+
+message GetActivityRequest
+{
+	required int32 sessionID = 1;
+	optional EnumLanguageType activityLanguageType = 2;
+}
+
+message SingleActivity
+{
+    required int64 activityID = 1;
+	required string activityTitle = 2;
+	required string activityContent = 3;
+	required string activityAddTime = 4;
+	required EnumSysActivityType activityType = 5;
+	required EnumSysActivityExpiredType activityExpired = 6;
+	optional string activityPicUrl = 7;
+	optional int32 activityGamecode = 8;
+	optional EnumLanguageType activityLanguageType = 9;
+	optional string activitySummary = 10;
+	optional string activityExpiredTime = 11;
+	optional string activityAutoInvalidTime = 12;
+	optional int64 activityExpiredTimeInt = 13;
+	optional int64 activityAutoInvalidTimeInt = 14;
+}
+
+message GetActivityResponse
+{
+    required EnumResult result = 1;
+	required int32 sessionID = 2;
+	repeated SingleActivity activities = 3;
+	optional bool end = 4;
+}
+
+message AddActivityReq
+{
+	required SingleActivity activity = 1;
+}
+
+message AddActivityRsp
+{
+    required int32 returncode = 1;
+}
+
+message DeleteActivityReq
+{
+	required int64 activityID = 1;
+}
+
+message DeleteActivityRsp
+{
+    required int32 returncode = 1;
+}
+
+message AddActivityNotify
+{
+    repeated SingleActivity activity = 1;
+}
+
+message DeleteActivityNotify
+{
+	repeated int64 activityID = 1;
+}
+
+message ForcePopActivityNotify
+{
+	repeated int64 activityID = 1;
+}
+
+message BuySpeakerReq
+{
+	required int64 userID = 1;
+	required int32 speakerNum = 2;
+	required int64 totalPrice = 3;
+}
+
+message BuySpeakerRsp
+{
+    required int32 returncode = 1;
+    required int64 userID = 2;
+	required int64 subscore = 3;
+}
+
+message KickUserFromTableRequest
+{
+	required int64 userIDKicked = 1;
+	required EnumGameType gameType = 2;
+	required int32 tableID = 3;
+}
+
+message KickUserFromTableResponse
+{
+	required EnumResult result = 1;
+	required int64 userIDKick = 2;
+	required int64 userIDKicked = 3;
+	required EnumGameType gameType = 4;
+	required int32 tableID = 5;
+}
+
+message ExchangeToolRequest
+{
+	required int64 userID = 1;
+	required string productID = 2;
+}
+
+message ExchangeToolResponse
+{
+	required EnumResult result = 1;
+}
+
+enum EnumTaskCategory
+{
+	enumTaskCategoryContinousWin = 1;
+	enumTaskCategoryGetOneCardType = 2;
+	enumTaskCategoryPlaySomeCards = 3;
+	enumTaskCategoryPlaySomeCardsAndWin = 4;
+}
+
+enum EnumTaskRewardType
+{
+	enumTaskRewardTypeChips = 1;
+	enumTaskRewardTypeYuanBao = 2;
+}
+
+message TaskProperty
+{
+	required EnumTaskCategory taskCategory = 1;
+	repeated int32 cards = 2;
+	optional int64 todoCount = 3;
+	optional int32 todoCardType = 4;
+}
+
+message TaskToDoNotify
+{
+	required TaskProperty taskProperty = 1;
+	required EnumTaskRewardType rewardType = 2;
+	required int64 rewardCount = 3;
+}
+
+message TaskFinishNotify
+{
+	required TaskProperty taskProperty = 1; 
+	required EnumTaskRewardType rewardType = 2;
+	required int64 rewardCount = 3;
+	required int64 userID = 4;
+}
+
+message AddFlagReq
+{
+	required FlagInfo flag = 1;
+}
+
+message AddFlagRsp
+{
+    required int32 returncode = 1;
+}
+
+message DeleteFlagReq
+{
+	required int32 flagID = 1;
+}
+
+message DeleteFlagRsp
+{
+    required int32 returncode = 1;
+}
+
+message AddFlagForUserReq
+{
+	required int32 flagID = 1;
+	required int64 userID = 2;
+}
+
+message AddFlagForUserRsp
+{
+    required int32 returncode = 1;
+}
+
+message FeedBackOperationReq
+{
+    required EnumFeedBackOperation operation = 1;
+	required string startTime = 2;
+	required string endTime = 3;
+	optional int32 gamecode = 4;
+}
+
+message FeedBackOperationRsp
+{
+    required int32 returncode = 1;
+}
+
+message ServerClientBroadcastData
+{
+	required EnumBroadcastEventType broadcastEventType = 1;
+	optional bytes serialized = 2;
+}
+
+message XiaoLaBaNotify
+{
+	required int32 gameCode = 1;
+	required EnumXiaoLaBaNotifyType type = 2;
+	optional int32 value = 3;
+	optional int64 userID = 4;
+	optional string nickName = 5;
+	optional int64 baseScore = 6;
+}
+
+message SpeakerAutoSendConfigInfo
+{
+	optional int64 msgBuyThreshold = 1;
+	optional int64 commonBuyThreshold = 2;
+	optional EnumZhajinhuaCardType zhaJinHuaCardTypeThreshold = 3;
+	optional int64 singleTurnWinThreshold = 4;
+	optional int64 rouletteWinThreshold = 5;
+	optional int64 tableRewardThreshold = 6;
+}
+
+message GetSpeakerAutoSendConfigReq
+{
+	optional int32 gameCode = 1;
+}
+
+message GetSpeakerAutoSendConfigRsp
+{
+	required int32 returncode = 1; 
+	optional SpeakerAutoSendConfigInfo configInfo = 2;
+}
+
+message ModifySpeakerAutoSendConfigReq
+{
+	required SpeakerAutoSendConfigInfo configInfo = 1;
+}
+
+message ModifySpeakerAutoSendConfigRsp
+{
+	required int32 returncode = 1;
+}
+
+message ModifySpeakerAutoSendConfigNotify
+{
+	required SpeakerAutoSendConfigInfo configInfo = 1;
+}
+
+message RoomInfo
+{
+	required int32 roomid = 1;
+	required int32 gameCode = 2;
+	required string roomName = 3;
+	required string roomDes = 4;
+	required int64 roomFee = 5;
+	required int64 roomBaseScore = 6;
+	required int64 roomMinScorePlay = 7;
+}
+
+message GetRoomInfoReq
+{
+	optional int32 gameCode = 1;
+}
+
+message GetRoomInfoRsp
+{
+	repeated RoomInfo roomInfo = 1;
+}
+
+message ModifyRoomInfoReq
+{
+	required RoomInfo roomInfo = 1;
+}
+
+message ModifyRoomInfoRsp
+{
+	required int32 returncode = 1;
+}
+
+message AddRoomInfoReq
+{
+	required RoomInfo roomInfo = 1;
+}
+
+message AddRoomInfoRsp
+{
+	required int32 returncode = 1;
+}
+
+message DeleteRoomInfoReq
+{
+	required int32 roomID = 1;
+}
+
+message DeleteRoomInfoRsp
+{
+	required int32 returncode = 1;
+}
+
+message ModifyRoomInfoNotify
+{
+	required RoomInfo roomInfo = 1;
+}
+
+message AddRoomInfoNotify
+{
+	required RoomInfo roomInfo = 1;
+}
+
+message DeleteRoomInfoNotify
+{
+	required int32 roomID = 1;
+}
+
+message CommonConfigInfo
+{
+	optional EnumFeedBackSwitch feedBackSwitch = 1;
+	optional string feedBackStartTime = 2;
+	optional string feedBackEndTime = 3;
+	optional int64 feedBackStartTimeInt = 4;
+	optional int64 feedBackEndTimeInt = 5;
+	optional int32 bStartNotified = 6;
+	optional int32 bEndNotified = 7;
+}
+
+message GetCommonConfigReq
+{
+	optional int32 gameCode = 1;
+}
+
+message GetCommonConfigRsp
+{
+	required CommonConfigInfo configInfo = 1;
+}
+
+message ModifyCommonConfigReq
+{
+	required CommonConfigInfo configInfo = 1;
+}
+
+message ModifyCommonConfigRsp
+{
+	required int32 returncode = 1;
+}
+
+message DailyMission
+{
+    required int32 dailyMissionID = 1;
+	required EnumDailyMissionType missionType = 2;
+	optional int32 gameCode = 3;
+	optional int32 userLevelStart = 4;
+	optional int32 userLevelEnd = 5;
+	optional int32 roomID = 6;
+	optional int64 userServiceFee = 7;
+	optional int32 gameLength = 8;
+	optional int32 gameTurnSum = 9;
+	optional int32 continuousWinTime = 10;
+	optional EnumZhajinhuaCardType zjhCardType = 11;
+    optional int32 userGetProbability = 12;
+	optional int32 couponNum = 13;
+	optional int64 chipNum = 14;
+	optional string flagName = 15;
+	optional int32 flagValidDay = 16;
+	optional string missionName = 17;
+	optional string missionDescription = 18;
+	optional int32 flagID = 19;
+	optional FlagInfo flagInfo = 20;
+}
+
+message DailyMissionStatus
+{
+    required DailyMission dailyMission = 1;
+	required EnumMissionStatus status = 2;
+}
+
+message AddDailyMissionReq
+{
+	required DailyMission dailyMissionInfo = 1;
+}
+
+message AddDailyMissionRsp
+{
+	required int32 returncode = 1;
+}
+
+message DeleteDailyMissionReq
+{
+	required int32 dailyMissionID = 1;
+}
+
+message DeleteDailyMissionRsp
+{
+	required int32 returncode = 1;
+}
+
+message SystemMission
+{
+    required int32 systemMissionID = 1;
+	required EnumSystemMissionType missionType = 2;
+	optional int32 gameCode = 3;
+	optional int32 userLevelStart = 4;
+	optional int32 userLevelEnd = 5;
+	optional int32 roomID = 6;
+	optional int64 userServiceFee = 7;
+	optional int32 gameLength = 8;
+	optional int32 gameTurnSum = 9;
+    optional int32 userGetProbability = 10;
+	optional int32 couponNum = 11;
+	optional int64 chipNum = 12;
+	optional string flagName = 13;
+	optional int32 flagValidDay = 14;
+	optional int32 userBuyMin = 15;
+	optional int32 userBuyMax = 16;
+	optional bool requireFirstBuy = 17;
+	optional int32 userExchangeMin = 18;
+	optional int32 userExchangeMax = 19;
+	optional bool requireFirstExchange = 20;
+	optional string missionName = 21;
+	optional string missionDescription = 22;
+	optional int32 flagID = 23;
+	optional FlagInfo flagInfo = 24;
+}
+
+message SystemMissionStatus
+{
+    required SystemMission systemMission = 1;
+	required EnumMissionStatus status = 2;
+}
+
+message AddSystemMissionReq
+{
+	required SystemMission systemMissionInfo = 1;
+}
+
+message AddSystemMissionRsp
+{
+	required int32 returncode = 1;
+}
+
+message DeleteSystemMissionReq
+{
+	required int32 systemMissionID = 1;
+}
+
+message DeleteSystemMissionRsp
+{
+	required int32 returncode = 1;
+}
+
+message QueryMissionReq
+{
+	required int64 userID = 1;
+}
+
+message QueryMissionRsp
+{
+	required int32 returncode = 1;
+	repeated DailyMissionStatus dailyMissions = 2;
+	repeated SystemMissionStatus systemMissions = 3;
+	optional int64 userID = 4;
+}
+
+message FinishMissionReq
+{
+	required int64 userID = 1;
+	repeated DailyMissionStatus dailyMissions = 2;
+	repeated SystemMissionStatus systemMissions = 3;
+}
+
+message ModifyMissionParaReq
+{
+	required int64 userID = 1;
+	optional int32 addGameTurns = 2;
+	optional int32 addContinuousWinTime = 3;
+}
+
+message ModifyMissionParaRsp
+{
+	required int32 returncode = 1;
+}
+
+message ExchangeCardType
+{
+    required int32 cardTypeID = 1;
+	required string cardName = 2;
+}
+
+message ExchangeProduct
+{
+    required int32 productID = 1;
+	required EnumExchangeProductType productType = 2;
+	required string productName = 3;
+	required int32 couponNum = 4;
+	required int32 productStock = 5;
+	required string productPicUrl = 6;
+	optional ExchangeCardType cardType = 7;
+	optional EnumProductFrontShow productFrontShow = 8;	
+	optional int32 selfExchangeProductid = 9;
+	optional int32 gamecode = 10;
+	optional int32 isTryLuckyProduct = 11;
+	optional int32 getProductNum = 12;
+	optional EnumExchangeProductStatus productStatus = 13;
+}
+
+message SingleCardInfo
+{
+    required int32 cardID = 1;
+	required ExchangeCardType cardType = 2;
+	required EnumCardStatus cardStatus = 3;
+	optional string cardSN = 4;
+}
+
+message AddExchangeProductReq
+{
+	required ExchangeProduct product = 1;
+}
+
+message AddExchangeProductRsp
+{
+	required int32 returncode = 1;
+}
+
+message ModifyExchangeProductReq
+{
+	required ExchangeProduct product = 1;
+}
+
+message ModifyExchangeProductRsp
+{
+	required int32 returncode = 1;
+}
+
+message DeleteExchangeProductReq
+{
+	required int32 productID = 1;
+	required int32 gamecode = 2;
+}
+
+message DeleteExchangeProductRsp
+{
+	required int32 returncode = 1;
+}
+
+message QueryExchangeProductListReq
+{
+	required int32 gamecode = 1;
+	required int32 sessionID = 2;
+}
+
+message QueryExchangeProductListRsp
+{
+    required int32 returncode = 1;
+	repeated ExchangeProduct products = 2;
+	required int32 sessionID = 3;
+	optional bool end = 4;
+}
+
+message ExchangeProductReq
+{
+	required int64 userID = 1;
+	required int32 productID = 2;
+	required int32 gamecode = 3;
+	optional string userName = 4;
+	optional string userIDCard = 5;
+	optional string userTel = 6;
+	optional string userAdress = 7;
+}
+
+message ExchangeProductRsp
+{
+	required int32 returncode = 1;
+	optional string productCode = 2;
+}
+
+message ExchangeProductStockChangeNotify
+{
+	required int32 productID = 1;
+    required int32 newStock = 2;	
+}
+
+message SelfExchangeProductInfo
+{
+	required int32 productID = 1;
+	required string productcode = 2;
+    required EnumSelfExchangeProductType producttype = 3;
+    required int32 gamecode = 4;
+    required string productname = 5;
+    required string productPicurl = 6;
+}
+
+message QueryTryLuckListReq
+{
+	required int32 gamecode = 1;
+	required int32 sessionID = 2;
+}
+
+message QueryTryLuckListRsp
+{
+    required int32 returncode = 1;
+	repeated ExchangeProduct products = 2;
+	required int32 sessionID = 3;
+	optional bool end = 4;
+}
+
+message StartTryLuckReq
+{
+	required int64 userID = 1;
+	required int32 gamecode = 2;
+	optional int32 costCouponNum = 3;
+}
+
+message StartTryLuckRsp
+{
+    required int32 returncode = 1;
+	optional int32 resultProductID = 2;
+}
+
+message CouponChangeHis
+{
+	required int64 userID = 1;
+	required string datetime = 2;
+	required string reason = 3;
+	required int32 changeNum = 4;
+	required int32 margin = 5;
+	required EnumExchangeProductType productType = 6;
+	optional string productCode = 7;
+	optional string userName = 8;
+	optional string userIDCard = 9;
+	optional string userTel = 10;
+	optional string userAdress = 11;
+	optional EnumExchangeStatus status = 12;
+	optional string remark = 13;
+	optional string orderNo = 14;
+	optional int32 exchangeProductID = 15;
+}
+
+message QueryCouponChangeHisReq
+{
+	required int64 userID = 1;
+	required int32 sessionID = 2;
+}
+
+message QueryCouponChangeHisRsp
+{
+    required int32 returncode = 1;
+	repeated CouponChangeHis changeHis = 2;
+	required int32 sessionID = 3;
+	optional bool end = 4;
+}
+
+message GameLengthRewardStageInfo
+{
+    required int32 configID = 1;
+    required int32 roomID = 2;
+	required int32 stage = 3;
+	required int32 timeLength = 4;
+	required int64 rewardChip = 5;
+}
+
+message GameLengthRewardRoomInfo
+{
+	required int32 roomID = 1;
+	repeated GameLengthRewardStageInfo stageConfigs = 2;
+}
+
+message AddGameLengthRewardStageInfoReq
+{
+	required GameLengthRewardStageInfo config = 1;
+}
+
+message AddGameLengthRewardStageInfoRsp
+{
+	required int32 returncode = 1;
+}
+
+message DeleteGameLengthRewardStageInfoReq
+{
+	required int32 configID = 1;
+}
+
+message DeleteGameLengthRewardStageInfoRsp
+{
+	required int32 returncode = 1;
+}
+
+message QueryGameLengthRewardConfigReq
+{
+	required int32 gameCode = 1;
+}
+
+message QueryGameLengthRewardConfigRsp
+{
+	required int32 returncode = 1;
+	repeated GameLengthRewardRoomInfo configInfos = 2;
+}
+
+
+message ClientGameServerMissionComplete
+{
+	required EnumMissionType missionType = 1;
+	required int32 missionID = 2;
+}
+
+message ClientGameServerGetMissoinRewardRequest
+{
+	required EnumMissionType missionType = 1;
+	required int32 missionID = 2;
+}
+
+message ClientGameServerGetMissoinRewardResponse
+{
+	required int32 result = 1; 
+	required EnumMissionType missionType = 2;
+	required int32 missionID = 3;
+}
+
+message UserMission
+{
+	required int32 missionID = 1;
+	required EnumMissionType missionType = 2;
+	required EnumMissionStatus missionStatus = 3;
+}
+//package SMCMidLayer;
+
+message PayRecordInfo
+{
+  //支付宝 = 1,快钱 = 2,财付通 = 3,神州付 = 4,360 = 5,
+  //微派 = 6,Q点 = 7,苹果商店 = 8,
+  required int32  paytype = 1;
+  required int64 userID = 2;
+  required string tradeno = 3;
+  required int32  gamecode = 4;
+  required int32  platformid = 5;
+  required int64  totalfee = 6;
+  required string productid = 7;
+  optional string productdesc = 8;
+  //client :0,weipai server : 1
+  optional int32 recordfrom = 9;
+  optional string recordfromip = 10;
+  optional int32  channelid = 11;
+}
+
+message InsertPayRecordReq
+{
+  required PayRecordInfo info = 1;
+}
+
+message InsertPayRecordRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+  //0:记录不全，1：记录已完整
+  optional int32 bsuccess = 2;
+}
+
+message GetUseridReq
+{
+  required string email = 1;
+}
+
+message GetUseridRsp
+{
+  required int32  returncode = 1;
+  required string email = 2;
+  required int64 userID = 3;
+}
+
+message AddIPBlackListReq
+{
+  required string userip = 1;
+  required string describecontent = 2;
+}
+
+message AddIPBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message deleteIPBlackListReq
+{
+  required string userip = 1;
+}
+
+message deleteIPBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message AddUserIDBlackListReq
+{
+  required int64 userID = 1;
+  required string describecontent = 2;
+}
+
+message AddUserIDBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message deleteUserIDBlackListReq
+{
+  required int64 userID = 1;
+}
+
+message deleteUserIDBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message AddMACBlackListReq
+{
+  required string usermac = 1;
+  required string describecontent = 2;
+}
+
+message AddMACBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message deleteMACBlackListReq
+{
+  required string usermac = 1;
+}
+
+message deleteMACBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message QueryBrokerageReq
+{
+  //默认1
+  required int32 id = 1;
+}
+
+message QueryBrokerageRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+  required int32 brokerage = 2;
+}
+
+message RankingInfo
+{
+  required int64 userID = 1;
+  required string account = 2;
+  required int64  value = 3;
+}
+
+message QueryRankingInfoReq
+{
+  //筹码排行：1
+  required int32 type = 1;
+}
+
+message QueryRankingInfoRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+  repeated RankingInfo info = 2;
+}
+
+//add
+message AddToolReq
+{
+  //小喇叭：1
+  required int32 type = 1;
+  required int64 num = 2;
+  required int64 userID = 3;
+}
+
+message AddToolRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+message ModifyBrokerageReq
+{
+  //默认1
+  required int32 id = 1;
+  required int32 brokerage = 2;
+}
+
+message ModifyBrokerageRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+message KickOffUserReq
+{
+  //默认1
+  required int64 userID = 1;
+}
+
+message KickOffUserRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+message MarkWeipaiSuccessReq
+{
+  //默认1
+  required string tradeno = 1;
+  required int64 userID = 2; 
+  required int64  totalfee = 3;
+}
+
+message MarkWeipaiSuccessRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//import "packet.proto";
+//import "ClientGameServer/clientgameserver.proto";
+
+//package MiddleLayerServer;
+
+//option optimize_for = LITE_RUNTIME;
+
+enum EnumAddScoreType
+{
+    enumAddScoreType_TableReward = 1;
+	enumAddScoreType_OnlineReward = 2;
+	enumAddScoreType_RouletteReward = 3;
+	enumAddScoreType_SlotsReward = 4;
+	enumAddScoreType_ZhaJinHuaXiQianReward = 5;
+	enumAddScoreType_UserBuy = 6;
+	enumAddScoreType_BackgroundAdd = 7;
+	enumAddScoreType_BackgroundSub = 8;
+	enumAddScoreType_BuySpeaker = 9;
+	enumAddScoreType_ServiceFee = 10;
+	enumAddScoreType_User_Disconnect = 11;
+	enumAddScoreType_Mission_Reward = 12;
+}
+
+enum EnumMidLayerBroadcastEventType
+{
+    enumBroadcastEventType_SpeakerConfigModify = 1;
+	enumBroadcastEventType_AddRoomInfo = 2;
+	enumBroadcastEventType_ModifyRoomInfo = 3;
+	enumBroadcastEventType_DeleteRoomInfo = 4;
+}
+
+message GameServerMiddleLayerServerScoreOperation
+{
+	required int64 userid = 1;
+    required int64 score = 2;
+	optional int32 adwalltype = 3;
+	optional int32 gameCode = 4;
+	optional EnumAddScoreType addtype = 5;
+	optional string ipAddress = 6;
+	optional int32 roomID = 7;
+	optional int32 tableID = 8;
+	optional int32 seatID = 9;
+	optional int32 baseScore = 10;
+	optional int32 playCountToday = 11;
+	optional int32 continuousWinCountToday = 12;
+}
+
+message GameServerMiddleLayerTurnInfoReport
+{
+	required int32 gameCode = 1;
+	required int32 baseScore = 2;
+	required int32 totalGameLength = 3;
+	required int32 averageWaitTime = 4;
+	required int64 turnServiceFee = 5;
+}
+
+message AddFuncCard
+{
+	required int64 userid = 1;
+	required EnumFuncCardType cardType = 2;
+	required int32 cardCountAdded = 3; 
+}
+
+message GameServerMiddleLayerServerScoreOperationRsp
+{
+	required int32 returncode = 1;
+}
+
+message RewardScoreCell
+{
+	required int64 userid = 1;
+    required int64 score = 2;
+    required int64 connectionID = 3;
+}
+
+message GameServerMiddleLayerServerRewardScore
+{
+	repeated RewardScoreCell cells = 1;
+}
+
+message GameServerMiddleLayerServerOnlineNumReport
+{
+    required string server_ip = 1;
+    optional string server_desc = 2;
+    required int32  server_membernum = 3;
+    required int32  game_code = 4;
+    optional int32  server_type = 5;
+}
+
+message GameServerMiddleLayerServerAddExperience
+{
+    required int64 userid = 1;
+    required int64 experience = 2;
+}
+
+message PaySuccessNotify
+{
+    required int64 userid = 1;
+    optional int64 newScore = 2;
+    optional int32 newSpeakerCount = 3;
+	optional int32 newVipLevel = 4;
+	repeated FuncCard funcCards = 5;
+	repeated EnumIdentity newIdentity = 6;//don't use this field, use the next one: flags
+	optional FlagInfos flags = 7;
+	optional int32 totalBuy = 8;
+}
+
+message GameServerMiddleLayerAddOfflineMsg
+{
+	required int64 userIDFrom = 1;
+	required int64 userIDTo = 2;
+	required string msg = 3;
+	optional string timestamp = 4;
+}
+
+message GameServerMiddleLayerAddOfflineFriendRequest
+{
+	required int64 userIDAdd = 1;
+	required int64 userIDAdded = 2;
+	optional string reason = 3;
+}
+
+message SystemBroadcastNotify
+{
+    required int32 gamecode = 1;
+	required int64 userid = 2;
+	required string content = 3;
+}
+
+message RegBroadcastConReq
+{
+    required int32 gamecode = 1;
+	required string gameserverip = 2;
+	required int32 gameserverport = 3;
+}
+
+message RegBroadcastConRsp
+{
+    required int32 returncode = 1;
+}
+
+message OnlineNumReporte
+{
+    required int32 gamecode = 1;
+	required string gameserverip = 2;
+	required int64 totalonlinenum = 3;
+	optional int32 port = 4;
+}
+
+message GameServerMiddleServerGameResult
+{
+	required int64 userID = 1;
+	required int64 score = 2;
+}
+
+message UserDisconnect
+{
+	required int64 userID = 1;
+}
+
+message AddYuanBao
+{
+	required int64 userID = 1;
+	required int32 yuanBaoCountAdded = 2;
+}
+
+message MidlayerGameServerBroadcastData
+{
+	required EnumMidLayerBroadcastEventType broadcastEventType = 1;
+	optional bytes serialized = 2;
+}
+
+message MidLayerGameServerQueryMissionConfigRequest
+{
+	optional int32 gameCode = 1;
+}
+
+message MidLayerGameServerQueryMissionConfigResponse
+{
+	repeated DailyMission dm = 1;
+	repeated SystemMission sm = 2;
+	optional int32 gameCode = 3;
+}

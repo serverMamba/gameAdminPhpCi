@@ -1,0 +1,223 @@
+package SMCMidLayer;
+
+message PayRecordInfo
+{
+  //支付宝 = 1,快钱 = 2,财付通 = 3,神州付 = 4,360 = 5,
+  //微派 = 6,Q点 = 7,苹果商店 = 8,
+  required int32  paytype = 1;
+  required uint64 userID = 2;
+  required string tradeno = 3;
+  required int32  gamecode = 4;
+  required int32  platformid = 5;
+  required int64  totalfee = 6;
+  required string productid = 7;
+  optional string productdesc = 8;
+  //client :0,weipai server : 1
+  optional int32 recordfrom = 9;
+  optional string recordfromip = 10;
+  optional int32  channelid = 11;
+}
+
+message InsertPayRecordReq
+{
+  required PayRecordInfo info = 1;
+}
+
+message InsertPayRecordRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+  //0:记录不全，1：记录已完整
+  optional int32 bsuccess = 2;
+}
+
+message GetUseridReq
+{
+  required string email = 1;
+}
+
+message GetUseridRsp
+{
+  required int32  returncode = 1;
+  required string email = 2;
+  required uint64 userID = 3;
+}
+
+message AddIPBlackListReq
+{
+  required string userip = 1;
+  required string describecontent = 2;
+}
+
+message AddIPBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message deleteIPBlackListReq
+{
+  required string userip = 1;
+}
+
+message deleteIPBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message AddUserIDBlackListReq
+{
+  required uint64 userID = 1;
+  required string describecontent = 2;
+}
+
+message AddUserIDBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message deleteUserIDBlackListReq
+{
+  required uint64 userID = 1;
+}
+
+message deleteUserIDBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message AddMACBlackListReq
+{
+  required string usermac = 1;
+  required string describecontent = 2;
+}
+
+message AddMACBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message deleteMACBlackListReq
+{
+  required string usermac = 1;
+}
+
+message deleteMACBlackListRsp
+{
+  //0:成功，1：失败
+  required int32  returncode = 1;
+}
+
+message QueryBrokerageReq
+{
+  //默认1
+  required int32 id = 1;
+}
+
+message QueryBrokerageRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+  required int32 brokerage = 2;
+}
+
+message RankingInfo
+{
+  required uint64 userID = 1;
+  required string account = 2;
+  required int64  value = 3;
+}
+
+message QueryRankingInfoReq
+{
+  //筹码排行：1
+  required int32 type = 1;
+}
+
+message QueryRankingInfoRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+  repeated RankingInfo info = 2;
+}
+
+//add
+message AddToolReq
+{
+  //小喇叭：1
+  required int32 type = 1;
+  required int64 num = 2;
+  required uint64 userID = 3;
+}
+
+message AddToolRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+message ModifyBrokerageReq
+{
+  //默认1
+  required int32 id = 1;
+  required int32 brokerage = 2;
+}
+
+message ModifyBrokerageRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+message KickOffUserReq
+{
+  //默认1
+  required uint64 userID = 1;
+}
+
+message KickOffUserRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+message MarkWeipaiSuccessReq
+{
+  //默认1
+  required string tradeno = 1;
+  required uint64 userID = 2; 
+  required int64  totalfee = 3;
+}
+
+message MarkWeipaiSuccessRsp
+{
+  //0:成功，1：失败
+  required int32 returncode = 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,175 @@
+enum EnumLoginType
+{
+    enumLoginTypeToRegisterNewUser = 0;
+    enumLoginTypeGuestAccount = 1;
+    enumLoginTypeRegisterAccount = 2;
+}
+enum EnumGameType
+{
+    enumGameTypeUnknown = 0x0000;
+    enumGameTypeTexasPokerPuTong = 0x0001;
+    enumGameTypeTexasPokerJiaBei = 0x0002;
+    enumGameTypeTexasPokerHuanLe = 0x0003;
+    enumGameTypeNiuNiu = 0x0011;
+    enumGameTypeNiuNiuQiangZhuang = 0x0012;
+    enumGameTypeNiuNiuXueZhanDaoDi = 0x0013;
+    enumGameTypeBaccarat = 0x0021;
+    enumGameTypeZhaJinHua = 0x0031;
+    enumGameTypeSlots = 0x0041;
+    enumGameTypeRoulette = 0x0051;
+    enumGameTypeDouDiZhu = 0x0061;
+    enumGameTypeDouDiZhuHuanLe = 0x0062;
+    enumGameTypeBlackJack = 0x0071;
+    enumGameTypeStud = 0x0081;
+    enumGameTypeGuanDan = 0x0091;
+    enumGameTypeShiSanZhang = 0x00A1;
+}
+enum EnumGender                                                                                                                                                              
+{
+    enumGenderFemale = 0;
+    enumGenderMale = 1;
+    enumGenderUnknown = 2;
+}
+enum EnumDeviceType
+{
+    enumDeviceTypeiPhone   = 0;
+    enumDeviceTypeiPad     = 1;
+    enumDeviceTypeAndroid  = 2;
+    enumDeviceTypeWindows  = 3;
+}
+enum EnumLoginResult
+{
+    enumLoginResultSucc             = 0;
+    enumLoginResultAccountNotExist  = 1;
+    enumLoginResultWrongPassword    = 2;
+    enumRegisterResultSucc          = 3;
+    enumRegisterResultAlreadyExist  = 4;
+    enumRegisterResultDatabaseError = 5;
+    enumBlackIP = 6;
+    enumBlackMac = 7;
+    enumBlackUserID = 8;
+    enumMax = 9;
+}
+enum EnumVIPLevel
+{
+    enumVIPLevelNone = 0;
+    enumVIPLevelSilver = 1;
+    enumVIPLevelGold = 2;
+    enumVIPLevelPlatinum = 3;
+    enumVIPLevelDiamond = 4;
+}
+
+enum EnumFuncCardType
+{
+    enumFuncCardKickUserFromTable = 0;
+}
+
+enum EnumNewVersion
+{
+    enumUpdateTipNoNewVersion  = 0;
+    enumUpdateTipHasNewVersion = 1;
+    enumUpdateTipHasNewVersionMandatoryUpdate = 2;
+}
+enum EnumFeedBackOperation
+{
+    enumFeedBackOpen = 0;
+    enumFeedBackClose = 1;
+}
+enum EnumGameType
+{
+    enumGameTypeUnknown = 0x0000;
+    enumGameTypeTexasPokerPuTong = 0x0001;
+    enumGameTypeTexasPokerJiaBei = 0x0002;
+    enumGameTypeTexasPokerHuanLe = 0x0003;
+    enumGameTypeNiuNiu = 0x0011;
+    enumGameTypeNiuNiuQiangZhuang = 0x0012;
+    enumGameTypeNiuNiuXueZhanDaoDi = 0x0013;
+    enumGameTypeBaccarat = 0x0021;
+    enumGameTypeZhaJinHua = 0x0031;
+    enumGameTypeSlots = 0x0041;
+    enumGameTypeRoulette = 0x0051;
+    enumGameTypeDouDiZhu = 0x0061;
+    enumGameTypeDouDiZhuHuanLe = 0x0062;
+    enumGameTypeBlackJack = 0x0071;
+    enumGameTypeStud = 0x0081;
+    enumGameTypeGuanDan = 0x0091;
+    enumGameTypeShiSanZhang = 0x00A1;
+}
+enum EnumGameTypeStatus
+{
+    enumGameTypeStatusAvailable  = 0;
+    enumGameTypeStatusComingSoon = 1;
+    enumGameTypeStatusComingHot  = 2;
+}
+
+message FuncCard                                                                                                                                                             
+{
+    required EnumFuncCardType cardType = 1;
+    required int32 cardCount = 2;
+}
+message GameInfo
+{
+    required EnumGameType gameType = 1;
+    required EnumGameTypeStatus gameTypeStatus = 2;
+}
+message BasicUserInfo                                                                                                                                                        
+{
+  required int64 userID = 1;
+  required string userNick = 2;
+  required string userAvatar = 3;
+  required EnumGender userGender = 4;
+  required int64 userScore = 5;
+  required int64 userExperience = 6;
+  optional EnumVIPLevel vipLevel = 7;
+  repeated FuncCard funcCards = 8;
+  optional int32 yuanBaoCount = 9;
+}
+message ChipsBonusInfo
+{
+    required bool isLoginBonus           = 1;
+    optional int32 consecutiveLoginDays = 2;
+    required int64 bonusChips           = 3;
+    required int64 totalChips           = 4;
+    optional int64 userID = 5;
+    optional EnumVIPLevel vipLevel = 6;
+    optional int64 vipBonusChips = 7;
+}
+
+message LoginRequest
+{
+  required EnumLoginType loginType = 1;
+  required EnumGameType gameType = 2;
+  required string account = 3;//email,91account
+  required string password = 4;
+  required string nickname = 5;
+  required EnumGender gender = 6;
+  required EnumDeviceType deviceType = 7;
+  required string deviceID = 8;          
+  optional string deviceToken = 9;//iOS device push token
+  required string macAddress = 10;
+  required string secureKey = 11;//avoid hacker attack
+  required string channel = 12;//marketing channel
+  required int32 version = 13;//current version
+  optional string loginipaddress = 14;//login ip address
+  optional int32 loginipport = 15;//login port
+  optional int32 gameserveripaddress = 16;
+  optional int32 gameserveripport = 17;
+  optional string mobilenumber = 18;
+}
+
+message LoginResponse
+{
+    required EnumLoginResult result = 1;
+    optional BasicUserInfo basicUserInfo = 2;
+    repeated GameInfo gameInfo = 3;
+    optional EnumNewVersion update = 4;
+    optional string updateURL = 5;
+    optional string iOSUpdateURL = 6;
+    optional string latestVersion = 7;
+    optional string updateInfo = 8;
+    optional int32 gameserveripaddress = 16;
+    optional int32 gameserveripport = 17;
+    optional ChipsBonusInfo bonusinfo = 18;
+    optional int32  speakerCount = 19;
+    optional EnumFeedBackOperation feedback = 20;
+}

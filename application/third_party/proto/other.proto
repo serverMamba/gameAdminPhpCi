@@ -1,0 +1,6 @@
+message SwitchTarget
+{
+    required int64 keyone = 1;
+    required int64 keytwo = 2;
+    required string token = 3;
+}

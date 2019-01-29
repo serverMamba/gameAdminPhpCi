@@ -1,0 +1,183 @@
+import "packet.proto";
+import "ClientGameServer/clientgameserver.proto";
+
+package MiddleLayerServer;
+
+option optimize_for = LITE_RUNTIME;
+
+enum EnumAddScoreType
+{
+    enumAddScoreType_TableReward = 1;
+	enumAddScoreType_OnlineReward = 2;
+	enumAddScoreType_RouletteReward = 3;
+	enumAddScoreType_SlotsReward = 4;
+	enumAddScoreType_ZhaJinHuaXiQianReward = 5;
+	enumAddScoreType_UserBuy = 6;
+	enumAddScoreType_BackgroundAdd = 7;
+	enumAddScoreType_BackgroundSub = 8;
+	enumAddScoreType_BuySpeaker = 9;
+	enumAddScoreType_ServiceFee = 10;
+	enumAddScoreType_User_Disconnect = 11;
+	enumAddScoreType_Mission_Reward = 12;
+}
+
+enum EnumMidLayerBroadcastEventType
+{
+    enumBroadcastEventType_SpeakerConfigModify = 1;
+	enumBroadcastEventType_AddRoomInfo = 2;
+	enumBroadcastEventType_ModifyRoomInfo = 3;
+	enumBroadcastEventType_DeleteRoomInfo = 4;
+}
+
+message GameServerMiddleLayerServerScoreOperation
+{
+	required uint64 userid = 1;
+    required int64 score = 2;
+	optional int32 adwalltype = 3;
+	optional int32 gameCode = 4;
+	optional EnumAddScoreType addtype = 5;
+	optional string ipAddress = 6;
+	optional int32 roomID = 7;
+	optional int32 tableID = 8;
+	optional int32 seatID = 9;
+	optional int32 baseScore = 10;
+	optional int32 playCountToday = 11;
+	optional int32 continuousWinCountToday = 12;
+}
+
+message GameServerMiddleLayerTurnInfoReport
+{
+	required int32 gameCode = 1;
+	required int32 baseScore = 2;
+	required int32 totalGameLength = 3;
+	required int32 averageWaitTime = 4;
+	required int64 turnServiceFee = 5;
+}
+
+message AddFuncCard
+{
+	required uint64 userid = 1;
+	required PB.EnumFuncCardType cardType = 2;
+	required int32 cardCountAdded = 3; 
+}
+
+message GameServerMiddleLayerServerScoreOperationRsp
+{
+	required int32 returncode = 1;
+}
+
+message RewardScoreCell
+{
+	required uint64 userid = 1;
+    required int64 score = 2;
+    required uint64 connectionID = 3;
+}
+
+message GameServerMiddleLayerServerRewardScore
+{
+	repeated RewardScoreCell cells = 1;
+}
+
+message GameServerMiddleLayerServerOnlineNumReport
+{
+    required string server_ip = 1;
+    optional string server_desc = 2;
+    required int32  server_membernum = 3;
+    required int32  game_code = 4;
+    optional int32  server_type = 5;
+}
+
+message GameServerMiddleLayerServerAddExperience
+{
+    required uint64 userid = 1;
+    required uint64 experience = 2;
+}
+
+message PaySuccessNotify
+{
+    required uint64 userid = 1;
+    optional int64 newScore = 2;
+    optional int32 newSpeakerCount = 3;
+	optional int32 newVipLevel = 4;
+	repeated PB.FuncCard funcCards = 5;
+	repeated PB.EnumIdentity newIdentity = 6;//don't use this field, use the next one: flags
+	optional GameServer.FlagInfos flags = 7;
+	optional int32 totalBuy = 8;
+}
+
+message GameServerMiddleLayerAddOfflineMsg
+{
+	required uint64 userIDFrom = 1;
+	required uint64 userIDTo = 2;
+	required string msg = 3;
+	optional string timestamp = 4;
+}
+
+message GameServerMiddleLayerAddOfflineFriendRequest
+{
+	required uint64 userIDAdd = 1;
+	required uint64 userIDAdded = 2;
+	optional string reason = 3;
+}
+
+message SystemBroadcastNotify
+{
+    required int32 gamecode = 1;
+	required uint64 userid = 2;
+	required string content = 3;
+}
+
+message RegBroadcastConReq
+{
+    required int32 gamecode = 1;
+	required string gameserverip = 2;
+	required uint32 gameserverport = 3;
+}
+
+message RegBroadcastConRsp
+{
+    required int32 returncode = 1;
+}
+
+message OnlineNumReporte
+{
+    required int32 gamecode = 1;
+	required string gameserverip = 2;
+	required uint64 totalonlinenum = 3;
+	optional int32 port = 4;
+}
+
+message GameServerMiddleServerGameResult
+{
+	required uint64 userID = 1;
+	required int64 score = 2;
+}
+
+message UserDisconnect
+{
+	required uint64 userID = 1;
+}
+
+message AddYuanBao
+{
+	required uint64 userID = 1;
+	required int32 yuanBaoCountAdded = 2;
+}
+
+message MidlayerGameServerBroadcastData
+{
+	required EnumMidLayerBroadcastEventType broadcastEventType = 1;
+	optional bytes serialized = 2;
+}
+
+message MidLayerGameServerQueryMissionConfigRequest
+{
+	optional int32 gameCode = 1;
+}
+
+message MidLayerGameServerQueryMissionConfigResponse
+{
+	repeated GameServer.DailyMission dm = 1;
+	repeated GameServer.SystemMission sm = 2;
+	optional int32 gameCode = 3;
+}

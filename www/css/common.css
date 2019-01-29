@@ -1,0 +1,202 @@
+* {
+	margin: 0px;
+	padding: 0px;
+	color: #000000;
+}
+table {
+	border-collapse:collapse;
+}
+body, td, th {
+	font-family: Arial, Courier New, Times New Roman, sans-serif;
+	font-size: 12px;
+	color: #000000;
+	background-color: #f2f3f7;
+	margin: 0px;
+}
+a {
+	text-decoration: none;
+	color: #FFF;
+}
+.common_table_div {
+	width: 520px;
+	margin: 10px auto;
+	padding: 10px;
+}
+
+.common_table_div a {
+	color: #32496E;
+	text-decoration: underline;
+}
+
+.common_table_div td,.common_table_div th {
+	border: 1px solid #000000;
+	background-color: #E8E8E8;
+	padding: 8px 5px;
+}
+
+.common_table_div td {
+	background-color: #f8f8f8;
+}
+
+td .td_error {
+	color:#f00;
+}
+
+/* login.html */
+.login_warpping {
+	background-image: url(../images/login_bg.png);
+	background-repeat: no-repeat;
+	height: 234px;
+	padding-top: 130px;
+	width: 328px;
+	margin-top: 5%;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+}
+.login_msg {
+	height: 20px;
+	padding: 0px 10px;
+	text-align: center;
+	color:#F30;
+}
+.login_green {
+	color:#075a38;
+}
+.login_label {
+	height: 20px;
+	margin-top: 10px;
+	padding-left: 45px;
+	color: #478fab;
+	font-size: 12px;
+	line-height: 20px;
+}
+.login_input {
+	margin-top: 0px;
+	padding-left: 45px;	
+}
+.login_input input {
+	background-image:url(../images/login_input_bg.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: #dcdcdc;
+	width: 229px;
+	height: 28px;
+	border:0px;
+	padding:0px 5px;
+	margin: 0px;
+	font-size: 14px;
+	font-weight: bold;
+}
+.login_input input:hover{
+	background-image:url(../images/login_input_bg2.png);
+}
+.login_btn {
+	margin-top: 35px;
+	padding-left: 190px;
+}
+
+
+/* header.html */
+#header {
+	height: 46px;
+	padding-right: 10px;
+	background-color: #336699;
+	background: url("../images/background.png") repeat-x scroll 0 0 transparent;
+}
+#header .logo {
+	float: left;
+	height: 30px;
+	padding-left: 30px;
+	padding-top: 10px;
+	font-weight: bold;
+	font-size: 18px;
+	color: #FFFFFF;
+}
+#header .sys_btn {
+	float: right;
+	margin-top:6px;
+}
+#header .sys_btn a {
+	margin-right: 5px;
+}
+#header .sys_btn .btn_side {
+	background: url("../images/button.png") no-repeat scroll 0 0px transparent;
+	color: #FFFFFF;
+	display: block;
+	float:left;
+	height:25px;
+}
+
+#header .sys_btn .left {
+	background-position: 0 -2752px;
+	width:4px;
+	margin-left:6px;
+}
+
+#header .sys_btn .middle {
+	background-position: 0 -2880px;
+	background-repeat: repeat-x;
+	padding: 0px 4px;
+	line-height: 25px;
+}
+
+#header .sys_btn .right {
+	background-position: -28px -2944px;
+	width:4px;
+}
+
+#header .sys_btn a:hover .left {
+	background-position: 0 -2784px;
+}
+#header .sys_btn a:hover .middle {
+	background-position: 0 -2912px;
+}
+#header .sys_btn a:hover .right {
+	background-position: -28px -2976px;
+}
+
+/* nav.html */
+.nav_body {
+	background: url("../images/nav_repeat_y.png") repeat-y scroll 0 0 transparent;
+	background-color: #f2f3f7;
+}
+div.sdmenu {
+	width: 164px;
+	font-size: 12px;
+	color: #fff;
+	padding: 1px 16px 20px;
+	float:left;
+}
+div.sdmenu div {
+	overflow: hidden;
+	background: url("../images/button.png") repeat-x scroll 0 -96px transparent;
+}
+div.sdmenu div.collapsed {
+	height: 26px;
+}
+div.sdmenu div span {
+	display: block;
+	padding: 6px 25px;
+	font-weight: bold;
+	color: #fff;
+	background: url(../images/expanded.gif) no-repeat 10px center;
+	cursor: pointer;
+}
+div.sdmenu div.collapsed span {
+	background-image: url(../images/collapsed.gif);
+}
+div.sdmenu div a {
+	line-height: 24px;
+	padding-left: 10px;
+	background: #dcdde0;
+	display: block;
+	color: #32496e;
+	border-bottom: 1px solid #cccdd1;
+}
+div.sdmenu div a.current {
+	background : #bdbec1 url(../images/linkarrow.gif) no-repeat right center;
+}
+div.sdmenu div a:hover {
+	background : #bdbec1 url(../images/linkarrow.gif) no-repeat right center;
+}

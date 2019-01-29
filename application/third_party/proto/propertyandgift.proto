@@ -1,0 +1,58 @@
+
+message PropertyInfo
+{
+    required int32 id = 1;
+    required string name = 2;
+    required int64 price = 3;
+    required string picurl = 4;
+    required int32 type = 5;
+}
+message GiftInfo
+{
+    required int32 id = 1;
+    required string name = 2;
+    required int64 price = 3;
+    required string picurl = 4;
+    required int32 type = 5;
+}
+
+
+message ModifyPropertyRequest
+{
+    required PropertyInfo property = 1;
+}
+
+message ModifyPropertyResponse
+{
+    required int32 returncode = 1;
+}
+
+message DelPropertyRequest
+{
+    required int32 propertyid = 1;
+}
+
+message DelPropertyResponse
+{
+    required int32 returncode = 1;
+}
+
+message ModifyGiftRequest
+{
+    required GiftInfo gift = 1;
+}
+
+message ModifyGiftResponse
+{
+    required int32 returncode = 1;
+}
+
+message DelGiftRequest
+{
+    required int32 giftid = 1;
+}
+
+message DelGiftResponse
+{
+    required int32 returncode = 1;
+}

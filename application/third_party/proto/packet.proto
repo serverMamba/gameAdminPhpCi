@@ -1,0 +1,81 @@
+
+package PB;
+
+option optimize_for = LITE_RUNTIME;
+
+message Packet {
+    required uint32         version      = 1;
+    required uint32         command      = 2;
+    optional bytes          serialized   = 3;
+    optional uint64         connectionid = 4;
+	optional uint64         gameserverconnectionid = 5;
+	optional int32          targettype = 6;
+	optional uint64 userID = 7;
+	optional int32          selftype = 8;
+};
+
+enum EnumFuncCardType
+{
+	enumFuncCardKickUserFromTable = 0;
+}
+
+enum EnumLanguageType
+{
+    enumLanguageTypeEnglish = 0;
+    enumLanguageTypeZhcn = 1;
+    enumLanguageTypeFrench = 2;
+    enumLanguageTypeItalian = 3;
+    enumLanguageTypeGerman = 4;
+    enumLanguageTypeSpanish = 5;
+    enumLanguageTypeRussian = 6;
+    enumLanguageTypeKorean = 7;
+	enumLanguageTypeZhtw = 8;
+}
+
+enum EnumSysNotificationType
+{
+    enumSysNotificationNormal = 0;
+    enumSysNotificationImportant = 1;
+}
+
+enum EnumSysActivityType
+{
+    enumActivityNormal = 0;
+    enumActivityImportant = 1;
+}
+
+enum EnumSysActivityExpiredType
+{
+    enumActivityNotExpired = 0;
+    enumActivityExpired = 1;
+}
+
+message FuncCard
+{
+	required EnumFuncCardType cardType = 1;
+	required int32 cardCount = 2;
+}
+
+enum EnumIdentity
+{
+	enumIdentityRose = 0;
+	enumIdentityTulip = 1;
+	enumIdentityPeony = 2;
+	enumIdentityBLUELOVER = 3;
+}
+
+enum EnumXiaoLaBaNotifyType
+{
+	enumXiaoLaBaNotifyTypePay = 0;
+	enumXiaoLaBaNotifyTypeCardType = 1;
+	enumXiaoLaBaNotifyTypePlayGame = 2;
+	enumXiaoLaBaNotifyTypePlayRoulette = 3;
+}
+
+enum EnumGameLevel
+{
+	enumGameLevelChuJi = 0;
+	enumGameLevelZhongJi = 1;
+	enumGameLevelGaoJi = 2;
+	enumGameLevelFuHao = 3;
+}

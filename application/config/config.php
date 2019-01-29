@@ -257,7 +257,7 @@ $config['directory_trigger'] = 'd'; // experimental not currently in use
   | your log files will fill up very fast.
   |
  */
-$config['log_threshold'] = 1;
+$config['log_threshold'] = 3;
 
 /*
   |--------------------------------------------------------------------------
@@ -269,7 +269,7 @@ $config['log_threshold'] = 1;
   |
  */
 // test
-$config['log_path'] = 'd:/log/phpHouTai';
+$config['log_path'] = 'd:/log/codeIgniterAdmin/';
 //$config['log_path'] = '';
 
 /*

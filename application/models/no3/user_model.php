@@ -152,7 +152,7 @@ class User_model extends CI_Model {
         if (!empty($row)) {
             return $row;
         } else {
-            log_message('info', 'db select return empty, db = eus' . $dbIndex
+            log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
                 . ', table = ' . $tableName . ', sql = ' . $sql);
             return [];
         }
@@ -217,7 +217,7 @@ class User_model extends CI_Model {
             if (!empty($rows)) {
                 $finalRet = array_merge($finalRet, $rows);
             } else {
-                log_message('info', 'db select return empty, db = eus' . $i
+                log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $i
                     . ', tablePrefix = ' . $tablePrefix . ', sql = ' . $sql);
             }
         }
@@ -226,7 +226,7 @@ class User_model extends CI_Model {
     }
 
     /**
-     * 用户登陆日志 - 根据userId获取
+     * 用户登录日志 - 根据userId获取
      * @param $userId
      * @param $dateBegin
      * @param $dateEnd
@@ -268,7 +268,7 @@ class User_model extends CI_Model {
         if (empty($rows)) {
             return $rows;
         } else {
-            log_message('info', 'db select return empty, db = eus' . $dbIndex
+            log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
                 . ', table = ' . $tableName . ', sql = ' . $sql);
 
             return [];
@@ -324,7 +324,7 @@ class User_model extends CI_Model {
             if (!empty($rows)) {
                 $finalRet = array_merge($finalRet, $rows);
             } else {
-                log_message('info', 'db select return empty, db = eus' . $i
+                log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $i
                     . ', tablePrefix = ' . $tablePrefix . ', sql = ' . $sql);
             }
         }
@@ -346,14 +346,14 @@ class User_model extends CI_Model {
         $sql = $this->betRecordGetGenerateSql($db, $dateBegin, $dateEnd, $gameId, $baseScore, $userId);
 
         if (empty($sql)) {
-            log_message('error', ' sql empty, dateBegin = ' . $dateBegin.  ', dateEnd = ' . $dateEnd
+            log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql empty, dateBegin = ' . $dateBegin.  ', dateEnd = ' . $dateEnd
                 . ', gameId = ' . $gameId . ', baseScore = ' . $baseScore . ', userId = ' . $userId);
             return [];
         }
 
         $rows = $db->query($sql)->result_array();
         if (empty($rows)) {
-            log_message('error', ' db select return empty, db = gamehis, sql = ' . $sql);
+            log_message('error', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = gamehis, sql = ' . $sql);
             return [];
         }
 

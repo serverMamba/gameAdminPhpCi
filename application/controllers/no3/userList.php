@@ -41,7 +41,8 @@ class UserList extends CI_Controller {
                 "father" => "用户管理",
                 "child" => "用户列表"
             ),
-            'userList' => $userList
+            'userList' => $userList,
+            'query' =>[]
         );
 
         $this->load->view('no3/userListView', $data);

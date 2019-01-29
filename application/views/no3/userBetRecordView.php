@@ -66,12 +66,14 @@
                                                 name="start_time" class="date-picker col-xs-10 col-sm-2"
                                                 id="id_date_picker_1" placeholder="开始时间" type="text"
                                                 data-date-format="yyyy-mm-dd"
+                                                autocomplete="off"
                                                 style="margin-left: 5px; height: 30px; width: 100px;" />
                                             <input
                                                 value="<?php if($query['end_time']){echo $query['end_time']; }?>"
                                                 name="end_time" class=" date-picker col-xs-10 col-sm-2"
                                                 id="id_date_picker_2" placeholder="终止时间" type="text"
                                                 data-date-format="yyyy-mm-dd"
+                                                autocomplete="off"
                                                 style="margin-left: 5px; height: 30px; width: 100px;" />
                                             <input
                                                 value="<?php if($query['user_id']){echo $query['user_id']; }?>"
@@ -174,5 +176,28 @@
 <script src="<?php echo base_url().'res/js/bootstrap.min.js'; ?>"></script>
 <script src="<?php echo base_url().'res/js/ace-elements.min.js'; ?>"></script>
 <script src="<?php echo base_url().'res/js/ace.min.js'; ?>"></script>
+
+<script src="../res/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="../res/js/date-time/bootstrap-timepicker.min.js"></script>
+<script src="../res/js/date-time/moment.min.js"></script>
+<script src="../res/js/date-time/daterangepicker.min.js"></script>
+<script src="../res/js/date-time/daterangepicker.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('#id_date_picker_1').datepicker({autoclose:true}).on(ace.click_event, function(){
+            $("#id_date_picker_1").focus();
+        });
+        $('#id_date_picker_2').datepicker({autoclose:true}).on(ace.click_event, function(){
+            $("#id_date_picker_2").focus();
+        });
+
+    });
+
+    function updateYestadayData(){
+        location.href = '<?php echo site_url('no3/finStatistics/getNewDataForYestaday'); ?>';
+        return true;
+    }
+
+</script>
 </body>
 </html>

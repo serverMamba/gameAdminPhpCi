@@ -17,13 +17,13 @@ class UserLoginLog extends CI_Controller {
     public function index() {
         $dateBegin = isset($_POST['dateBegin']) ? trim($_POST['dateBegin']) : '';
         $dateEnd = isset($_POST['dateEnd']) ? trim($_POST['dateEnd']) : '';
-        $userId = isset($_POST['userId']) ? $_POST['userId'] : 0;
-        $ip = isset($_POST['ip']) ? $_POST['ip'] : '';
+        $userId = isset($_POST['userId']) ? intval($_POST['userId']) : '';
+        $ip = isset($_POST['ip']) ? trim($_POST['ip']) : '';
 
         if ($userId) {
-            $userLoginLog = $this->User_model->userLoginLogGetByUserId($userId, $dateBegin, $dateEnd, $userId, $ip);
+            $userLoginLog = $this->User_model->userLoginLogGetByUserId($dateBegin, $dateEnd, $userId, $ip);
         } else {
-            $userLoginLog = $this->User_model->userLoginLogGet($dateBegin, $dateEnd, $userId, $ip);
+            $userLoginLog = $this->User_model->userLoginLogGet($dateBegin, $dateEnd, $ip);
         }
 
         $data = array(
@@ -36,7 +36,13 @@ class UserLoginLog extends CI_Controller {
                 "father" => "用户管理",
                 "child" => "用户登录日志"
             ),
-            'userLoginLog' => $userLoginLog
+            'userLoginLog' => $userLoginLog,
+            'query' => [
+                'dateBegin' => $dateBegin,
+                'dateEnd' => $dateEnd,
+                'userId' => $userId,
+                'ip' => $ip
+            ]
         );
 
         $this->load->view('no3/userLoginLogView', $data);

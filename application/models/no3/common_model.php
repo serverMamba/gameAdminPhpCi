@@ -69,6 +69,11 @@ class Common_model extends CI_Model {
         return $total_menu_list;
     }
 
+    /**
+     * 获取用户所在数据库和数据表
+     * @param $user_id
+     * @return bool
+     */
     public function getUserDBPos($user_id) {
         $tmp = $user_id & 0x00000000000000FF;
         $dbx = ($tmp & 0xF0) >> 4;
@@ -116,18 +121,5 @@ class Common_model extends CI_Model {
         }
 
         return null;
-    }
-
-    /**
-     * 通过userId得到映射库表索引
-     * @param $userId
-     * @return array
-     */
-    public function getDbTablePos($userId) {
-        $tmp = $userId & 0x00000000000000FF;
-        return [
-            'dbIndex' => ($tmp & 0xF0) >> 4,
-            'tableIndex' => $tmp & 0x0F
-        ];
     }
 }

@@ -115,9 +115,9 @@ class User_model extends CI_Model {
      * @return array
      */
     public function userGet($userId, $dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount) {
-        $indexArr = $this->Common_model->getDbTablePos($userId);
-        $dbIndex = $indexArr['dbIndex'];
-        $tableIndex = $indexArr['tableIndex'];
+        $indexArr = $this->Common_model->getUserDBPos($userId);
+        $dbIndex = $indexArr['dbindex'];
+        $tableIndex = $indexArr['tableindex'];
 
         $db = $this->load->database('eus' . $dbIndex, true);
         $tableName = 'casinouser_' . $tableIndex;
@@ -125,22 +125,23 @@ class User_model extends CI_Model {
         $sql .= ' where id = ' . $userId;
 
         if ($dateBegin !== '') {
-            $item[] = 'registertime >= ' . $dateBegin;
+            $item[] = 'registertime >= ' . $this->db->escape($dateBegin);
         }
         if ($dateEnd !== '') {
-            $item[] = 'registertime <= ' . $dateEnd;
+            $dateEnd = date('Y-m-d H:i:s', strtotime($dateEnd) + daySeconds);
+            $item[] = 'registertime < ' . $this->db->escape($dateEnd);
         }
         if ($account !== '') {
-            $item[] = 'user_email = ' . $account;
+            $item[] = 'user_email = ' . $this->db->escape($account);
         }
         if ($realName) {
-            $item[] = 'userIDCardName = ' . $realName;
+            $item[] = 'userIDCardName = ' . $this->db->escape($realName);
         }
         if ($mobileNumber !== '') {
-            $item[] = 'mobile_number = ' . $mobileNumber;
+            $item[] = 'mobile_number = ' . $this->db->escape($mobileNumber);
         }
         if ($aliPayAccount !== '') {
-            $item[] = 'alipay_account = ' . $aliPayAccount;
+            $item[] = 'alipay_account = ' . $this->db->escape($aliPayAccount);
         }
 
         if (!empty($item)) {
@@ -174,22 +175,23 @@ class User_model extends CI_Model {
         $where = '';
 
         if ($dateBegin !== '') {
-            $item[] = 'registertime >= ' . $dateBegin;
+            $item[] = 'registertime >= ' . $this->db->escape($dateBegin);
         }
         if ($dateEnd !== '') {
-            $item[] = 'registertime <= ' . $dateEnd;
+            $dateEnd = date('Y-m-d H:i:s', strtotime($dateEnd) + daySeconds);
+            $item[] = 'registertime < ' . $this->db->escape($dateEnd);
         }
         if ($account !== '') {
-            $item[] = 'user_email = ' . $account;
+            $item[] = 'user_email = ' . $this->db->escape($account);
         }
         if ($realName) {
-            $item[] = 'userIDCardName = ' . $realName;
+            $item[] = 'userIDCardName = ' . $this->db->escape($realName);
         }
         if ($mobileNumber !== '') {
-            $item[] = 'mobile_number = ' . $mobileNumber;
+            $item[] = 'mobile_number = ' . $this->db->escape($mobileNumber);
         }
         if ($aliPayAccount !== '') {
-            $item[] = 'alipay_account = ' . $aliPayAccount;
+            $item[] = 'alipay_account = ' . $this->db->escape($aliPayAccount);
         }
 
         if (!empty($item)) {
@@ -227,21 +229,21 @@ class User_model extends CI_Model {
 
     /**
      * 用户登录日志 - 根据userId获取
-     * @param $userId
      * @param $dateBegin
      * @param $dateEnd
+     * @param $userId
      * @param $ip
      * @return array
      */
-    public function userLoginLogGetByUserId($userId, $dateBegin, $dateEnd, $ip) {
-        $indexArr = $this->Common_model->getDbTablePos($userId);
-        $dbIndex = $indexArr['dbIndex'];
-        $tableIndex = $indexArr['tableIndex'];
+    public function userLoginLogGetByUserId($dateBegin, $dateEnd, $userId, $ip) {
+        $indexArr = $this->Common_model->getUserDBPos($userId);
+        $dbIndex = $indexArr['dbindex'];
+        $tableIndex = $indexArr['tableindex'];
 
         $db = $this->load->database('eus' . $dbIndex, true);
         $tableName = 'casinouser_' . $tableIndex;
 
-        $sql = 'select id, last_login_time, lastLoginIp, location, lastLoginMac'; // activate_device, uuid, lastLoginMac哪个是设备
+        $sql = 'select id, last_login_time, lastLoginIp, location, activate_device'; // activate_device, uuid, lastLoginMac哪个是设备
         $sql .= ' from ' . $tableName;
         $sql .= ' where id = ' . $userId;
 
@@ -251,11 +253,11 @@ class User_model extends CI_Model {
             $item[] = 'last_login_time >= ' . $tsBegin;
         }
         if ($dateEnd !== '') {
-            $tsEnd = strtotime($dateEnd);
-            $item[] = 'last_login_time <= ' . $tsEnd;
+            $tsEnd = strtotime($dateEnd) + daySeconds;
+            $item[] = 'last_login_time < ' . $tsEnd;
         }
-        if ($ip) {
-            $item[] = 'lastLoginIp = ' . $ip;
+        if ($ip !== '') {
+            $item[] = 'lastLoginIp = ' . $this->db->escape($ip);
         }
 
         if (!empty($item)) {
@@ -265,7 +267,12 @@ class User_model extends CI_Model {
         $sql .= ' limit ' . maxQueryNum; // todo 分页
 
         $rows = $db->query($sql)->result_array();
-        if (empty($rows)) {
+
+        if (!empty($rows)) {
+            foreach ($rows as &$row) {
+                $row['last_login_time'] = date('Y-m-d H:i:s', $row['last_login_time']);
+            }
+            unset($row);
             return $rows;
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
@@ -292,11 +299,11 @@ class User_model extends CI_Model {
             $item[] = 'last_login_time >= ' . $tsBegin;
         }
         if ($dateEnd !== '') {
-            $tsEnd = strtotime($dateEnd);
-            $item[] = 'last_login_time <= ' . $tsEnd;
+            $tsEnd = strtotime($dateEnd) + daySeconds;
+            $item[] = 'last_login_time < ' . $tsEnd;
         }
         if ($ip !== '') {
-            $item[] = 'ip = ' . $ip;
+            $item[] = 'ip = ' . $this->db->escape($ip);
         }
 
         if (!empty($item)) {
@@ -314,7 +321,7 @@ class User_model extends CI_Model {
                 if (!empty($sql)) {
                     $sql .= ' union all ';
                 }
-                $sql .= 'select id, user_email, registertime, userIDCardName';
+                $sql .= 'select id, last_login_time, lastLoginIp, location, activate_device';
                 $sql .= ' from ' . $tableName;
                 $sql .= $where;
             }
@@ -327,6 +334,13 @@ class User_model extends CI_Model {
                 log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $i
                     . ', tablePrefix = ' . $tablePrefix . ', sql = ' . $sql);
             }
+        }
+
+        if (!empty($finalRet)) {
+            foreach ($finalRet as &$row) {
+                $row['last_login_time'] = date('Y-m-d H:i:s', $row['last_login_time']);
+            }
+            unset($row);
         }
 
         return $finalRet;
@@ -378,6 +392,7 @@ class User_model extends CI_Model {
         $db = $this->load->database('default', true);
         $sql = 'select id, name, sort, autoMoney from smc_user_tag order by id desc limit ' . maxQueryNum;
         $rows = $db->query($sql)->result_array();
+
         if (!empty($rows)) {
             foreach ($rows as &$row) {
                 $row['personNum'] = 0; // notice 测试数据
@@ -394,14 +409,14 @@ class User_model extends CI_Model {
     /**
      * 用户标签 - 添加
      * @param $name
-     * @param $sort
      * @param $autoMoney
+     * @param $sort
      * @return bool
      */
-    public function userTagAdd($name, $sort, $autoMoney) {
+    public function userTagAdd($name, $autoMoney, $sort) {
         $db = $this->load->database('default', true);
         $sql = 'insert into smc_user_tag (name, sort, autoMoney) values (';
-        $sql .= $name . ', ' . $sort . ', ' . $autoMoney;
+        $sql .= $this->db->escape($name) . ', ' . $sort . ', ' . $this->db->escape($autoMoney) . ')';
         $ret = $db->query($sql);
         if (!$ret) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = default, sql = ' . $sql);
@@ -439,9 +454,11 @@ class User_model extends CI_Model {
      * @return bool
      */
     public function userTagDel($id) {
-        $db = $this->load->database('default');
+        $db = $this->load->database('default', true);
         $sql = 'delete from smc_user_tag where id = ' . $id;
         $ret = $db->query($sql);
+        // test
+        log_message('error', 'ok21, id = ' . $id . ', sql = ' . $sql . ', ret = ' . json_encode($ret));
         if (!$ret) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = default, sql = ' . $sql);
             return false;
@@ -455,7 +472,7 @@ class User_model extends CI_Model {
      * @return array
      */
     public function userLvGetList() {
-        $db = $this->load->database('default');
+        $db = $this->load->database('default', true);
         $sql = 'select id, name, upPrice, templateId, note from smc_user_lv order by lv limit ' . maxQueryNum;
         $rows = $db->query($sql)->result_array();
         if (!empty($rows)) {
@@ -480,9 +497,9 @@ class User_model extends CI_Model {
      * @return bool
      */
     public function userLvAdd($name, $upPrice, $templateId, $note) {
-        $db = $this->load->database('default');
+        $db = $this->load->database('default', true);
         $sql = 'insert into smc_user_lv (name, upPrice, templateId, note) values (';
-        $sql .= $name . ', ' . $upPrice . ', ' . $templateId . ', ' . $note;
+        $sql .= $this->db->escape($name) . ', ' . $upPrice . ', ' . $templateId . ', ' . $this->db->escape($note) . ')';
         $ret = $db->query($sql);
         if (!$ret) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = default, sql = ' . $sql);
@@ -502,9 +519,9 @@ class User_model extends CI_Model {
      * @return bool
      */
     public function userLvEdit($id, $name, $upPrice, $templateId, $note) {
-        $db = $this->load->database('default');
+        $db = $this->load->database('default', true);
         $sql = 'update smc_user_lv set name = ' . $name . ', upPrice = ' . $upPrice;
-        $sql .= ', templateId = ' . $templateId . ', note = ' . $note . ' where id = ' . $id;
+        $sql .= ', templateId = ' . $templateId . ', note = ' . $this->db->escape($note) . ' where id = ' . $id;
         $ret = $db->query($sql);
         if (!$ret) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = default, sql = ' . $sql);
@@ -599,15 +616,15 @@ class User_model extends CI_Model {
                         if ($baseScore !== -1) {
                             // 判断是否存在 room_basescore 字段 (bairen类的游戏表中不存在该字段, 且表结构跟其他不同)
                             if (checkColumnExist('room_basescore', $tableName, $db)) {
-                                $sql .= ' where room_basescore = ' . $baseScore;
+                                $sql .= ' where room_basescore = ' . $this->db->escape($baseScore);
                                 $haveWhere = true;
                             }
                         }
                         if ($userId !== -1) {
                             if ($haveWhere) {
-                                $sql .= ' and user_id = :userId';
+                                $sql .= ' and user_id = ' . $userId;
                             } else {
-                                $sql .= ' where user_id = :userId';
+                                $sql .= ' where user_id = ' . $userId;
                                 $haveWhere = true;
                             }
                         }
@@ -657,15 +674,15 @@ class User_model extends CI_Model {
                 if ($baseScore !== -1) {
                     // 判断是否存在 room_basescore 字段 (bairen类的游戏表中不存在该字段, 且表结构跟其他不同)
                     if (checkColumnExist('room_basescore', $tableName, $db)) {
-                        $sql .= ' where room_basescore = ' . $baseScore;
+                        $sql .= ' where room_basescore = ' . $this->db->escape($baseScore);
                         $haveWhere = true;
                     }
                 }
                 if ($userId !== -1) {
                     if ($haveWhere) {
-                        $sql .= ' and user_id = :userId';
+                        $sql .= ' and user_id = ' . $userId;
                     } else {
-                        $sql .= ' where user_id = :userId';
+                        $sql .= ' where user_id = ' . $userId;
                         $haveWhere = true;
                     }
                 }

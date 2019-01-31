@@ -15,7 +15,7 @@
 
     <div class="main-container-inner">
         <a class="menu-toggler" id="menu-toggler" href="#"> <span
-                class="menu-text"></span>
+                    class="menu-text"></span>
         </a>
 
         <div class="sidebar" id="sidebar">
@@ -48,8 +48,12 @@
             <?php $this->load->view('no3/common/nav_top'); ?>
 
             <div class="page-content">
-                <?php if($this->session->flashdata('success')){ ?><div class="alert alert-success" role="alert"><?php echo $this->session->flashdata('success'); ?></div><?php } ?>
-                <?php if($this->session->flashdata('error')){ ?><div class="alert alert-danger" role="alert"><?php echo $this->session->flashdata('error'); ?></div><?php } ?>
+                <?php if ($this->session->flashdata('success')) { ?>
+                    <div class="alert alert-success"
+                         role="alert"><?php echo $this->session->flashdata('success'); ?></div><?php } ?>
+                <?php if ($this->session->flashdata('error')) { ?>
+                    <div class="alert alert-danger"
+                         role="alert"><?php echo $this->session->flashdata('error'); ?></div><?php } ?>
 
                 <div class="row">
                     <div class="col-xs-12">
@@ -57,16 +61,8 @@
                             <div class="col-xs-12 col-sm-12 widget-container-span">
                                 <div class="widget-box">
 
-                                    <div class="widget-toolbox padding-8 clearfix">
-                                        <form
-                                            action="<?php echo site_url('no3/tgCorrection/tgCorrectionLog');?>"
-                                            style="float: left;">
-                                            <button class="btn btn-xs btn-success "
-                                                    style="margin-top: 3px;">
-                                                <span class="bigger-110">添加</span>
-                                            </button>
-                                        </form>
-                                    </div>
+                                    <a href="<?php echo site_url('no3/userTag/toAdd'); ?>"
+                                       class="btn btn-success">添加</a>
 
                                     <div class="widget-body">
                                         <div class="widget-main" style="padding: 0;">
@@ -81,23 +77,16 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <?php foreach ($tg_account_list as $v){ ?>
+                                                <?php foreach ($userTag as $v) { ?>
                                                     <tr>
-                                                        <td><?php echo $v['id']; ?></td>
-                                                        <td><?php echo $v['account']; ?></td>
-                                                        <td><?php echo $v['channel_name']; ?></td>
-                                                        <td><?php echo $v['agent_balance']/100; ?>元</td>
-                                                        <td><?php echo $v['balance']/100; ?>元</td>
-                                                        <td><?php echo $v['status'] ? '启用' : '关闭'; ?></td>
-                                                        <td><?php if($v['last_login_time']){ echo date('Y-m-d H:i:s',$v['last_login_time']); }else{echo '-'; } ?></td>
-                                                        <td><?php if($v['last_login_ip']){ echo $v['last_login_ip']; }else{echo '-'; } ?></td>
+                                                        <td><?php echo $v['name']; ?></td>
+                                                        <td><?php echo $v['sort']; ?></td>
+                                                        <td><?php echo $v['personNum']; ?></td>
                                                         <td>
-                                                            <a href="<?php echo site_url('no3/tgAccount/toEdit/'.$v['id']); ?>">修改</a>
-                                                            <a href="<?php echo site_url('no3/tgAccount/operationList/'.$v['id']); ?>">操作日志</a>
-                                                            <?php if($flagEditAgentBalance){?>
-                                                                <a href="<?php echo site_url('no3/tgAccount/toEditAgentBalance/'.$v['id']); ?>">修改信用金</a>
-                                                            <?php }?>
-                                                            <a href="<?php echo site_url('no3/tgAccount/income/'.$v['id']); ?>">收入统计</a>
+                                                            <a href="<?php echo site_url('no3/userTag/toEdit/' . $v['id']); ?>">编辑</a>
+                                                            <a onclick="deleteOne('<?php echo $v['id']; ?>');"
+                                                               href="javascript:;">删除</a>
+
                                                         </td>
                                                     </tr>
                                                 <?php } ?>
@@ -113,7 +102,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
 
                         </div>
@@ -132,10 +120,21 @@
     <!-- /.main-container-inner -->
 </div>
 <!-- /.main-container -->
-<script src="<?php echo base_url().'res/js/jquery-2.0.3.min.js'; ?>"></script>
-<script src="<?php echo base_url().'res/js/jquery-ui-1.10.3.custom.min.js'; ?>"></script>
-<script src="<?php echo base_url().'res/js/bootstrap.min.js'; ?>"></script>
-<script src="<?php echo base_url().'res/js/ace-elements.min.js'; ?>"></script>
-<script src="<?php echo base_url().'res/js/ace.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/jquery-2.0.3.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/jquery-ui-1.10.3.custom.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/bootstrap.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/ace-elements.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/ace.min.js'; ?>"></script>
+
+<script>
+    function deleteOne(id) {
+        if (!confirm('确定删除吗？')) {
+            return;
+        }
+
+        location.href = '<?php echo site_url('no3/userTag/del') . "?id="; ?>' + id;
+        return;
+    }
+</script>
 </body>
 </html>

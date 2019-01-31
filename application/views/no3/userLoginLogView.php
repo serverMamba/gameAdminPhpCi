@@ -59,34 +59,38 @@
 
                                     <div class="widget-toolbox padding-8 clearfix">
                                         <form
-                                            action="<?php echo site_url('no3/tgCorrection/tgCorrectionLog');?>"
-                                            style="float: left;">
+                                            action="<?php echo site_url('no3/userLoginLog');?>"
+                                            style="float: left;"
+                                            method="post"
+                                        >
                                             <input
-                                                value="<?php if($query['start_time']){echo $query['start_time']; }?>"
-                                                name="start_time" class="date-picker col-xs-10 col-sm-2"
-                                                id="id_date_picker_1" placeholder="开始时间" type="text"
+                                                value="<?php if($query['dateBegin']){echo $query['dateBegin']; }?>"
+                                                name="dateBegin" class="date-picker col-xs-10 col-sm-2"
+                                                id="dateBegin" placeholder="开始时间" type="text"
                                                 data-date-format="yyyy-mm-dd"
                                                 autocomplete="off"
                                                 style="margin-left: 5px; height: 30px; width: 100px;" />
                                             <input
-                                                value="<?php if($query['end_time']){echo $query['end_time']; }?>"
-                                                name="end_time" class=" date-picker col-xs-10 col-sm-2"
-                                                id="id_date_picker_2" placeholder="终止时间" type="text"
+                                                value="<?php if($query['dateEnd']){echo $query['dateEnd']; }?>"
+                                                name="dateEnd" class=" date-picker col-xs-10 col-sm-2"
+                                                id="dateEnd" placeholder="终止时间" type="text"
                                                 data-date-format="yyyy-mm-dd"
                                                 autocomplete="off"
                                                 style="margin-left: 5px; height: 30px; width: 100px;" />
                                             <input
-                                                value="<?php if($query['user_id']){echo $query['user_id']; }?>"
-                                                type="text" placeholder="用户id" name="user_id"
+                                                value="<?php if($query['userId']){echo $query['userId']; }?>"
+                                                type="text" placeholder="用户id" name="userId"
                                                 class="col-xs-10 col-sm-2"
                                                 style="margin-left: 5px; height: 34px; width: 80px;" />
                                             <input
-                                                value="<?php if($query['admin_name']){echo $query['admin_name']; }?>"
-                                                type="text" placeholder="ip" name="admin_name"
+                                                value="<?php if($query['ip']){echo $query['ip']; }?>"
+                                                type="text" placeholder="ip" name="ip"
                                                 class="col-xs-10 col-sm-2"
                                                 style="margin-left: 5px; height: 34px; width: 80px;" />
                                             <button class="btn btn-xs btn-success "
-                                                    style="margin-top: 3px;">
+                                                    style="margin-top: 3px;"
+                                                    type="submit"
+                                            >
                                                 <span class="bigger-110">查询</span> <i
                                                     class="icon-search icon-on-right"></i>
                                             </button>
@@ -161,11 +165,11 @@
 <script src="../res/js/date-time/daterangepicker.min.js"></script>
 <script type="text/javascript">
     $(function(){
-        $('#id_date_picker_1').datepicker({autoclose:true}).on(ace.click_event, function(){
-            $("#id_date_picker_1").focus();
+        $('#dateBegin').datepicker({autoclose:true}).on(ace.click_event, function(){
+            $("#dateBegin").focus();
         });
-        $('#id_date_picker_2').datepicker({autoclose:true}).on(ace.click_event, function(){
-            $("#id_date_picker_2").focus();
+        $('#dateEnd').datepicker({autoclose:true}).on(ace.click_event, function(){
+            $("#dateEnd").focus();
         });
 
     });

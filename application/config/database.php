@@ -163,7 +163,7 @@ if (!function_exists('generateDBConfig'))
 			$database = $dbConfigs[$i]['database'];
 
 			//$db[$dbName]['hostname'] = $dbHost;
-			$db[$dbName]['hostname'] = '192.168.1.58';
+			$db[$dbName]['hostname'] = '192.168.1.119';
 			//$db[$dbName]['username'] = 'dbuserx';
 			$db[$dbName]['username'] = 'RoamGame';
 			//$db[$dbName]['password'] = 'dbpwdxxxxxxxxxxxxxxx';

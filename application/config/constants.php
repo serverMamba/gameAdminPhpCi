@@ -287,3 +287,5 @@ const gameIdName = [
 
 const maxQueryNum = 30; // 最大查询数量
 
+const daySeconds = 86400; // 一天的秒数
+

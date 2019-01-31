@@ -15,9 +15,9 @@ class UserList extends CI_Controller {
     }
 
     public function index() {
-        $dateBegin = isset($_POST['beginDate']) ? trim($_POST['beginDate']) : '';
-        $dateEnd = isset($_POST['endDate']) ? trim($_POST['endDate']) : '';
-        $userId = isset($_POST['userId']) ? intval($_POST['userId']) : 0;
+        $dateBegin = isset($_POST['dateBegin']) ? trim($_POST['dateBegin']) : '';
+        $dateEnd = isset($_POST['dateEnd']) ? trim($_POST['dateEnd']) : '';
+        $userId = isset($_POST['userId']) ? intval($_POST['userId']) : '';
         $account = isset($_POST['account']) ? trim($_POST['account']) : '';
 
         $mobileNumber = isset($_POST['mobileNumber']) ? trim($_POST['mobileNumber']) : '';
@@ -42,7 +42,16 @@ class UserList extends CI_Controller {
                 "child" => "用户列表"
             ),
             'userList' => $userList,
-            'query' =>[]
+            'query' =>[
+                'dateBegin' => $dateBegin,
+                'dateEnd' => $dateEnd,
+                'userId' => $userId,
+                'account' => $account,
+
+                'mobileNumber' => $mobileNumber,
+                'realName' => $realName,
+                'aliPayAccount' => $aliPayAccount
+            ]
         );
 
         $this->load->view('no3/userListView', $data);

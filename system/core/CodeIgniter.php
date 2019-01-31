@@ -231,17 +231,11 @@
 		return CI_Controller::get_instance();
 	}
 
-	// test
-    log_message('error', 'ok1111');
-
 
 	if (file_exists(APPPATH.'core/'.$CFG->config['subclass_prefix'].'Controller'.EXT))
 	{
 		require APPPATH.'core/'.$CFG->config['subclass_prefix'].'Controller'.EXT;
 	}
-
-// test
-log_message('error', 'ok111112221');
 
 	// Load the local application controller
 	// Note: The Router class automatically validates the controller path using the router->_validate_request().
@@ -250,12 +244,8 @@ log_message('error', 'ok111112221');
 	{
 		show_error('Unable to load your default controller. Please make sure the controller specified in your Routes.php file is valid.');
 	}
-// test
-log_message('error', 'ok111112222, fetD = ' . $RTR->fetch_directory() . ', fetC = ' . $RTR->fetch_class());
 	include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().EXT);
 
-// test
-log_message('error', 'ok11111222');
 	// Set a mark point for benchmarking
 	$BM->mark('loading_time:_base_classes_end');
 
@@ -302,9 +292,6 @@ log_message('error', 'ok11111222');
  * ------------------------------------------------------
  */
 	$EXT->_call_hook('post_controller_constructor');
-
-// test
-log_message('error', 'ok1112');
 /*
  * ------------------------------------------------------
  *  Call the requested method
@@ -313,14 +300,10 @@ log_message('error', 'ok1112');
 	// Is there a "remap" function? If so, we call it instead
 	if (method_exists($CI, '_remap'))
 	{
-        // test
-        log_message('error', 'ok1113');
 		$CI->_remap($method, array_slice($URI->rsegments, 2));
 	}
 	else
 	{
-        // test
-        log_message('error', 'ok1114');
 		// is_callable() returns TRUE on some versions of PHP 5 for private and protected
 		// methods, so we'll use this workaround for consistent behavior
 		if ( ! in_array(strtolower($method), array_map('strtolower', get_class_methods($CI))))
@@ -348,9 +331,6 @@ log_message('error', 'ok1112');
 				show_404("{$class}/{$method}");
 			}
 		}
-
-        // test
-        log_message('error', 'ok1115, class = ' . json_encode($class) . ', method = ' . $method);
 
 		// Call the requested method.
 		// Any URI segments present (besides the class/function) will be passed to the method for convenience

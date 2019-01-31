@@ -488,7 +488,7 @@ function checkColumnExist($columnName, $tableName, &$db) {
         return false;
     }
     if (empty($row)) {
-        log_message('error',__METHOD__ . ', ' . __LINE__ . ', mysql select return empty, sql = ' . $sql);
+        log_message('error', __METHOD__ . ', ' . __LINE__ . ', mysql select return empty, sql = ' . $sql);
         return false;
     }
 

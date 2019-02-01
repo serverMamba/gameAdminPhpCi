@@ -83,10 +83,8 @@
                                                         <td><?php echo $v['sort']; ?></td>
                                                         <td><?php echo $v['personNum']; ?></td>
                                                         <td>
-                                                            <a href="<?php echo site_url('no3/userTag/toEdit/' . $v['id']); ?>">编辑</a>
-                                                            <a onclick="deleteOne('<?php echo $v['id']; ?>');"
-                                                               href="javascript:;">删除</a>
-
+                                                            <a href="<?php echo site_url('no3/userTag/toEdit') . "?id=" . $v['id'] . "&name=" . $v['name'] . "&sort=" . $v['sort'] . "&autoMoney=" . $v['autoMoney']; ?>">编辑</a>
+                                                            <a onclick="deleteOne('<?php echo $v['id']; ?>');" href="javascript:;">删除</a>
                                                         </td>
                                                     </tr>
                                                 <?php } ?>

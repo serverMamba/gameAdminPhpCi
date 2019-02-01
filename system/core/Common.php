@@ -458,8 +458,11 @@ function remove_invisible_characters($str, $url_encoded = TRUE) {
  */
 function checkTableExist(&$db, $tableName) {
     try {
-        $sql = "select table_name from information_schema.tables where table_name=" . $tableName;
+        $sql = "select table_name from information_schema.tables where table_name=" . $db->escape($tableName);
         $row = $db->query($sql)->row_array();
+
+        // test
+        log_message('error', __METHOD__ . ', ' . __LINE__ . ', tableName = ' . $tableName . ', sql = ' . $sql . ', row = ' . json_encode($row));
     } catch (Exception $e) {
         log_message('error', __METHOD__ . ', ' . __LINE__ . ', mysql exception, exception = ' . $e->getMessage());
         return false;

@@ -358,6 +358,9 @@ class User_model extends CI_Model {
     public function betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId) {
         $db = $this->load->database('gamehis', true);
         $sql = $this->betRecordGetGenerateSql($db, $dateBegin, $dateEnd, $gameId, $baseScore, $userId);
+        
+        // test
+        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql);
 
         if (empty($sql)) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql empty, dateBegin = ' . $dateBegin.  ', dateEnd = ' . $dateEnd
@@ -367,7 +370,7 @@ class User_model extends CI_Model {
 
         $rows = $db->query($sql)->result_array();
         if (empty($rows)) {
-            log_message('error', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = gamehis, sql = ' . $sql);
+            log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = gamehis, sql = ' . $sql);
             return [];
         }
 
@@ -430,14 +433,14 @@ class User_model extends CI_Model {
      * 用户标签 - 编辑
      * @param $id
      * @param $name
-     * @param $sort
      * @param $autoMoney
+     * @param $sort
      * @return bool
      */
-    public function userTagEdit($id, $name, $sort, $autoMoney) {
+    public function userTagEdit($id, $name, $autoMoney, $sort) {
         $db = $this->load->database('default', true);
 
-        $sql = 'update smc_user_tab set name = ' . $name . ', sort = ' . $sort . ', autoMoney = ' . $autoMoney;
+        $sql = 'update smc_user_tag set name = ' . $this->db->escape($name) . ', sort = ' . $sort . ', autoMoney = ' . $autoMoney;
         $sql .= ' where id = ' . $id;
         $ret = $db->query($sql);
         if (!$ret) {
@@ -457,8 +460,6 @@ class User_model extends CI_Model {
         $db = $this->load->database('default', true);
         $sql = 'delete from smc_user_tag where id = ' . $id;
         $ret = $db->query($sql);
-        // test
-        log_message('error', 'ok21, id = ' . $id . ', sql = ' . $sql . ', ret = ' . json_encode($ret));
         if (!$ret) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = default, sql = ' . $sql);
             return false;
@@ -473,7 +474,7 @@ class User_model extends CI_Model {
      */
     public function userLvGetList() {
         $db = $this->load->database('default', true);
-        $sql = 'select id, name, upPrice, templateId, note from smc_user_lv order by lv limit ' . maxQueryNum;
+        $sql = 'select id, name, upPrice, templateId, note from smc_user_lv order by id limit ' . maxQueryNum;
         $rows = $db->query($sql)->result_array();
         if (!empty($rows)) {
             foreach ($rows as &$row) {
@@ -520,11 +521,127 @@ class User_model extends CI_Model {
      */
     public function userLvEdit($id, $name, $upPrice, $templateId, $note) {
         $db = $this->load->database('default', true);
-        $sql = 'update smc_user_lv set name = ' . $name . ', upPrice = ' . $upPrice;
+        $sql = 'update smc_user_lv set name = ' . $this->db->escape($name) . ', upPrice = ' . $upPrice;
         $sql .= ', templateId = ' . $templateId . ', note = ' . $this->db->escape($note) . ' where id = ' . $id;
+
         $ret = $db->query($sql);
         if (!$ret) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = default, sql = ' . $sql);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 用户详情 - 获取
+     * @param $userId
+     * @return array
+     */
+    public function userDetailGet($userId) {
+        $indexArr = $this->Common_model->getUserDBPos($userId);
+        $dbIndex = $indexArr['dbindex'];
+        $tableIndex = $indexArr['tableindex'];
+
+        $db = $this->load->database('eus' . $dbIndex, true);
+        $tableName = 'casinouser_' . $tableIndex;
+
+        /**
+         * 用户基础信息 -
+         *
+         * 用户id - id
+         * 上级:
+         * 用户等级: 比如 普通会员, vip1, vip2 等
+         * 真实姓名: userIDCardName
+         * 用户状态: todo 是黑名单吗
+         * E-mail: user_email
+         * 手机号码: mobile_number
+         * 微信号码:
+         * QQ号码:
+         * 账户id: user_email
+         * 注册时间: registertime - timestamp
+         * 最后登录时间: last_login_time - bigint
+         * 密码: password
+         * 资金密码:
+         * 用户标签:
+         * 设备唯一标识码: todo user_device_id, uuid, mac 哪个是
+         * 备注:
+         *
+         * ====
+         * 账户信息 -
+         *
+         * 账户余额: wallet total_total_money todo
+         * 保险箱余额:
+         * 支付宝: alipay_account
+         * 银行卡:
+         * 银行名称:
+         * 充值次数: payBonusGameCount todo
+         * 充值金额: payContribution todo
+         * 提现次数:
+         * 提现金额:
+         * 返水金额:
+         *
+         * ====
+         * 会员权限设置 -
+         *
+         *
+         * ====
+         * 用户游戏信息 -
+         *
+         * 游戏:
+         * 游戏次数: total_competition_times todo
+         * 输赢:
+         * 最后游戏时间:
+         *
+         * ====
+         * 用户活动信息:
+         *
+         * 时间:
+         * IP: lastLoginIp
+         * 地址: location
+         * 行为: 比如 官方充值请求, 用户绑定实名信息, 微信登录 等
+         */
+        $sql = 'select id, userIDCardName, user_email, mobile_number, registertime, last_login_time, password, wallet,';
+        $sql .= ' alipay_account, payBonusGameCount, payContribution, total_competition_times, lastLoginIp, location';
+        $sql .= ' from ' . $tableName;
+        $sql .= ' where id = ' . $userId;
+
+        $rows = $db->query($sql)->result_array();
+        if (!empty($row)) {
+            return $rows;
+        } else {
+            log_message('error', __METHOD__ . ', ' . __LINE__ . ', return empty, db = eus' . $dbIndex
+                . ', table = ' . $tableName . ', sql = ' . $sql);
+            return [];
+        }
+    }
+
+    /**
+     * 用户详情 - 保存
+     * @param $param
+     * @return bool
+     */
+    public function userDetailSave(&$param) {
+        $userId = $param['userId'];
+        $realName = $param['realName'];
+        $mobileNumber = $param['mobileNumber'];
+        $aliPayAccount = $param['aliPayAccount'];
+
+        $indexArr = $this->Common_model->getUserDBPos($userId);
+        $dbIndex = $indexArr['dbindex'];
+        $tableIndex = $indexArr['tableindex'];
+
+        $db = $this->load->database('eus' . $dbIndex, true);
+        $tableName = 'casinouser_' . $tableIndex;
+
+        $sql = 'update ' . $tableName;
+        $sql .= ' set userIDCardName = ' . $realName . ', mobile_number = ' . $mobileNumber . ', alipay_account = ' . $aliPayAccount;
+        $sql .= ' where id = ' . $userId;
+
+        $ret = $db->query($sql);
+        if (!$ret) {
+            log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = eus' . $dbIndex
+                . ', table = ' . $tableName . ', sql = ' . $sql);
             return false;
         }
 
@@ -548,7 +665,7 @@ class User_model extends CI_Model {
 
         $tsBegin = strtotime($dateBegin);
         $tsEnd = strtotime($dateEnd);
-        if ($dateBegin !== -1) {
+        if ($dateBegin !== '') {
             for ($i = $tsBegin; $i <= $tsEnd; $i += 86400) {
                 $tableSuffix = date('Ymd', $i);
 
@@ -613,14 +730,14 @@ class User_model extends CI_Model {
 
                         $haveWhere = false;
 
-                        if ($baseScore !== -1) {
+                        if ($baseScore !== '') {
                             // 判断是否存在 room_basescore 字段 (bairen类的游戏表中不存在该字段, 且表结构跟其他不同)
                             if (checkColumnExist('room_basescore', $tableName, $db)) {
                                 $sql .= ' where room_basescore = ' . $this->db->escape($baseScore);
                                 $haveWhere = true;
                             }
                         }
-                        if ($userId !== -1) {
+                        if ($userId !== '') {
                             if ($haveWhere) {
                                 $sql .= ' and user_id = ' . $userId;
                             } else {
@@ -671,14 +788,14 @@ class User_model extends CI_Model {
 
                 $haveWhere = false;
 
-                if ($baseScore !== -1) {
+                if ($baseScore !== '') {
                     // 判断是否存在 room_basescore 字段 (bairen类的游戏表中不存在该字段, 且表结构跟其他不同)
                     if (checkColumnExist('room_basescore', $tableName, $db)) {
                         $sql .= ' where room_basescore = ' . $this->db->escape($baseScore);
                         $haveWhere = true;
                     }
                 }
-                if ($userId !== -1) {
+                if ($userId !== '') {
                     if ($haveWhere) {
                         $sql .= ' and user_id = ' . $userId;
                     } else {

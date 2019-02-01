@@ -148,7 +148,10 @@
 
                                                         <td><?php echo $v['balance'] ?></td>
                                                         <td><?php echo $v['userStatus'] ?></td>
-                                                        <td><?php echo $v['operation'] ?></td>
+                                                        <td>
+                                                            <a href="<?php echo site_url('no3/userTag/toEdit') . "?id=" . $v['id'] . "&name=" . $v['name'] . "&sort=" . $v['sort'] . "&autoMoney=" . $v['autoMoney']; ?>">详情</a>
+                                                            <a onclick="deleteOne('<?php echo $v['id']; ?>');" href="javascript:;">禁用</a>
+                                                        </td>
 
                                                     </tr>
                                                 <?php } ?>

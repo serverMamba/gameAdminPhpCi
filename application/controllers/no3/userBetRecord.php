@@ -17,12 +17,12 @@ class UserBetRecord extends CI_Controller {
     public function index() {
         $dateBegin = isset($_POST['dateBegin']) ? trim($_POST['dateBegin']) : '';
         $dateEnd = isset($_POST['dateEnd']) ? trim($_POST['dateEnd']) : '';
-        $gameId = isset($_POST['gameId']) ? intval($_POST['gameId']) : -1;
-        $baseScore = isset($_POST['baseScore']) ? $_POST['baseScore'] : 0;
+        $gameId = isset($_POST['gameId']) ? intval(intval($_POST['gameId'])) : -1;
+        $baseScore = isset($_POST['baseScore']) ? $_POST['baseScore'] : '';
 
-        $userId = isset($_POST['userId']) ? $_POST['userId'] : 0;
+        $userId = isset($_POST['userId']) ? intval($_POST['userId']) : '';
 
-        $betRecord = $this->User_model()->betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId);
+        $betRecord = $this->User_model->betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId);
 
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),

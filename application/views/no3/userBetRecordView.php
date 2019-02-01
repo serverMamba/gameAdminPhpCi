@@ -120,24 +120,20 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <?php foreach ($tg_account_list as $v){ ?>
+                                                <?php foreach ($betRecord as $v){ ?>
                                                     <tr>
-                                                        <td><?php echo $v['id']; ?></td>
-                                                        <td><?php echo $v['account']; ?></td>
-                                                        <td><?php echo $v['channel_name']; ?></td>
-                                                        <td><?php echo $v['agent_balance']/100; ?>元</td>
-                                                        <td><?php echo $v['balance']/100; ?>元</td>
-                                                        <td><?php echo $v['status'] ? '启用' : '关闭'; ?></td>
-                                                        <td><?php if($v['last_login_time']){ echo date('Y-m-d H:i:s',$v['last_login_time']); }else{echo '-'; } ?></td>
-                                                        <td><?php if($v['last_login_ip']){ echo $v['last_login_ip']; }else{echo '-'; } ?></td>
-                                                        <td>
-                                                            <a href="<?php echo site_url('no3/tgAccount/toEdit/'.$v['id']); ?>">修改</a>
-                                                            <a href="<?php echo site_url('no3/tgAccount/operationList/'.$v['id']); ?>">操作日志</a>
-                                                            <?php if($flagEditAgentBalance){?>
-                                                                <a href="<?php echo site_url('no3/tgAccount/toEditAgentBalance/'.$v['id']); ?>">修改信用金</a>
-                                                            <?php }?>
-                                                            <a href="<?php echo site_url('no3/tgAccount/income/'.$v['id']); ?>">收入统计</a>
-                                                        </td>
+                                                        <td><?php echo $v['userId']; ?></td>
+                                                        <td><?php echo $v['userNickname']; ?></td>
+                                                        <td><?php echo $v['gameName']; ?></td>
+                                                        <td><?php echo $v['roomBaseScore']; ?></td>
+
+                                                        <td><?php echo $v['gameNumber']; ?></td>
+                                                        <td><?php echo $v['userGameResult']; ?></td>
+                                                        <td><?php echo $v['userScoreBegin']; ?></td>
+                                                        <td><?php echo $v['userScoreEnd']; ?></td>
+
+                                                        <td><?php echo $v['gameTime']; ?></td>
+                                                        <td><?php echo $v['recordTimestamp']; ?></td>
                                                     </tr>
                                                 <?php } ?>
                                                 </tbody>

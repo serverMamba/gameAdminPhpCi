@@ -137,7 +137,13 @@
                                                 <tbody>
                                                 <?php foreach ($userList as $v){ ?>
                                                     <tr>
-                                                        <td><?php echo $v['online']; ?></td>
+                                                        <td>
+                                                            <?php if ($v['online']) { ?>
+                                                                <font color="green">&#10004;</font>
+                                                            <?php } else { ?>
+                                                                <font color="red">&#10006;</font>
+                                                            <?php } ?>
+                                                        </td>
                                                         <td><?php echo $v['id']; ?></td>
                                                         <td><?php echo $v['user_email']; ?></td>
                                                         <td><?php echo $v['userIDCardName']; ?></td>
@@ -148,7 +154,13 @@
                                                         <td><?php echo $v['isBlack'] ?></td>
 
                                                         <td><?php echo $v['balance'] ?></td>
-                                                        <td><?php echo $v['userSealStatus'] ?></td>
+                                                        <td>
+                                                            <?php if ($v['userSealStatus'] == '启用') { ?>
+                                                                <font color="green"><?php echo $v['userSealStatus'] ?></font>
+                                                            <?php } else { ?>
+                                                                <font color="red"><?php echo $v['userSealStatus'] ?></font>
+                                                            <?php } ?>
+                                                        </td>
                                                         <td><?php echo $v['user_chips'] ?></td>
                                                         <td>
                                                             <a href="<?php echo site_url('no3/userList/userDetailGet') . "?userId=" . $v['id']; ?>">详情</a>

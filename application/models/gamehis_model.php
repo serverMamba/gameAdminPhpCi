@@ -89,7 +89,8 @@ class gamehis_model extends MY_Model {
 			
 			if (strlen ( $sqltable ) < 6) {
 				return array (
-						"count" => 0,
+//						"count" => 0,
+                    "count" => 888,
 						"detail" => "" 
 				);
 			}
@@ -104,7 +105,8 @@ class gamehis_model extends MY_Model {
 			$query1 = $db->query ( $sql1 );
 			$ret1 = $this->_dealwith_ret ( $query1 );
 			return array (
-					"count" => $ret1,
+//					"count" => $ret1,
+                "count" => 888,
 					"detail" => $ret 
 			);
 		}

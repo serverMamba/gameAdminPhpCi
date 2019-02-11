@@ -153,6 +153,20 @@ class User_model extends CI_Model {
 
         if (!empty($row)) {
             $row['userSealStatus'] = $this->getUserSealStatus($userId) === 1 ? '禁用' : '启用';
+
+            // 是否在线 - redisdb14, hash键user_dispatch, 中存在子键userId则在线, 否则不在线 (因为服务端是在析构函数中删除相应键的, 服务器关闭时不会自动清空这个键, 可以手动清空)
+            $redisConfig = $this->config->item('redis');
+            $redis = new Redis();
+            $redis->connect($redisConfig['host'], $redisConfig['port']);
+            if (!empty($redisConfig['pass'])) {
+                $redis->auth($redisConfig['pass']);
+            }
+            $redis->select(14);
+
+            $key = 'user_dispatch';
+            $hashKey = $userId;
+            $row['online'] = $redis->hExists($key, $hashKey) ? 1 : 0;
+
             return $row;
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
@@ -227,8 +241,21 @@ class User_model extends CI_Model {
         }
 
         if (!empty($finalRet)) {
+            $redisConfig = $this->config->item('redis');
+            $redis = new Redis();
+            $redis->connect($redisConfig['host'], $redisConfig['port']);
+            if (!empty($redisConfig['pass'])) {
+                $redis->auth($redisConfig['pass']);
+            }
+            $redis->select(14);
+
             foreach ($finalRet as &$v) {
                 $v['userSealStatus'] = $this->getUserSealStatus($v['id']) === 1 ? '禁用' : '启用';
+
+                // 是否在线 - redisdb14, hash键user_dispatch, 中存在子键userId则在线, 否则不在线 (因为服务端是在析构函数中删除相应键的, 服务器关闭时不会自动清空这个键, 可以手动清空)
+                $key = 'user_dispatch';
+                $hashKey = $v['id'];
+                $row['online'] = $redis->hExists($key, $hashKey) ? 1 : 0;
             }
         }
 

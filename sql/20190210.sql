@@ -1,0 +1,1 @@
+casinouser_ 表中新增  userTag, note字段

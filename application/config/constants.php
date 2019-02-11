@@ -27,7 +27,8 @@ if (DEV_ENV)
 	define('MID_SERVER_PORT',10004);
 	define('HASH_SERVER_IP','127.0.0.1');
 	define('HASH_SERVER_PORT',9109);
-	define('DISPATCH_SERVER_IP','127.0.0.1');
+//	define('DISPATCH_SERVER_IP','127.0.0.1');
+    define('DISPATCH_SERVER_IP','192.168.1.58');
 	define('DISPATCH_SERVER_PORT',10003);
 	define('LHP_SERVER_IP','127.0.0.1');
 	define('LHP_SERVER_PORT',12301);

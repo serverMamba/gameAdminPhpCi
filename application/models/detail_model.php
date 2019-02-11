@@ -63,7 +63,13 @@ class detail_model extends MY_Model {
         $ret = $this->_request_midlayer_res($buf, $command);
 
         $rsp->ParseFromString($ret);
-		if ($rsp->returncode () == 0) {
+
+        $retCode = $rsp->returncode ();
+
+        // test
+        log_message('error', 'sealCode = ' . json_encode($retCode) . ', content = ' . $content);
+
+		if (!is_null($retCode) && intval($retCode) === EnumResult::enumResultSucc) {
 			$CI = &get_instance ();
 			$db = $CI->load->database ( 'us3', true );
 			if($type == '1'){
@@ -86,9 +92,11 @@ class detail_model extends MY_Model {
         		
         		$db->insert('CASINOUSERIDBLACKLIST',$data);
 			}
-		}
-        return $rsp->returncode() === EnumResult::enumResultSucc;
 
+			return true;
+		} else {
+		    return false;
+        }
     } 
 
     public function del_blacklist($type, $rid) {
@@ -114,8 +122,13 @@ class detail_model extends MY_Model {
         $ret = $this->_request_midlayer_res($buf, $command);
 
         $rsp->ParseFromString($ret);
-        
-        if ($rsp->returncode () == 0) {
+
+        $retCode = $rsp->returncode ();
+
+        // test
+        log_message('error', 'unSealCode = ' . json_encode($retCode) . ', rid = ' . $rid);
+
+        if (!is_null($retCode) && intval($retCode) === EnumResult::enumResultSucc) {
         	$CI = &get_instance ();
         	$db = $CI->load->database ( 'us3', true );
         	if($type == '1'){
@@ -128,11 +141,11 @@ class detail_model extends MY_Model {
         		$db->where('userid',$rid);
         		$db->delete('CASINOUSERIDBLACKLIST');
         	}
+
+        	return true;
+        } else {
+            return false;
         }
-
-        return $rsp->returncode() == EnumResult::enumResultSucc;
-
-
     } 
     
       public function  get_robot_lastday($id){
@@ -973,8 +986,13 @@ class detail_model extends MY_Model {
     	$scoreoper->set_addtype(EnumAddScoreType::enumAddScoreType_BackgroundAdd);
     
     	$buf = $scoreoper->SerializeToString();
-    
+
+    	// test
+        log_message('error', 'ok11');
     	$ret = $this->_request_midlayer_res1($buf,60002, DISPATCH_SERVER_IP, DISPATCH_SERVER_PORT);
+
+        // test
+        log_message('error', 'ok11. ret = ' . json_encode($ret));
     
     	$rsp = new GameServerMiddleLayerServerScoreOperationRsp();
     	$rsp->ParseFromString($ret);

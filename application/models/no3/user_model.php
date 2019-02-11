@@ -121,7 +121,7 @@ class User_model extends CI_Model {
 
         $db = $this->load->database('eus' . $dbIndex, true);
         $tableName = 'casinouser_' . $tableIndex;
-        $sql = 'select id, user_email, registertime, userIDCardName from ' . $tableName;
+        $sql = 'select id, user_email, registertime, userIDCardName, user_chips from ' . $tableName;
         $sql .= ' where id = ' . $userId;
 
         if ($dateBegin !== '') {
@@ -147,10 +147,12 @@ class User_model extends CI_Model {
         if (!empty($item)) {
             $sql .= ' and ' . implode(' and ', $item);
         }
+        $sql .= ' limit 1';
 
         $row = $db->query($sql)->row_array();
 
         if (!empty($row)) {
+            $row['userSealStatus'] = $this->getUserSealStatus($userId) === 1 ? '禁用' : '启用';
             return $row;
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
@@ -209,7 +211,7 @@ class User_model extends CI_Model {
                 if (!empty($sql)) {
                     $sql .= ' union all ';
                 }
-                $sql .= 'select id, user_email, registertime, userIDCardName';
+                $sql .= 'select id, user_level, user_email, registertime, userIDCardName, user_chips';
                 $sql .= ' from ' . $tableName;
                 $sql .= $where;
             }
@@ -221,6 +223,12 @@ class User_model extends CI_Model {
             } else {
                 log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $i
                     . ', tablePrefix = ' . $tablePrefix . ', sql = ' . $sql);
+            }
+        }
+
+        if (!empty($finalRet)) {
+            foreach ($finalRet as &$v) {
+                $v['userSealStatus'] = $this->getUserSealStatus($v['id']) === 1 ? '禁用' : '启用';
             }
         }
 
@@ -543,7 +551,11 @@ class User_model extends CI_Model {
         $dbIndex = $indexArr['dbindex'];
         $tableIndex = $indexArr['tableindex'];
 
+        // test
+        log_message('error', 'ok11, dbIndex = ' . $dbIndex . ', userId = ' . $userId);
         $db = $this->load->database('eus' . $dbIndex, true);
+        // test
+        log_message('error', 'ok12');
         $tableName = 'casinouser_' . $tableIndex;
 
         /**
@@ -604,11 +616,13 @@ class User_model extends CI_Model {
         $sql = 'select id, userIDCardName, user_email, mobile_number, registertime, last_login_time, password, wallet,';
         $sql .= ' alipay_account, payBonusGameCount, payContribution, total_competition_times, lastLoginIp, location';
         $sql .= ' from ' . $tableName;
-        $sql .= ' where id = ' . $userId;
+        $sql .= ' where id = ' . $userId . ' limit 1';
 
-        $rows = $db->query($sql)->result_array();
+        $row = $db->query($sql)->row_array();
         if (!empty($row)) {
-            return $rows;
+            $row['last_login_time'] = date('Y-m-d h:i:s', $row['last_login_time']);
+            $row['userSealStatus'] = $this->getUserSealStatus($userId);
+            return $row;
         } else {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', return empty, db = eus' . $dbIndex
                 . ', table = ' . $tableName . ', sql = ' . $sql);
@@ -618,15 +632,13 @@ class User_model extends CI_Model {
 
     /**
      * 用户详情 - 保存
-     * @param $param
+     * @param $userId
+     * @param $realName
+     * @param $mobileNumber
+     * @param $aliPayAccount
      * @return bool
      */
-    public function userDetailSave(&$param) {
-        $userId = $param['userId'];
-        $realName = $param['realName'];
-        $mobileNumber = $param['mobileNumber'];
-        $aliPayAccount = $param['aliPayAccount'];
-
+    public function userDetailSave($userId, $realName, $mobileNumber, $aliPayAccount) {
         $indexArr = $this->Common_model->getUserDBPos($userId);
         $dbIndex = $indexArr['dbindex'];
         $tableIndex = $indexArr['tableindex'];
@@ -635,7 +647,8 @@ class User_model extends CI_Model {
         $tableName = 'casinouser_' . $tableIndex;
 
         $sql = 'update ' . $tableName;
-        $sql .= ' set userIDCardName = ' . $realName . ', mobile_number = ' . $mobileNumber . ', alipay_account = ' . $aliPayAccount;
+        $sql .= ' set userIDCardName = ' . $this->db->escape($realName) . ', mobile_number = '
+            . $this->db->escape($mobileNumber) . ', alipay_account = ' . $this->db->escape($aliPayAccount);
         $sql .= ' where id = ' . $userId;
 
         $ret = $db->query($sql);
@@ -809,5 +822,22 @@ class User_model extends CI_Model {
         }
 
         return $sql;
+    }
+
+    /**
+     * 获取玩家封印状态
+     * @param $userId
+     * @return int
+     */
+    public function getUserSealStatus($userId) {
+        $db = $this->load->database('us3', true);
+        $sql = 'select id from casinouseridblacklist where userid = ' . $userId . ' limit 1';
+
+        $row = $db->query($sql)->row_array();
+        if (!empty($row)) {
+            return UserList::sealStatusYes;
+        } else {
+            return UserList::sealStatusNo;
+        }
     }
 }

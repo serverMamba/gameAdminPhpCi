@@ -137,6 +137,8 @@ class MY_Model extends CI_Model {
      * @return $ret [stream]
      */
     public function _request_midlayer_res1($buf, $command,$host,$port) {
+        // test
+        log_message('error',__METHOD__ . ', ' . __LINE__ . ', ok20');
         //require_once(APPPATH . "third_party/proto/pb_proto_packet.php");
         $this->_require('pb_proto_pbclientgameserver');
         $pack = new Packet();
@@ -151,18 +153,17 @@ class MY_Model extends CI_Model {
 
         $request_stream = pack('H*', $buf_length) . $buf_pack;
 
-        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) or die('Could not create socket');
+        // test
+        log_message('error',__METHOD__ . ', ' . __LINE__ . ', ok21');
+//        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP) or die('Could not create socket');
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        // test
+        log_message('error',__METHOD__ . ', ' . __LINE__ . ', ok22');
+
         socket_set_option($socket, SOL_SOCKET,SO_RCVTIMEO, array('sec'=>20, 'usec'=>0));
         socket_set_option($socket, SOL_SOCKET,SO_SNDTIMEO, array('sec'=>20, 'usec'=>0));
-        
-        // socket_set_option($socket, SOL_SOCKET,SO_KEEPALIVE,10000);
-       // $arrOpt = array('l_onoff' => 1, 'l_linger' => 1);
-       // socket_set_block($socket);
-       // socket_set_option($socket, SOL_SOCKET, SO_LINGER, $arrOpt);
-     //   echo $host,":",$port;
-        // test
-        $conn = socket_connect($socket, '192.168.1.219', 10004);
-//        $conn = socket_connect($socket, $host,$port);
+
+        $conn = socket_connect($socket, $host, $port);
 
          if (!$conn) {
             exit("socket connect error");
@@ -307,6 +308,10 @@ class MY_Model extends CI_Model {
         socket_set_option($socket, SOL_SOCKET,SO_SNDTIMEO, array('sec'=>1, 'usec'=>0));
         
         $length = count($this->midlayer);
+
+        // test
+        log_message('error', 'midlayer = ' . json_encode($this->midlayer));
+
         for ($i = 0; $i < $length; $i++) {
             try {
                 $conn = socket_connect($socket, $this->midlayer[$i]['host'], $this->midlayer[$i]['port']);

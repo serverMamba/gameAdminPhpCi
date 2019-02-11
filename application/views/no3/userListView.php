@@ -130,6 +130,7 @@
 
                                                     <th>账户余额</th>
                                                     <th>玩家状态</th>
+                                                    <th>金币</th>
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
@@ -147,10 +148,16 @@
                                                         <td><?php echo $v['isBlack'] ?></td>
 
                                                         <td><?php echo $v['balance'] ?></td>
-                                                        <td><?php echo $v['userStatus'] ?></td>
+                                                        <td><?php echo $v['userSealStatus'] ?></td>
+                                                        <td><?php echo $v['user_chips'] ?></td>
                                                         <td>
-                                                            <a href="<?php echo site_url('no3/userTag/toEdit') . "?id=" . $v['id'] . "&name=" . $v['name'] . "&sort=" . $v['sort'] . "&autoMoney=" . $v['autoMoney']; ?>">详情</a>
-                                                            <a onclick="deleteOne('<?php echo $v['id']; ?>');" href="javascript:;">禁用</a>
+                                                            <a href="<?php echo site_url('no3/userList/userDetailGet') . "?userId=" . $v['id']; ?>">详情</a>
+                                                            |
+                                                            <?php if ($v['userSealStatus'] == '启用') { ?>
+                                                            <a onclick="sealOne('<?php echo $v['id']; ?>');" href="javascript:;">禁用</a>
+                                                            <?php } else { ?>
+                                                                <a onclick="unsealOne('<?php echo $v['id']; ?>');" href="javascript:;">启用</a>
+                                                            <?php } ?>
                                                         </td>
 
                                                     </tr>
@@ -211,6 +218,24 @@
     function updateYestadayData(){
         location.href = '<?php echo site_url('no3/finStatistics/getNewDataForYestaday'); ?>';
         return true;
+    }
+
+    function sealOne(id) {
+        if (!confirm('确定禁用吗？')) {
+            return;
+        }
+
+        location.href = '<?php echo site_url('no3/userList/blacklistSeal') . "?id="; ?>' + id;
+        return;
+    }
+
+    function unsealOne(id) {
+        if (!confirm('确定启用吗？')) {
+            return;
+        }
+
+        location.href = '<?php echo site_url('no3/userList/blacklistUnseal') . "?id="; ?>' + id;
+        return;
     }
 
 </script>

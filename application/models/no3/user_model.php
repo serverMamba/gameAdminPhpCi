@@ -551,11 +551,7 @@ class User_model extends CI_Model {
         $dbIndex = $indexArr['dbindex'];
         $tableIndex = $indexArr['tableindex'];
 
-        // test
-        log_message('error', 'ok11, dbIndex = ' . $dbIndex . ', userId = ' . $userId);
         $db = $this->load->database('eus' . $dbIndex, true);
-        // test
-        log_message('error', 'ok12');
         $tableName = 'casinouser_' . $tableIndex;
 
         /**
@@ -575,9 +571,9 @@ class User_model extends CI_Model {
          * 最后登录时间: last_login_time - bigint
          * 密码: password
          * 资金密码:
-         * 用户标签:
+         * 用户标签: userTag
          * 设备唯一标识码: todo user_device_id, uuid, mac 哪个是
-         * 备注:
+         * 备注: note
          *
          * ====
          * 账户信息 -
@@ -614,11 +610,15 @@ class User_model extends CI_Model {
          * 行为: 比如 官方充值请求, 用户绑定实名信息, 微信登录 等
          */
         $sql = 'select id, userIDCardName, user_email, mobile_number, registertime, last_login_time, password, wallet,';
-        $sql .= ' alipay_account, payBonusGameCount, payContribution, total_competition_times, lastLoginIp, location';
+        $sql .= ' alipay_account, payBonusGameCount, payContribution, total_competition_times, lastLoginIp, location,';
+        $sql .= ' userTag, note';
         $sql .= ' from ' . $tableName;
         $sql .= ' where id = ' . $userId . ' limit 1';
 
         $row = $db->query($sql)->row_array();
+        // test
+        log_message('error', __METHOD__ . ', ' . __LINE__ . ', db = eus' . $dbIndex
+            . ', table = ' . $tableName . ', sql = ' . $sql . ', row = ' . json_encode($row));
         if (!empty($row)) {
             $row['last_login_time'] = date('Y-m-d h:i:s', $row['last_login_time']);
             $row['userSealStatus'] = $this->getUserSealStatus($userId);
@@ -636,9 +636,11 @@ class User_model extends CI_Model {
      * @param $realName
      * @param $mobileNumber
      * @param $aliPayAccount
+     * @param $userTag
+     * @param $note
      * @return bool
      */
-    public function userDetailSave($userId, $realName, $mobileNumber, $aliPayAccount) {
+    public function userDetailSave($userId, $realName, $mobileNumber, $aliPayAccount, $userTag, $note) {
         $indexArr = $this->Common_model->getUserDBPos($userId);
         $dbIndex = $indexArr['dbindex'];
         $tableIndex = $indexArr['tableindex'];
@@ -648,10 +650,14 @@ class User_model extends CI_Model {
 
         $sql = 'update ' . $tableName;
         $sql .= ' set userIDCardName = ' . $this->db->escape($realName) . ', mobile_number = '
-            . $this->db->escape($mobileNumber) . ', alipay_account = ' . $this->db->escape($aliPayAccount);
+            . $this->db->escape($mobileNumber) . ', alipay_account = ' . $this->db->escape($aliPayAccount)
+            . ', userTag = ' . $userTag . ', note = ' . $this->db->escape($note);
         $sql .= ' where id = ' . $userId;
 
         $ret = $db->query($sql);
+        // test
+        log_message('error', __METHOD__ . ', ' . __LINE__ . ', db = eus' . $dbIndex
+            . ', table = ' . $tableName . ', sql = ' . $sql . ', ret = ' . json_encode($ret));
         if (!$ret) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', fail, db = eus' . $dbIndex
                 . ', table = ' . $tableName . ', sql = ' . $sql);

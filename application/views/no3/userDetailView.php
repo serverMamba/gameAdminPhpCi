@@ -227,8 +227,13 @@
                                                     <td>
                                                         <select name="bugtype" id="userTag"
                                                                 style="margin-left: 0px; width: 240px;">
-                                                            <?php foreach ($userTag as $k => $v) { ?>
-                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                                                            <?php foreach ($userTag as $k => $v) {
+                                                                if (intval($k) === intval($userDetail['userTag'])) {
+                                                                ?>
+                                                                    <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
+                                                                <?php } else { ?>
+                                                                    <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                                                                <?php } ?>
                                                             <?php } ?>
                                                         </select>
                                                     </td>
@@ -252,7 +257,7 @@
                                                     <td colspan="3">
 															<textarea class="form-control"
                                                                       style="width:100%; margin-right: 10px;"
-                                                                      id="note" name="describe" rows="3"></textarea>
+                                                                      id="note" name="describe" rows="3"><?php echo $userDetail['note'] ?></textarea>
                                                     </td>
                                                 </tr>
                                             </table>

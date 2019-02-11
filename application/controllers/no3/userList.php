@@ -87,6 +87,7 @@ class UserList extends CI_Controller {
                 $userTag[$row['id']] = $row['name'];
             }
         }
+        $userTag[0] = '无';
 
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),
@@ -112,8 +113,8 @@ class UserList extends CI_Controller {
         $userId = isset($_POST['userId']) ? intval($_POST['userId']) : '';
         $realName = isset($_POST['realName']) ? trim($_POST['realName']) : '';
         $mobileNumber = isset($_POST['mobileNumber']) ? intval($_POST['mobileNumber']) : '';
-        $userTag = isset($_POST['userTag']) ? intval($_POST['userTag']) : '';
-        $note = isset($_POST['note']) ? intval($_POST['note']) : '';
+        $userTag = isset($_POST['userTag']) ? intval($_POST['userTag']) : 0;
+        $note = isset($_POST['note']) ? $_POST['note'] : '';
 
         // 账户信息
         $aliPayAccount = isset($_POST['mobileNumber']) ? intval($_POST['mobileNumber']) : '';
@@ -129,10 +130,8 @@ class UserList extends CI_Controller {
             redirect('no3/userList/userDetailView');
         }
 
-        $ret = $this->User_model->userDetailSave($userId, $realName, $mobileNumber, $aliPayAccount);
+        $ret = $this->User_model->userDetailSave($userId, $realName, $mobileNumber, $aliPayAccount, $userTag, $note);
 
-        // test
-        log_message('error', 'ret = ' . json_encode($ret));
         if (!$ret) {
             exit(json_encode([
                 'status' => '0',

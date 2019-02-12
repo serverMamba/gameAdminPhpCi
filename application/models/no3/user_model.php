@@ -422,7 +422,7 @@ class User_model extends CI_Model {
         }
 
         if (!empty($content)) {
-            array_multisort(array_column($content,'id'), SORT_DESC, $content);
+            array_multisort(array_column($content, 'id'), SORT_DESC, $content);
 
             $totalNum = count($content);
             $content = array_slice($content, $start, $per);
@@ -459,7 +459,7 @@ class User_model extends CI_Model {
         $sql = $this->betRecordGetGenerateSql($db, $dateBegin, $dateEnd, $gameId, $baseScore, $userId);
 
         if (empty($sql)) {
-            log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql empty, dateBegin = ' . $dateBegin.  ', dateEnd = ' . $dateEnd
+            log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql empty, dateBegin = ' . $dateBegin . ', dateEnd = ' . $dateEnd
                 . ', gameId = ' . $gameId . ', baseScore = ' . $baseScore . ', userId = ' . $userId);
             return $finalRet;
         }
@@ -494,13 +494,48 @@ class User_model extends CI_Model {
      * @return array
      */
     public function userTagGet() {
+        $numArr = [];
+        for ($i = 0; $i <= 15; $i++) {
+            $db = $this->load->database('eus' . $i, true);
+
+            $sql = '';
+
+            $tablePrefix = 'casinouser_';
+            for ($j = 0; $j <= 15; $j++) {
+                $tableName = $tablePrefix . $j;
+                if (!empty($sql)) {
+                    $sql .= ' union all ';
+                }
+                $sql .= 'select userTag, count(*) as num from ' . $tableName . ' where userTag != 0';
+            }
+            $rows = $db->query($sql)->result_array();
+
+            if (!empty($rows)) {
+                $numArr = array_merge($numArr, $rows);
+            } else {
+                log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $i
+                    . ', tablePrefix = ' . $tablePrefix . ', sql = ' . $sql);
+            }
+        }
+
+        $numRetArr = [];
+        if (!empty($numArr)) {
+            foreach ($numArr as $v) {
+                $userTag = intval($v['userTag']);
+                $num = intval($v['num']);
+
+                $numRetArr[$userTag] += $num;
+            }
+        }
+
         $db = $this->load->database('default', true);
         $sql = 'select id, name, sort, autoMoney from smc_user_tag order by id desc limit ' . maxQueryNum;
         $rows = $db->query($sql)->result_array();
 
         if (!empty($rows)) {
             foreach ($rows as &$row) {
-                $row['personNum'] = 0; // notice 测试数据
+                $id = intval($row['id']);
+                $row['personNum'] = isset($numRetArr[$id]) ? $numRetArr[$id] : 0;
             }
             unset($row);
 

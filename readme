@@ -26,7 +26,10 @@ base on codeigniter
 
     2. 代码更新
         更新 application/models/no3/configs_model.php
-        新增 application/models/no3目录下, userList.php, userLoginLog.php, userLv.php, userTag.php
+        更新 system/core/Common.php
+        更新 application/config/constants.php
+        新增 application/models/no3/user_model.php
+        新增 application/models/no3目录下, userList.php, userLoginLog.php, userLv.php, userTag.php, userBetRecord.php
             application/views/no3目录下,
             userListView.php, userDetailView.php, userLoginLogView.php, userBetRecordView.php,
             userLvView.php, userLvAddView.php, userLvEditView.php,

@@ -506,13 +506,13 @@
                                         <div class="modal-body no-padding">
                                             <div id="solveremark"></div>
                                             <div id="btn_ns_span" class="form-group">
-                                                <button onclick="javascript:reset()"
+                                                <button onclick="javascript:history.back(-1);"
                                                         class="btn btn-xs btn-success "
                                                         style="margin-top: 1px; margin-left: 10px;">
                                                     <span
                                                             class="bigger-110">返回</span>
                                                 </button>
-                                                <button onclick="javascript:ajaxSaveBugNew()"
+                                                <button onclick="javascript:ajaxSave()"
                                                         class="btn btn-xs btn-success "
                                                         style="margin-top: 1px; margin-left: 10px;">
                                                     <span class="bigger-110">提交</span>
@@ -551,6 +551,9 @@
 <script src="../res/js/date-time/daterangepicker.min.js"></script>
 </body>
 <script type="text/javascript">
+    /**
+     * 重置
+     */
     function reset() {
         $("#solveremark").html("");
         $("#user_id").val("");
@@ -564,7 +567,7 @@
         $("#describe").val("");
     }
 
-    function ajaxSaveBugNew() {
+    function ajaxSave() {
         var _url = "<?php echo site_url('no3/userList/ajaxUserDetailSave'); ?>";
 
         // 用户基础信息

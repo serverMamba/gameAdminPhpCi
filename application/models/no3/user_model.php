@@ -112,9 +112,20 @@ class User_model extends CI_Model {
     /**
      * 用户 - 获取
      * @param $userId
+     * @param $dateBegin
+     * @param $dateEnd
+     * @param $account
+     * @param $mobileNumber
+     * @param $realName
+     * @param $aliPayAccount
      * @return array
      */
     public function userGet($userId, $dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount) {
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+
         $indexArr = $this->Common_model->getUserDBPos($userId);
         $dbIndex = $indexArr['dbindex'];
         $tableIndex = $indexArr['tableindex'];
@@ -149,10 +160,10 @@ class User_model extends CI_Model {
         }
         $sql .= ' limit 1';
 
-        $row = $db->query($sql)->row_array();
+        $rows = $db->query($sql)->result_array();
 
-        if (!empty($row)) {
-            $row['userSealStatus'] = $this->getUserSealStatus($userId) === 1 ? '禁用' : '启用';
+        if (!empty($rows)) {
+            $rows[0]['userSealStatus'] = $this->getUserSealStatus($userId) === 1 ? '禁用' : '启用';
 
             // 是否在线 - redisdb14, hash键user_dispatch, 中存在子键userId则在线, 否则不在线 (因为服务端是在析构函数中删除相应键的, 服务器关闭时不会自动清空这个键, 可以手动清空)
             $redisConfig = $this->config->item('redis');
@@ -165,14 +176,16 @@ class User_model extends CI_Model {
 
             $key = 'user_dispatch';
             $hashKey = $userId;
-            $row['online'] = $redis->hExists($key, $hashKey) ? 1 : 0;
+            $rows[0]['online'] = $redis->hExists($key, $hashKey) ? 1 : 0;
 
-            return $row;
+            $finalRet['content'] = $rows;
+            $finalRet['totalNum'] = 1;
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
                 . ', table = ' . $tableName . ', sql = ' . $sql);
-            return [];
         }
+
+        return $finalRet;
     }
 
     /**
@@ -183,10 +196,16 @@ class User_model extends CI_Model {
      * @param $mobileNumber
      * @param $realName
      * @param $aliPayAccount
+     * @param $start
+     * @param $per
      * @return array
      */
-    public function userListGet($dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount) {
-        $finalRet = [];
+    public function userListGet($dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount, $start, $per) {
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+        $content = [];
 
         $where = '';
 
@@ -229,18 +248,22 @@ class User_model extends CI_Model {
                 $sql .= ' from ' . $tableName;
                 $sql .= $where;
             }
-            $sql .= ' limit ' . maxQueryNum; // todo 分页
             $rows = $db->query($sql)->result_array();
 
             if (!empty($rows)) {
-                $finalRet = array_merge($finalRet, $rows);
+                $content = array_merge($content, $rows);
             } else {
                 log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $i
                     . ', tablePrefix = ' . $tablePrefix . ', sql = ' . $sql);
             }
         }
 
-        if (!empty($finalRet)) {
+        if (!empty($content)) {
+            $totalNum = count($content);
+
+            array_multisort(array_column($content, 'id'), SORT_DESC, $content);
+            $content = array_slice($content, $start, $per);
+
             $redisConfig = $this->config->item('redis');
             $redis = new Redis();
             $redis->connect($redisConfig['host'], $redisConfig['port']);
@@ -249,14 +272,18 @@ class User_model extends CI_Model {
             }
             $redis->select(14);
 
-            foreach ($finalRet as &$v) {
+            foreach ($content as &$v) {
                 $v['userSealStatus'] = $this->getUserSealStatus($v['id']) === 1 ? '禁用' : '启用';
 
                 // 是否在线 - redisdb14, hash键user_dispatch, 中存在子键userId则在线, 否则不在线 (因为服务端是在析构函数中删除相应键的, 服务器关闭时不会自动清空这个键, 可以手动清空)
                 $key = 'user_dispatch';
                 $hashKey = $v['id'];
-                $row['online'] = $redis->hExists($key, $hashKey) ? 1 : 0;
+                $v['online'] = $redis->hExists($key, $hashKey) ? 1 : 0;
             }
+            unset($v);
+
+            $finalRet['content'] = $content;
+            $finalRet['totalNum'] = $totalNum;
         }
 
         return $finalRet;
@@ -268,9 +295,16 @@ class User_model extends CI_Model {
      * @param $dateEnd
      * @param $userId
      * @param $ip
+     * @param $start
+     * @param $per
      * @return array
      */
-    public function userLoginLogGetByUserId($dateBegin, $dateEnd, $userId, $ip) {
+    public function userLoginLogGetByUserId($dateBegin, $dateEnd, $userId, $ip, $start, $per) {
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+
         $indexArr = $this->Common_model->getUserDBPos($userId);
         $dbIndex = $indexArr['dbindex'];
         $tableIndex = $indexArr['tableindex'];
@@ -281,6 +315,8 @@ class User_model extends CI_Model {
         $sql = 'select id, last_login_time, lastLoginIp, location, activate_device'; // activate_device, uuid, lastLoginMac哪个是设备
         $sql .= ' from ' . $tableName;
         $sql .= ' where id = ' . $userId;
+
+        $sqlCount = 'select count(*) as totalNum from ' . $tableName . ' where id = ' . $userId;
 
         $item = [];
         if ($dateBegin !== '') {
@@ -297,24 +333,33 @@ class User_model extends CI_Model {
 
         if (!empty($item)) {
             $sql .= ' and ' . implode(' and ', $item);
+            $sqlCount .= ' and ' . implode(' and ', $item);
         }
 
-        $sql .= ' limit ' . maxQueryNum; // todo 分页
+        $sql .= ' order by last_login_time desc limit ' . $start . ', ' . $per;
 
         $rows = $db->query($sql)->result_array();
+        $rowCount = $db->query($sqlCount)->row_array();
 
         if (!empty($rows)) {
             foreach ($rows as &$row) {
                 $row['last_login_time'] = date('Y-m-d H:i:s', $row['last_login_time']);
             }
             unset($row);
-            return $rows;
+            $finalRet['content'] = $rows;
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
                 . ', table = ' . $tableName . ', sql = ' . $sql);
-
-            return [];
         }
+
+        if (!empty($rowCount)) {
+            $finalRet['totalNum'] = intval($rowCount['totalNum']);
+        } else {
+            log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $dbIndex
+                . ', table = ' . $tableName . ', sql = ' . $sqlCount);
+        }
+
+        return $finalRet;
     }
 
     /**
@@ -322,10 +367,16 @@ class User_model extends CI_Model {
      * @param $dateBegin
      * @param $dateEnd
      * @param $ip
+     * @param $start
+     * @param $per
      * @return array
      */
-    public function userLoginLogGet($dateBegin, $dateEnd, $ip) {
-        $finalRet = [];
+    public function userLoginLogGet($dateBegin, $dateEnd, $ip, $start, $per) {
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+        $content = [];
 
         $where = '';
 
@@ -360,22 +411,28 @@ class User_model extends CI_Model {
                 $sql .= ' from ' . $tableName;
                 $sql .= $where;
             }
-            $sql .= ' limit ' . maxQueryNum; // todo 分页
             $rows = $db->query($sql)->result_array();
 
             if (!empty($rows)) {
-                $finalRet = array_merge($finalRet, $rows);
+                $content = array_merge($content, $rows);
             } else {
                 log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = eus' . $i
                     . ', tablePrefix = ' . $tablePrefix . ', sql = ' . $sql);
             }
         }
 
-        if (!empty($finalRet)) {
-            foreach ($finalRet as &$row) {
+        if (!empty($content)) {
+            array_multisort(array_column($content,'id'), SORT_DESC, $content);
+
+            $totalNum = count($content);
+            $content = array_slice($content, $start, $per);
+            foreach ($content as &$row) {
                 $row['last_login_time'] = date('Y-m-d H:i:s', $row['last_login_time']);
             }
             unset($row);
+
+            $finalRet['content'] = $content;
+            $finalRet['totalNum'] = $totalNum;
         }
 
         return $finalRet;

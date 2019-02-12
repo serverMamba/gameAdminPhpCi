@@ -34,12 +34,18 @@ class UserList extends CI_Controller {
         $realName = isset($_POST['realName']) ? trim($_POST['realName']) : '';
         $aliPayAccount = isset($_POST['aliPayAccount']) ? trim($_POST['aliPayAccount']) : '';
 
+        $per = 20;
+        $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
+        $start = ($page - 1) * $per;
+
+        $finalRet = [];
         if ($userId) {
-            $user = $this->User_model->userGet($userId, $dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount);
-            $userList = !empty($user) ? [$user] : [];
+            $finalRet = $this->User_model->userGet($userId, $dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount);
         } else {
-            $userList = $this->User_model->userListGet($dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount);
+            $finalRet = $this->User_model->userListGet($dateBegin, $dateEnd, $account, $mobileNumber, $realName, $aliPayAccount, $start, $per);
         }
+        $userList = $finalRet['content'];
+        $totalNum = $finalRet['totalNum'];
 
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),
@@ -63,6 +69,12 @@ class UserList extends CI_Controller {
                 'aliPayAccount' => $aliPayAccount
             ]
         );
+
+        $this->load->library('pagination');
+        $config ['base_url'] = site_url('no3/userList/index');
+        $config ['total_rows'] = $totalNum;
+        $config ['per_page'] = $per;
+        $this->pagination->initialize($config);
 
         $this->load->view('no3/userListView', $data);
     }

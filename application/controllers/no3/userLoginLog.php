@@ -20,11 +20,18 @@ class UserLoginLog extends CI_Controller {
         $userId = isset($_POST['userId']) ? intval($_POST['userId']) : '';
         $ip = isset($_POST['ip']) ? trim($_POST['ip']) : '';
 
+        $per = 20;
+        $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
+        $start = ($page - 1) * $per;
+
+        $finalRet = [];
         if ($userId) {
-            $userLoginLog = $this->User_model->userLoginLogGetByUserId($dateBegin, $dateEnd, $userId, $ip);
+            $finalRet = $this->User_model->userLoginLogGetByUserId($dateBegin, $dateEnd, $userId, $ip, $start, $per);
         } else {
-            $userLoginLog = $this->User_model->userLoginLogGet($dateBegin, $dateEnd, $ip);
+            $finalRet = $this->User_model->userLoginLogGet($dateBegin, $dateEnd, $ip, $start, $per);
         }
+        $userLoginLog = $finalRet['content'];
+        $totalNum = $finalRet['totalNum'];
 
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),
@@ -44,6 +51,12 @@ class UserLoginLog extends CI_Controller {
                 'ip' => $ip
             ]
         );
+
+        $this->load->library('pagination');
+        $config ['base_url'] = site_url('no3/userLoginLog/index');
+        $config ['total_rows'] = $totalNum;
+        $config ['per_page'] = $per;
+        $this->pagination->initialize($config);
 
         $this->load->view('no3/userLoginLogView', $data);
     }

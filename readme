@@ -1,0 +1,33 @@
+base on codeigniter
+
+20190212新增用户管理
+    1. 数据库更新
+        1. db_smc中新建表smc_user_lv, smc_user_tag,
+                CREATE TABLE `smc_user_lv` (
+                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+                  `name` varchar(10) NOT NULL DEFAULT '' COMMENT '等级名称',
+                  `upPrice` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '晋升条件',
+                  `templateId` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '出款稽核模板id',
+                  `note` text NOT NULL COMMENT '备注',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `name` (`name`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COMMENT='用户等级';
+
+                CREATE TABLE `smc_user_tag` (
+                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+                  `name` varchar(10) NOT NULL DEFAULT '' COMMENT '标签名称',
+                  `sort` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '排序',
+                  `autoMoney` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '自动出款: 1是, 2否',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `name` (`name`)
+                ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='用户标签';
+
+            2. 运行application/controllers/scripts/alterCasinouser.php
+
+    2. 代码更新
+        更新 application/models/no3/configs_model.php
+        新增 application/models/no3目录下, userList.php, userLoginLog.php, userLv.php, userTag.php
+            application/views/no3目录下,
+            userListView.php, userDetailView.php, userLoginLogView.php, userBetRecordView.php,
+            userLvView.php, userLvAddView.php, userLvEditView.php,
+            userTagView.php, userTagAddView.php, userTagEditView.php,

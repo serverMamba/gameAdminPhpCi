@@ -1,2 +1,0 @@
-# phphoutai
-base on codeigniter

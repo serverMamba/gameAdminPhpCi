@@ -139,6 +139,10 @@
                                                 </tbody>
                                             </table>
 
+                                            <div class="modal-footer no-margin-top">
+                                                <?php echo $this->pagination->create_links();?>
+                                            </div>
+
 
                                             <div class="modal-body no-padding"></div>
 

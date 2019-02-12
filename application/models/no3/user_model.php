@@ -445,38 +445,48 @@ class User_model extends CI_Model {
      * @param $gameId
      * @param $baseScore
      * @param $userId
+     * @param $start
+     * @param $per
      * @return array
      */
-    public function betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId) {
+    public function betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId, $start, $per) {
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+
         $db = $this->load->database('gamehis', true);
         $sql = $this->betRecordGetGenerateSql($db, $dateBegin, $dateEnd, $gameId, $baseScore, $userId);
-        
-        // test
-        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql);
 
         if (empty($sql)) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql empty, dateBegin = ' . $dateBegin.  ', dateEnd = ' . $dateEnd
                 . ', gameId = ' . $gameId . ', baseScore = ' . $baseScore . ', userId = ' . $userId);
-            return [];
+            return $finalRet;
         }
 
         $rows = $db->query($sql)->result_array();
-        if (empty($rows)) {
+        if (!empty($rows)) {
+            $totalNum = count($rows);
+            array_multisort(array_column($rows, 'recordTimestamp'), SORT_DESC, $rows);
+            $content = array_slice($rows, $start, $per);
+
+            foreach ($content as &$row) {
+                $row['roomBaseScore'] = isset($row['roomBaseScore']) ? $row['roomBaseScore'] : baiRenBaseScore;
+                $row['roomBaseScore'] = number_format($row['roomBaseScore'] / 100, 2, '.', ' ');
+
+                $row['userGameResult'] = number_format($row['userGameResult'] / 100, 2, '.', ' ');
+                $row['userScoreBegin'] = number_format($row['userScoreBegin'] / 100, 2, '.', ' ');
+                $row['userScoreEnd'] = number_format($row['userScoreEnd'] / 100, 2, '.', ' ');
+            }
+            unset($row);
+
+            $finalRet['content'] = $content;
+            $finalRet['totalNum'] = $totalNum;
+        } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = gamehis, sql = ' . $sql);
-            return [];
         }
 
-        foreach ($rows as &$row) {
-            $row['roomBaseScore'] = isset($row['roomBaseScore']) ? $row['roomBaseScore'] : baiRenBaseScore;
-            $row['roomBaseScore'] = number_format($row['roomBaseScore'] / 100, 2, '.', ' ');
-
-            $row['userGameResult'] = number_format($row['userGameResult'] / 100, 2, '.', ' ');
-            $row['userScoreBegin'] = number_format($row['userScoreBegin'] / 100, 2, '.', ' ');
-            $row['userScoreEnd'] = number_format($row['userScoreEnd'] / 100, 2, '.', ' ');
-        }
-        unset($row);
-
-        return $rows;
+        return $finalRet;
     }
 
     /**

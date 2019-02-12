@@ -22,7 +22,14 @@ class UserBetRecord extends CI_Controller {
 
         $userId = isset($_POST['userId']) ? intval($_POST['userId']) : '';
 
-        $betRecord = $this->User_model->betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId);
+        $per = 20;
+        $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
+        $start = ($page - 1) * $per;
+
+        $finalRet = [];
+        $finalRet = $this->User_model->betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId, $start, $per);
+        $betRecord = $finalRet['content'];
+        $totalNum = $finalRet['totalNum'];
 
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),
@@ -36,6 +43,12 @@ class UserBetRecord extends CI_Controller {
             ),
             'betRecord' => $betRecord
         );
+
+        $this->load->library('pagination');
+        $config ['base_url'] = site_url('no3/userBetRecord/index');
+        $config ['total_rows'] = $totalNum;
+        $config ['per_page'] = $per;
+        $this->pagination->initialize($config);
 
         $this->load->view('no3/userBetRecordView', $data);
     }

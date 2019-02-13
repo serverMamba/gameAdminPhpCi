@@ -28,11 +28,11 @@ class CashOrder extends CI_Controller {
 		$data = array (
 				'menu' => $this->Common_model->getAdminMenuList (),
 				"choose" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "提现订单" 
 				),
 				"header1" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "提现订单" 
 				),
 				'tip_msg' => $tip_msg,
@@ -293,11 +293,11 @@ class CashOrder extends CI_Controller {
 		$data = array (
 				'menu' => $this->Common_model->getAdminMenuList (),
 				"choose" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "提现订单" 
 				),
 				"header1" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "提现订单(查看支付宝日志数据)" 
 				),
 				'data' => $this->Order_model->getRelatedAlipayLogData ( $order_sn ),

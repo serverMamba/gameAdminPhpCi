@@ -59,35 +59,42 @@
 
                                     <div class="widget-toolbox padding-8 clearfix">
                                         <form
-                                            action="<?php echo site_url('no3/tgCorrection/tgCorrectionLog');?>"
+                                            action="<?php echo site_url('no3/userBetRecord/index');?>"
+                                            method="post"
                                             style="float: left;">
                                             <input
-                                                value="<?php if($query['start_time']){echo $query['start_time']; }?>"
-                                                name="start_time" class="date-picker col-xs-10 col-sm-2"
-                                                id="id_date_picker_1" placeholder="开始时间" type="text"
-                                                data-date-format="yyyy-mm-dd"
-                                                autocomplete="off"
-                                                style="margin-left: 5px; height: 30px; width: 100px;" />
+                                                    value="<?php if($query['dateBegin']){echo $query['dateBegin']; }?>"
+                                                    name="dateBegin" class="date-picker col-xs-10 col-sm-2"
+                                                    id="dateBegin" placeholder="开始时间" type="text"
+                                                    data-date-format="yyyy-mm-dd"
+                                                    autocomplete="off"
+                                                    style="margin-left: 5px; height: 30px; width: 100px;" />
                                             <input
-                                                value="<?php if($query['end_time']){echo $query['end_time']; }?>"
-                                                name="end_time" class=" date-picker col-xs-10 col-sm-2"
-                                                id="id_date_picker_2" placeholder="终止时间" type="text"
-                                                data-date-format="yyyy-mm-dd"
-                                                autocomplete="off"
-                                                style="margin-left: 5px; height: 30px; width: 100px;" />
+                                                    value="<?php if($query['dateEnd']){echo $query['dateEnd']; }?>"
+                                                    name="dateEnd" class=" date-picker col-xs-10 col-sm-2"
+                                                    id="dateEnd" placeholder="终止时间" type="text"
+                                                    data-date-format="yyyy-mm-dd"
+                                                    autocomplete="off"
+                                                    style="margin-left: 5px; height: 30px; width: 100px;" />
+                                            <select name="gameId" id="gameId"
+                                                    style="margin-left: 0px; width: 120px;">
+                                                <?php foreach ($gameIdName as $k => $v) {
+                                                    if (isset($query['gameId']) && intval($k) === intval($query['gameId'])) {
+                                                        ?>
+                                                        <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
+                                                    <?php } else { ?>
+                                                        <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
+                                                    <?php } ?>
+                                                <?php } ?>
+                                            </select>
                                             <input
-                                                value="<?php if($query['user_id']){echo $query['user_id']; }?>"
-                                                type="text" placeholder="游戏名称" name="user_id"
+                                                value="<?php if($query['baseScore']){echo $query['baseScore']; }?>"
+                                                type="text" placeholder="房间底分" name="baseScore"
                                                 class="col-xs-10 col-sm-2"
                                                 style="margin-left: 5px; height: 34px; width: 80px;" />
                                             <input
-                                                value="<?php if($query['admin_name']){echo $query['admin_name']; }?>"
-                                                type="text" placeholder="房间底分" name="admin_name"
-                                                class="col-xs-10 col-sm-2"
-                                                style="margin-left: 5px; height: 34px; width: 80px;" />
-                                            <input
-                                                value="<?php if($query['promotion_old']){echo $query['promotion_old']; }?>"
-                                                type="text" placeholder="玩家id" name="promotion_old"
+                                                value="<?php if($query['userId']){echo $query['userId']; }?>"
+                                                type="text" placeholder="玩家id" name="userId"
                                                 class="col-xs-10 col-sm-2"
                                                 style="margin-left: 5px; height: 34px; width: 80px;" />
                                             <button class="btn btn-xs btn-success "
@@ -184,11 +191,11 @@
 <script src="../res/js/date-time/daterangepicker.min.js"></script>
 <script type="text/javascript">
     $(function(){
-        $('#id_date_picker_1').datepicker({autoclose:true}).on(ace.click_event, function(){
-            $("#id_date_picker_1").focus();
+        $('#dateBegin').datepicker({autoclose:true}).on(ace.click_event, function(){
+            $("#dateBegin").focus();
         });
-        $('#id_date_picker_2').datepicker({autoclose:true}).on(ace.click_event, function(){
-            $("#id_date_picker_2").focus();
+        $('#dateEnd').datepicker({autoclose:true}).on(ace.click_event, function(){
+            $("#dateEnd").focus();
         });
 
     });

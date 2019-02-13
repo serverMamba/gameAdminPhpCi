@@ -17,10 +17,14 @@ class UserBetRecord extends CI_Controller {
     public function index() {
         $dateBegin = isset($_POST['dateBegin']) ? trim($_POST['dateBegin']) : '';
         $dateEnd = isset($_POST['dateEnd']) ? trim($_POST['dateEnd']) : '';
-        $gameId = isset($_POST['gameId']) ? intval(intval($_POST['gameId'])) : -1;
+        $gameId = isset($_POST['gameId']) && !empty($_POST['gameId']) ? intval($_POST['gameId']) : -1;
         $baseScore = isset($_POST['baseScore']) ? $_POST['baseScore'] : '';
 
-        $userId = isset($_POST['userId']) ? intval($_POST['userId']) : '';
+        $userId = isset($_POST['userId']) && !empty($_POST['userId']) ? intval($_POST['userId']) : '';
+
+        if (!empty($baseScore)) {
+            $baseScore = $baseScore * 100;
+        }
 
         $per = 20;
         $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
@@ -30,6 +34,9 @@ class UserBetRecord extends CI_Controller {
         $finalRet = $this->User_model->betRecordGet($dateBegin, $dateEnd, $gameId, $baseScore, $userId, $start, $per);
         $betRecord = $finalRet['content'];
         $totalNum = $finalRet['totalNum'];
+
+        $gameIdName = gameIdName;
+        $gameIdName[-1] = '游戏名称';
 
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),
@@ -41,7 +48,16 @@ class UserBetRecord extends CI_Controller {
                 "father" => "用户管理",
                 "child" => "用户投注记录"
             ),
-            'betRecord' => $betRecord
+            'betRecord' => $betRecord,
+            'query' => [
+                'dateBegin' => $dateBegin,
+                'dateEnd' => $dateEnd,
+                'gameId' => $gameId,
+                'userId' => $userId,
+
+                'baseScore' => $baseScore,
+            ],
+            'gameIdName' => $gameIdName
         );
 
         $this->load->library('pagination');

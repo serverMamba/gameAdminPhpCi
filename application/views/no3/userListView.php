@@ -151,14 +151,20 @@
                                                         <td><?php echo $v['upLine']; ?></td>
                                                         <td><?php echo $v['downLineNum']; ?></td>
                                                         <td><?php echo $v['registertime']; ?></td>
-                                                        <td><?php echo $v['isBlack'] ?></td>
-
-                                                        <td><?php echo $v['balance'] ?></td>
                                                         <td>
                                                             <?php if ($v['userSealStatus'] == '启用') { ?>
                                                                 <font color="green"><?php echo $v['userSealStatus'] ?></font>
                                                             <?php } else { ?>
                                                                 <font color="red"><?php echo $v['userSealStatus'] ?></font>
+                                                            <?php } ?>
+                                                        </td>
+
+                                                        <td><?php echo $v['balance'] ?></td>
+                                                        <td>
+                                                            <?php if ($v['online']) { ?>
+                                                                <font color="green">在线</font>
+                                                            <?php } else { ?>
+                                                                <font color="red">离线</font>
                                                             <?php } ?>
                                                         </td>
                                                         <td><?php echo $v['user_chips'] ?></td>

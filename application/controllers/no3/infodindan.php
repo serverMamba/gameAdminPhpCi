@@ -69,11 +69,11 @@ class Infodindan extends MY_Controller {
 		$data = array (
 				'menu' => $this->Common_model->getAdminMenuList (),
 				"choose" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "玩家订单查询" 
 				),
 				"header1" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "玩家订单查询" 
 				),
 				"header2" => array (
@@ -141,11 +141,11 @@ class Infodindan extends MY_Controller {
 		$data = array (
 				'menu' => $this->Common_model->getAdminMenuList (),
 				"choose" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "玩家订单查询" 
 				),
 				"header1" => array (
-						"father" => "客服管理",
+						"father" => "财务管理",
 						"child" => "玩家超时订单查询" 
 				),
 				"header2" => array (

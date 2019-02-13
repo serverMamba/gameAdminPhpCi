@@ -690,7 +690,7 @@ class User_model extends CI_Model {
          * 上级:
          * 用户等级: 比如 普通会员, vip1, vip2 等
          * 真实姓名: userIDCardName
-         * 用户状态: todo 是黑名单吗
+         * 用户状态: 黑名单
          * E-mail: user_email
          * 手机号码: mobile_number
          * 微信号码:

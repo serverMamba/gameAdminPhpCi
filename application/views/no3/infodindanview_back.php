@@ -58,92 +58,46 @@
 									<div class="widget-box">
 										<div class="widget-toolbox padding-8 clearfix">
 											<form action="<?php echo site_url('no3/infodindan/index');?>" id="form">
+	                                            <input value="<?php if($query['account']){echo $query['account']; }?>"  type="text" placeholder="帐号ID" name="account" class="col-xs-10 col-sm-2" style="margin-left:5px;height:34px;width:160px;"/>
+	                                            <input value="<?php if($query['user_id']){echo $query['user_id']; }?>"  type="text" placeholder="用户ID" name="user_id" class="col-xs-10 col-sm-2" style="margin-left:5px;height:34px;width:160px;"/>
+	                                            <input value="<?php if($query['order_sn']){echo $query['order_sn']; }?>" type="text" placeholder="订单号" name="order_sn"  class="col-xs-10 col-sm-2" style = "margin-left:5px;height:34px;width:160px;"/> 
+	                                            <input value="<?php if($query['third_order_sn']){echo $query['third_order_sn']; }?>" type="text" placeholder="第三方订单号" name="third_order_sn"  class="col-xs-10 col-sm-2" style = "margin-left:5px;height:34px;width:160px;"/> 
+	                                            	支付平台：
+												<select name="pay_platform">
+													<option value="">全部</option>
+													<?php foreach ($pay_platform_list as $k=>$v){ ?>
+													<option <?php if($query['pay_platform'] == $k){ ?> selected="selected"
+														<?php } ?> value="<?php echo $k; ?>"><?php echo $v;?></option>
+													<?php } ?>
+												</select>
 
-                                                <div style="margin-bottom: 20px">
-                                                    支付方式:
-                                                    <select name="gameId" id="gameId"
-                                                            style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($gameIdName as $k => $v) {
-                                                            if (isset($query['gameId']) && intval($k) === intval($query['gameId'])) {
-                                                                ?>
-                                                                <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
-                                                            <?php } else { ?>
-                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </select>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;
-
-                                                    支付状态
-                                                    <select name="gameId" id="gameId"
-                                                            style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($gameIdName as $k => $v) {
-                                                            if (isset($query['gameId']) && intval($k) === intval($query['gameId'])) {
-                                                                ?>
-                                                                <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
-                                                            <?php } else { ?>
-                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </select>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;
-
-                                                    充值情况
-                                                    <select name="gameId" id="gameId"
-                                                            style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($gameIdName as $k => $v) {
-                                                            if (isset($query['gameId']) && intval($k) === intval($query['gameId'])) {
-                                                                ?>
-                                                                <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
-                                                            <?php } else { ?>
-                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </select>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                                </div>
-
-                                                <div style="margin-bottom: 20px">
-                                                    金额范围<input value="<?php if($query['account']){echo $query['account']; }?>"  type="text" placeholder="最小金额" name="account" style="margin-left: 10px"/>
-                                                    至<input value="<?php if($query['account']){echo $query['account']; }?>"  type="text" placeholder="最大金额" name="account" style="margin-left: 10px"/>
-                                                </div>
-
-                                                <div style="margin-bottom: 20px">
-                                                    统计时间<input value="<?php if($query['start_time']){echo $query['start_time']; }?>" name="start_time" id="id_date_picker_1"  placeholder="开始时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
-                                                    <input value="<?php if($query['start_time_time']){echo $query['start_time_time'];}else{echo "00:00";}?>" name="start_time_time" id="id_time_picker_1" type="text" style = "height:30px;width:100px;" />
-
-                                                    至<input value="<?php if($query['end_time']){echo $query['end_time']; }?>" name="end_time" id="id_date_picker_2"  placeholder="终止时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
-                                                    <input value="<?php if($query['end_time_time']){echo $query['end_time_time'];}else{echo "00:00";}?>" name="end_time_time" id="id_time_picker_2" type="text" style = "height:30px;width:100px;" />
-
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">查询</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">导出</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                </div>
-
-	                                            <div style="margin-bottom: 20px">
-                                                    精确搜索
-                                                    <input value="<?php if($query['user_id']){echo $query['user_id']; }?>"  type="text" placeholder="玩家ID" name="user_id" style="margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['order_sn']){echo $query['order_sn']; }?>" type="text" placeholder="充值订单号" name="order_sn" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['third_order_sn']){echo $query['third_order_sn']; }?>" type="text" placeholder="所属代理" name="third_order_sn" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['order_sn']){echo $query['order_sn']; }?>" type="text" placeholder="操作员" name="order_sn"  style = "margin-left:5px;height:34px;width:160px;"/>
-
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">查询</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                </div>
-
-	                                            <div>
-                                                    <a class="btn btn-xs btn-danger " style="margin-top:3px;margin-left:3px" onclick="onclickCheckDelayOrders();">
-                                                        <span class="bigger-110">查询延时订单</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </a>
-                                                </div>
+												<input value="<?php if($query['start_time']){echo $query['start_time']; }?>" name="start_time" class="date-picker col-xs-10 col-sm-2" id="id_date_picker_1"  placeholder="开始时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
+												<div class="input-group bootstrap-timepicker" style="float:left;">
+													<input value="<?php if($query['start_time_time']){echo $query['start_time_time'];}else{echo "00:00";}?>" name="start_time_time" id="id_time_picker_1" type="text" class="form-control col-xs-10 col-sm-2" style = "height:30px;width:100px;" />
+												</div>
+	                                            <input value="<?php if($query['end_time']){echo $query['end_time']; }?>" name="end_time" class=" date-picker col-xs-10 col-sm-2" id="id_date_picker_2"  placeholder="终止时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
+												<div class="input-group bootstrap-timepicker" style="float:left;">
+													<input value="<?php if($query['end_time_time']){echo $query['end_time_time'];}else{echo "00:00";}?>" name="end_time_time" id="id_time_picker_2" type="text" class="form-control col-xs-10 col-sm-2" style = "height:30px;width:100px;" />
+												</div>
+												<select name="order_status">
+													<option value="0">状态</option>
+													<option <?php if($query['order_status'] && $query['order_status'] == 2){ ?> selected="selected" <?php } ?> value="2">未支付</option>
+													<option <?php if($query['order_status'] && $query['order_status'] == 1){ ?> selected="selected" <?php } ?> value="1">成功</option>
+												</select>
+												<select name="game_code">
+													<?php foreach ($game_codes as $k=>$v){ ?>
+													<option <?php if($query['game_code'] == $k){ ?> selected="selected"
+														<?php } ?> value="<?php echo $k; ?>"><?php echo $v;?></option>
+													<?php } ?>
+												</select>
+	                                            <button class="btn btn-xs btn-success " style="margin-top:3px;">
+	                                                <span class="bigger-110">查询</span>
+	                                                <i class="icon-search icon-on-right"></i>
+	                                            </button>
+	                                            <a class="btn btn-xs btn-danger " style="margin-top:3px;margin-left:3px" onclick="onclickCheckDelayOrders();">
+	                                                <span class="bigger-110">查询延时订单</span>
+	                                                <i class="icon-search icon-on-right"></i>
+	                                            </a>	                                            
                                             </form>
              
                                             <input type="checkbox" id="hide_pay" value="1"  <?php if($query['is_show_pay'] == 1){ ?> checked="checked" <?php } ?> /> 显示支付平台

@@ -94,7 +94,7 @@
                                                 style="margin-left: 5px; height: 34px; width: 80px;" />
                                             <input
                                                 value="<?php if($query['userId']){echo $query['userId']; }?>"
-                                                type="text" placeholder="玩家id" name="userId"
+                                                type="text" placeholder="用户id" name="userId"
                                                 class="col-xs-10 col-sm-2"
                                                 style="margin-left: 5px; height: 34px; width: 80px;" />
                                             <button class="btn btn-xs btn-success "

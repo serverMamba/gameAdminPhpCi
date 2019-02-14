@@ -86,6 +86,7 @@ class UserList extends CI_Controller {
         $userId = isset($_GET['userId']) && !empty($_GET['userId']) ? intval($_GET['userId']) : '';
         if (empty($userId) || $userId < 0) {
             $this->session->set_flashdata('error', '参数错误');
+            redirect('no3/userList');
         }
 
         // 用户详情

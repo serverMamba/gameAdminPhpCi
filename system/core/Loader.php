@@ -181,18 +181,7 @@ class CI_Loader {
 				load_class('Model', 'core');
 			}
 
-			// test
-			if (file_exists($mod_path.'models/'.$path.$model.EXT)) {
-                log_message('error', __METHOD__ . ', ' . __LINE__ . ', yes');
-            } else {
-                log_message('error', __METHOD__ . ', ' . __LINE__ . ', no');
-            }
-
-			// test
-            log_message('error', __METHOD__ . ', ' . __LINE__ . ', require = ' . $mod_path.'models/'.$path.$model.EXT);
 			require_once($mod_path.'models/'.$path.$model.EXT);
-            // test
-            log_message('error', __METHOD__ . ', ' . __LINE__ . ',2 require = ' . $mod_path.'models/'.$path.$model.EXT);
 
 			$model = ucfirst($model);
 
@@ -200,8 +189,6 @@ class CI_Loader {
 
 			$this->_ci_models[] = $name;
 
-			// test
-            log_message('error',__METHOD__ . ', ' . __LINE__ . ', name = ' . $name . ', cimodels = ' . json_encode($this->_ci_models));
 			return;
 		}
 

@@ -57,14 +57,16 @@
 								<div class="col-xs-12 col-sm-12 widget-container-span">
 									<div class="widget-box">
 										<div class="widget-toolbox padding-8 clearfix">
-											<form action="<?php echo site_url('no3/infodindan/index');?>" id="form">
+											<form action="<?php echo site_url('no3/infodindan/index');?>" id="form" method="post">
+
+                                                <input value="2" type="hidden" name="searchType"/>
 
                                                 <div style="margin-bottom: 20px">
                                                     支付方式:
-                                                    <select name="gameId" id="gameId"
+                                                    <select name="payType" id="payType"
                                                             style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($gameIdName as $k => $v) {
-                                                            if (isset($query['gameId']) && intval($k) === intval($query['gameId'])) {
+                                                        <?php foreach ($payType as $k => $v) {
+                                                            if (isset($query['payType']) && $k == $query['payType']) {
                                                                 ?>
                                                                 <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
                                                             <?php } else { ?>
@@ -75,10 +77,10 @@
                                                     &nbsp;&nbsp;&nbsp;&nbsp;
 
                                                     支付状态
-                                                    <select name="gameId" id="gameId"
+                                                    <select name="payStatus" id="payStatus"
                                                             style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($gameIdName as $k => $v) {
-                                                            if (isset($query['gameId']) && intval($k) === intval($query['gameId'])) {
+                                                        <?php foreach ($payStatus as $k => $v) {
+                                                            if (isset($query['payStatus']) && intval($k) === intval($query['payStatus'])) {
                                                                 ?>
                                                                 <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
                                                             <?php } else { ?>
@@ -89,10 +91,10 @@
                                                     &nbsp;&nbsp;&nbsp;&nbsp;
 
                                                     充值情况
-                                                    <select name="gameId" id="gameId"
+                                                    <select name="paySituation" id="paySituation"
                                                             style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($gameIdName as $k => $v) {
-                                                            if (isset($query['gameId']) && intval($k) === intval($query['gameId'])) {
+                                                        <?php foreach ($paySituation as $k => $v) {
+                                                            if (isset($query['paySituation']) && intval($k) === intval($query['paySituation'])) {
                                                                 ?>
                                                                 <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
                                                             <?php } else { ?>
@@ -104,16 +106,13 @@
                                                 </div>
 
                                                 <div style="margin-bottom: 20px">
-                                                    金额范围<input value="<?php if($query['account']){echo $query['account']; }?>"  type="text" placeholder="最小金额" name="account" style="margin-left: 10px"/>
-                                                    至<input value="<?php if($query['account']){echo $query['account']; }?>"  type="text" placeholder="最大金额" name="account" style="margin-left: 10px"/>
+                                                    金额范围<input value="<?php if($query['amountMin']){echo $query['amountMin']; }?>"  type="text" placeholder="最小金额" name="amountMin" style="margin-left: 10px"/>
+                                                    至<input value="<?php if($query['amountMax']){echo $query['amountMax']; }?>"  type="text" placeholder="最大金额" name="amountMax" style="margin-left: 10px"/>
                                                 </div>
 
                                                 <div style="margin-bottom: 20px">
-                                                    统计时间<input value="<?php if($query['start_time']){echo $query['start_time']; }?>" name="start_time" id="id_date_picker_1"  placeholder="开始时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
-                                                    <input value="<?php if($query['start_time_time']){echo $query['start_time_time'];}else{echo "00:00";}?>" name="start_time_time" id="id_time_picker_1" type="text" style = "height:30px;width:100px;" />
-
-                                                    至<input value="<?php if($query['end_time']){echo $query['end_time']; }?>" name="end_time" id="id_date_picker_2"  placeholder="终止时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
-                                                    <input value="<?php if($query['end_time_time']){echo $query['end_time_time'];}else{echo "00:00";}?>" name="end_time_time" id="id_time_picker_2" type="text" style = "height:30px;width:100px;" />
+                                                    统计时间<input value="<?php if($query['dateTimeBegin']){echo $query['dateTimeBegin']; }?>" name="dateTimeBegin" placeholder="开始时间" type="datetime-local" />
+                                                    至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd"  placeholder="终止时间" type="datetime-local"/>
 
                                                     <button class="btn btn-xs btn-success " style="margin-top:3px;">
                                                         <span class="bigger-110">查询</span>
@@ -124,13 +123,18 @@
                                                         <i class="icon-search icon-on-right"></i>
                                                     </button>
                                                 </div>
+                                            </form>
 
-	                                            <div style="margin-bottom: 20px">
+                                            <form action="<?php echo site_url('no3/infodindan/index');?>" id="form" method="post">
+
+                                                <input value="1" type="hidden" name="searchType"/>
+
+                                                <div style="margin-bottom: 20px">
                                                     精确搜索
-                                                    <input value="<?php if($query['user_id']){echo $query['user_id']; }?>"  type="text" placeholder="玩家ID" name="user_id" style="margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['order_sn']){echo $query['order_sn']; }?>" type="text" placeholder="充值订单号" name="order_sn" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['third_order_sn']){echo $query['third_order_sn']; }?>" type="text" placeholder="所属代理" name="third_order_sn" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['order_sn']){echo $query['order_sn']; }?>" type="text" placeholder="操作员" name="order_sn"  style = "margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if($query['userId']){echo $query['userId']; }?>"  type="text" placeholder="玩家ID" name="userId" style="margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if($query['orderId']){echo $query['orderId']; }?>" type="text" placeholder="充值订单号" name="orderId" style = "margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if($query['agentId']){echo $query['agentId']; }?>" type="text" placeholder="所属代理" name="agentId" style = "margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if($query['operator']){echo $query['operator']; }?>" type="text" placeholder="操作员" name="operator"  style = "margin-left:5px;height:34px;width:160px;"/>
 
                                                     <button class="btn btn-xs btn-success " style="margin-top:3px;">
                                                         <span class="bigger-110">查询</span>
@@ -138,14 +142,15 @@
                                                     </button>
                                                 </div>
 
-	                                            <div>
-                                                    <a class="btn btn-xs btn-danger " style="margin-top:3px;margin-left:3px" onclick="onclickCheckDelayOrders();">
+                                                <div>
+                                                    <a class="btn btn-xs btn-danger " style="margin-top:3px;margin-left:3px;margin-bottom:20px" onclick="onclickCheckDelayOrders();">
                                                         <span class="bigger-110">查询延时订单</span>
                                                         <i class="icon-search icon-on-right"></i>
                                                     </a>
                                                 </div>
+
                                             </form>
-             
+
                                             <input type="checkbox" id="hide_pay" value="1"  <?php if($query['is_show_pay'] == 1){ ?> checked="checked" <?php } ?> /> 显示支付平台
                                         </div>
                                         <?php if($isNormal){?>
@@ -155,18 +160,21 @@
 													class="table table-striped table-bordered table-hover">
 													<thead id="targethead">
 														<tr>
-															<th>userID</th>
-															<th>金额</th>
+															<th>玩家ID</th>
+															<th>充值情况</th>
+                                                            <th>充值金额</th>
 															<th>充值前金币</th>
+
 															<th>充值后金币</th>
 															<th>订单号</th>
-															<th>第三方订单号</th>
 															<th>参数</th>
 															<th>提交时间</th>
+
 															<th>到帐时间</th>
 															<th>状态</th>
 															<th>来源</th>
 															<th>支付方式</th>
+
 															<?php if($query['is_show_pay'] == 1){ ?>
 															<th>支付平台</th>
 															<?php } ?>
@@ -174,24 +182,27 @@
 														</tr>
 													</thead>
 													<tbody>
-													<?php foreach ($order_list as $v){ ?>
+													<?php foreach ($orderList as $v){ ?>
 														<tr>
 															<td><a href="<?php echo site_url('no3/infodetail').'?user_id='.$v['user_id']; ?>"><?php echo $v['user_id']; ?></a></td>
+                                                            <td><?php echo $v['paySituation']; ?></td>
 															<td><?php echo $v['money']; ?>元</td>
 															<td><?php echo $v['before_chips']; ?></td>
+
 															<td><?php echo $v['after_chips']; ?></td>
 															<td <?php if($v['pay_platform'] == '品付'){ ?> onclick="queryOrder('<?php echo site_url('pay/android/queryOrder');?>','<?php echo $v['order_sn']; ?>','<?php echo $v['pay_platform'];?>','<?php echo site_url('pay/android/budan');?>')" <?php } ?>><?php echo $v['order_sn']; ?></td>
-															<td><?php echo $v['third_order_sn']; ?></td>
 															<td><?php echo $v['param']; ?></td>
 															<td><?php echo $v['add_time'];?></td>
+
 															<td><?php echo $v['pay_success_time'];?></td>
 															<td><?php echo $v['status']; ?></td>
 															<td><?php if($v['refer'] == 2){echo 'Android'; }else{echo 'Ios'; } ?></td>
 															<td><?php if($v['pay_type']){echo $v['pay_type'];}else{echo '--';} ?></td>
+
 															<?php if($query['is_show_pay'] == 1){ ?>
 															<td><?php echo $v['pay_platform']; ?></td>
 															<?php } ?>
-															<td><?php if($v['pay_platform'] == '支付宝web转账' && $v['is_image']){ ?> 
+															<td><?php if($v['pay_platform'] == '支付宝web转账' && $v['is_image']){ ?>
 																<a href="http://i.yuming.com/<?php echo $v['third_order_sn'].'.jpg';?>" target="_blank">查看订单图</a>
 															<?php } ?>
 															</td>
@@ -199,9 +210,9 @@
 													<?php } ?>
 													</tbody>
 												</table>
-												
+
 												<div class="modal-footer no-margin-top">
-													<?php echo $this->pagination->create_links();?>											
+													<?php echo $this->pagination->create_links();?>
 												</div>
 
 												<div class="modal-body no-padding"></div>
@@ -255,9 +266,9 @@
 													<?php } ?>
 													</tbody>
 												</table>
-												
+
 												<div class="modal-footer no-margin-top">
-													<?php echo $this->pagination->create_links();?>											
+													<?php echo $this->pagination->create_links();?>
 												</div>
 
 												<div class="modal-body no-padding"></div>
@@ -296,7 +307,7 @@
 			    	<div id="send_status">正在查询，请稍后...</div>
 	      			<ul>
 	      				<li>状态：<span id="modal_result"></span></li>
-	      				<li>订单号：<span id="modal_order_sn"></span></li>   				
+	      				<li>订单号：<span id="modal_order_sn"></span></li>
 	      				<li>金额：<span id="modal_money"></span></li>
 	      				<li>补单:<span id="extend"></span></li>
 	      			</ul>
@@ -304,7 +315,7 @@
     		</div>
   		</div>
 	</div>
-	
+
 	<script src="<?php echo base_url().'res/js/jquery-2.0.3.min.js'; ?>"></script>
 	<script src="<?php echo base_url().'res/js/jquery-ui-1.10.3.custom.min.js'; ?>"></script>
 	<script src="<?php echo base_url().'res/js/bootstrap.min.js'; ?>"></script>
@@ -331,14 +342,14 @@
 			}).on(ace.click_event, function(){
 				$("#id_time_picker_1").focus();
 			  });
-							
+
 		$('#id_time_picker_2').timepicker({
 				minuteStep: 1,
 				showSeconds: false,
 				showMeridian: false
 			}).on(ace.click_event, function(){
 				$("#id_time_picker_2").focus();
-			});  
+			});
 
 		$('#order_modal').on('hide.bs.modal', function (e) {
 			$('#modal_order_sn').html('');
@@ -348,10 +359,10 @@
 		})
 
 		$('#hide_pay').change(function(){
-			if($('#hide_pay').is(':checked')){				
-				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&start_time=<?php echo $query['start_time']; ?>&start_time_time=<?php echo $query['start_time_time']; ?>&end_time=<?php echo $query['end_time']; ?>&end_time_time=<?php echo $query['end_time_time']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&is_show_pay=1&page=<?php echo $page; ?>';
+			if($('#hide_pay').is(':checked')){
+				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&is_show_pay=1&page=<?php echo $page; ?>';
 			}else{
-				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&start_time=<?php echo $query['start_time']; ?>&start_time_time=<?php echo $query['start_time_time']; ?>&end_time=<?php echo $query['end_time']; ?>&end_time_time=<?php echo $query['end_time_time']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&is_show_pay=2&page=<?php echo $page; ?>';
+				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&is_show_pay=2&page=<?php echo $page; ?>';
 			}
 			location.href = tourl;
 		});

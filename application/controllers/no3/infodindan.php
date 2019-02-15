@@ -53,18 +53,13 @@ class Infodindan extends MY_Controller {
         $finalRet = [];
         $query = [];
 
-        // test
-        log_message('error', 'ok777, post = ' . json_encode($_POST));
-
         if ($searchType === 1) { // 精确搜索
             $userId = isset($_POST['userId']) && !empty($_POST['userId']) ? intval($_POST['userId']) : '';
             $orderId = isset($_POST['orderId']) && !empty($_POST['orderId']) ? trim($_POST['orderId']) : '';
             $agentId = isset($_POST['agentId']) && !empty($_POST['agentId']) ? intval($_POST['agentId']) : '';
             $operator = isset($_POST['operator']) && !empty($_POST['operator']) ? trim($_POST['operator']) : '';
 
-            if ($userId <= 0
-                || ($userId === '' && $orderId === '' && $agentId === '' && $operator === '')
-            ) {
+            if ($userId === '' && $orderId === '' && $agentId === '' && $operator === '') {
                 log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
                     . json_encode($_POST));
                 $this->session->set_flashdata('error', '参数错误');
@@ -98,9 +93,11 @@ class Infodindan extends MY_Controller {
                 $amountMax = $amountMaxOriginal * 100;
             }
 
-            if ($amountMax < $amountMin) {
-                $this->session->set_flashdata('error', '金额范围不合法');
-                redirect('no3/infodindan');
+            if ($amountMin !== '' && $amountMax !== '') {
+                if ($amountMax < $amountMin) {
+                    $this->session->set_flashdata('error', '金额范围不合法');
+                    redirect('no3/infodindan');
+                }
             }
 
             $dateTimeBeginOriginal = isset($_POST['dateTimeBegin']) ? trim($_POST['dateTimeBegin']) : '';
@@ -132,28 +129,30 @@ class Infodindan extends MY_Controller {
 
         $orderList = $finalRet['content'];
 
-        foreach ($orderList as &$row) { // todo 之前的做法和现在的状态定义不一致
-            $row['money'] = $row['money'] / 100;
+        if (!empty($orderList)) {
+            foreach ($orderList as &$row) { // todo 之前的做法和现在的状态定义不一致
+                $row['money'] = $row['money'] / 100;
 
-            if ($row ['status'] == 1) {
-                $row ['after_chips'] = $row ['before_chips'] + $row ['money'];
-            } else {
-                $row['after_chips'] = '--';
-            }
+                if ($row ['status'] == 1) {
+                    $row ['after_chips'] = $row ['before_chips'] + $row ['money'];
+                } else {
+                    $row['after_chips'] = '--';
+                }
 
-            if ($row ['status'] == 0) {
-                $row ['status'] = '未支付';
-            } else if ($row['status'] == 1) {
-                $row ['status'] = '支付成功';
-            } else {
-                $row ['status'] = '支付失败';
-            }
+                if ($row ['status'] == 0) {
+                    $row ['status'] = '未支付';
+                } else if ($row['status'] == 1) {
+                    $row ['status'] = '支付成功';
+                } else {
+                    $row ['status'] = '支付失败';
+                }
 
-            $row ['add_time'] = date('Y-m-d H:i:s', $row ['add_time']);
-            if ($row['pay_success_time']) {
-                $row ['pay_success_time'] = date('Y-m-d H:i:s', $row ['pay_success_time']);
-            } else {
-                $row ['pay_success_time'] = ' - ';
+                $row ['add_time'] = date('Y-m-d H:i:s', $row ['add_time']);
+                if ($row['pay_success_time']) {
+                    $row ['pay_success_time'] = date('Y-m-d H:i:s', $row ['pay_success_time']);
+                } else {
+                    $row ['pay_success_time'] = ' - ';
+                }
             }
         }
         $totalNum = $finalRet['totalNum'];

@@ -112,7 +112,7 @@
 
                                                 <div style="margin-bottom: 20px">
                                                     统计时间<input value="<?php if($query['dateTimeBegin']){echo $query['dateTimeBegin']; }?>" name="dateTimeBegin" placeholder="开始时间" type="datetime-local" />
-                                                    至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd"  placeholder="终止时间" type="datetime-local"/>
+                                                    至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd"  placeholder="终止时间" type="datetime-local" style="margin-left: 10px"/>
 
                                                     <button class="btn btn-xs btn-success " style="margin-top:3px;">
                                                         <span class="bigger-110">查询</span>

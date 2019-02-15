@@ -82,60 +82,24 @@ $statusTextColor = array(
 								<div class="col-xs-12 col-sm-12 widget-container-span">
 									<div class="widget-box">		
 										<div class="widget-toolbox padding-8 clearfix">
-											<form action="<?php echo site_url('no3/cashOrder/index');?>" method="post" id="form1">
-
-                                                <input value="2" type="hidden" name="searchType"/>
-                                                <div style="margin-bottom: 20px">
-                                                    金额范围<input value="<?php if($query['amountMin']){echo $query['amountMin']; }?>"  type="text" placeholder="最小金额" name="amountMin" id="amountMin" style="margin-left: 10px"/>
-                                                    至<input value="<?php if($query['amountMax']){echo $query['amountMax']; }?>"  type="text" placeholder="最大金额" name="amountMax" id="amountMax" style="margin-left: 10px"/>
-                                                </div>
-
-                                                <div style="margin-bottom: 20px">
-                                                    统计时间<input value="<?php if($query['dateTimeBegin']){echo $query['dateTimeBegin']; }?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间" type="datetime-local" />
-                                                    至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间" type="datetime-local" style="margin-left: 10px"/>
-
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">查询</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                </div>
-                                            </form>
-
-                                            <button onclick="javascript:getexcel()" class="btn btn-xs btn-success " style="margin-top:3px;margin-bottom: 20px">
-                                                <span class="bigger-110">导出EXCEL</span>
-                                                <i class="icon-envelope icon-on-right"></i>
-                                            </button>
-
-
-                                            <form action="<?php echo site_url('no3/cashOrder/index');?>" id="form" method="post">
-
-                                                <input value="1" type="hidden" name="searchType"/>
-
-                                                <div style="margin-bottom: 20px">
-                                                    精确搜索
-                                                    <input value="<?php if($query['userId']){echo $query['userId']; }?>"  type="text" placeholder="玩家ID" name="userId" style="margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['aliPayAccount']){echo $query['aliPayAccount']; }?>" type="text" placeholder="支付宝账号" name="aliPayAccount" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['orderId']){echo $query['orderId']; }?>" type="text" placeholder="订单号" name="orderId" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['operator']){echo $query['operator']; }?>" type="text" placeholder="操作员" name="operator"  style = "margin-left:5px;height:34px;width:160px;"/>
-
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">查询</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                </div>
-
-                                                <div>
-                                                    <a class="btn btn-xs btn-danger " style="margin-top:3px;margin-left:3px;margin-bottom:20px" onclick="onclickCheckDelayOrders();">
-                                                        <span class="bigger-110">查询延时订单</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </a>
-                                                </div>
-
-                                            </form>
-
+											<form action="<?php echo site_url('no3/cashOrder/index');?>" style="float:left;">
+	                                            <input value="<?php if($query['user_id']){echo $query['user_id']; }?>"  type="text" placeholder="用户ID" name="user_id" class="col-xs-10 col-sm-2" style="margin-left:5px;height:34px;width:160px;"/>
+	                                            <input value="<?php if($query['alipay_account']){echo $query['alipay_account']; }?>" type="text" placeholder="支付宝账号" name="alipay_account"  class="col-xs-10 col-sm-2" style = "margin-left:5px;height:34px;width:160px;"/> 
+	                                            <input value="<?php if($query['order_sn']){echo $query['order_sn']; }?>" type="text" placeholder="订单号" name="order_sn"  class="col-xs-10 col-sm-2" style = "margin-left:5px;height:34px;width:160px;"/> 
+												<input value="<?php if($query['start_time']){echo $query['start_time']; }?>" name="start_time" class="date-picker col-xs-10 col-sm-2" id="id_date_picker_1"  placeholder="开始时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
+	                                            <input value="<?php if($query['end_time']){echo $query['end_time']; }?>" name="end_time" class=" date-picker col-xs-10 col-sm-2" id="id_date_picker_2"  placeholder="终止时间" type="text" data-date-format="yyyy-mm-dd" style = "margin-left:5px;height:30px;width:100px;"  />
+												<select name="order_status">
+													<?php foreach($statusShowText as $k => $v){ ?>
+													<option <?php if($query['order_status'] == $k){ ?> selected="selected" <?php } ?> value="<?php echo $k?>"><?php echo $v?></option>
+													<?php }?>
+												</select>
+	                                            <button class="btn btn-xs btn-success " style="margin-top:3px;">
+	                                                <span class="bigger-110">查询</span>
+	                                                <i class="icon-search icon-on-right"></i>
+	                                            </button>
+	                                         </form>
 	                                         <span>未处理订单数：<?php echo $no_process_num; ?></span>
-	                                         <button onclick="deleteblack('<?php echo site_url('no3/cashOrder/clearBlackAlipayAccount'); ?>');" class="btn btn-danger" style="border: none;float:right;">清空支付宝黑名单</button>
-
+	                                         <button onclick="deleteblack('<?php echo site_url('no3/cashOrder/clearBlackAlipayAccount'); ?>');" class="btn btn-danger" style="border: none;float:right;">清空支付宝黑名单</button>																									                                          
                                         </div>
 																		
 										<div class="widget-body">
@@ -170,7 +134,7 @@ $statusTextColor = array(
 															</tr>
 														</thead>
 														<tbody id="tbody">
-														<?php if(!empty($cashOrderList)){ foreach ($cashOrderList as $v){ ?>
+														<?php if(!empty($cash_order_list)){ foreach ($cash_order_list as $v){ ?>
 															<tr>
 																<td><input type="checkbox" class="line_check_box" name="select_cash_ids[]" value="<?php echo $v['order_sn']; ?>" /></td>
 																<td class="td_user_id" _data="<?php echo $v['user_id']; ?>">
@@ -261,12 +225,6 @@ $statusTextColor = array(
 														</tbody>
 													</table>
 													</form>
-
-                                                <div class="modal-footer no-margin-top">
-                                                    <?php echo $this->pagination->create_links();?>
-                                                </div>
-
-
 												<div class="modal-footer no-margin-top">
 													<?php //echo $this->pagination->create_links();?>	
 												</div>
@@ -399,28 +357,6 @@ $statusTextColor = array(
 		}
 		return true;
 	}
-
-    function getexcel() {
-        var param = "cashOrder/exportData?" +
-            "amountMin=" + $("#amountMin").val() +
-            "&amountMax=" + $("#amountMax").val() +
-            "&dateTimeBegin=" + $("#dateTimeBegin").val() +
-            "&dateTimeEnd=" + $("#dateTimeEnd").val();
-
-
-        var form = $("<form>");
-        form.attr("style", "display:none");
-        form.attr("target", "");
-        form.attr("method", "post");
-        form.attr("action", param);
-        var input1 = $("<input>");
-        input1.attr("type", "hidden");
-        input1.attr("name", "exportData");
-        input1.attr("value", (new Date()).getMilliseconds());
-        $("body").append(form);
-        form.append(input1);
-        form.submit();
-    }
 		
 	</script>
 </body>

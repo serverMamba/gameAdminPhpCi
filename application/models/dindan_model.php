@@ -29,6 +29,7 @@ class dindan_model extends CI_Model {
 
         $db = $this->load->database('default_slave', true);
         $sql = 'select * from smc_order';
+        $sqlCount = 'select count(*) as totalNum from smc_order';
 
         $itemArr = [];
         if ($userId !== '') {
@@ -41,17 +42,25 @@ class dindan_model extends CI_Model {
         if (!empty($itemArr)) {
             $str = implode(' and ', $itemArr);
             $sql .= ' where ' . $str;
+            $sqlCount .= ' where ' . $str;
         }
         $sql .= ' limit ' . $start . ', ' . $per;
 
         $rows = $db->query($sql)->result_array();
 
         // test
-        log_message('error', 'ok995, sql = ' . $sql . ', rows = ' . json_encode($rows));
+        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
 
         if (!empty($rows)) {
-            $finalRet['totalNum'] = count($rows);
             $finalRet['content'] = $rows;
+
+            $rowCount = $db->query($sqlCount)->row_array();
+            if (!empty($rowCount)) {
+                $finalRet['totalNum'] = intval($rowCount['totalNum']);
+            } else {
+                log_message('error', __METHOD__ . ', ' . __LINE__ .
+                    ', db select return empty, db = default_slave' . ', sqlCount = ' . $sqlCount);
+            }
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ .
                 ', db select return empty, db = default_slave' . ', sql = ' . $sql);
@@ -85,6 +94,7 @@ class dindan_model extends CI_Model {
 
         $db = $this->load->database('default_slave', true);
         $sql = 'select * from smc_order';
+        $sqlCount = 'select count(*) as totalNum from smc_order';
 
         $itemArr = [];
         if ($payType !== -1) {
@@ -109,6 +119,7 @@ class dindan_model extends CI_Model {
         if (!empty($itemArr)) {
             $str = implode(' and ', $itemArr);
             $sql .= ' where ' . $str;
+            $sqlCount .= ' where ' . $str;
         }
 
         $sql .= ' limit ' . $start . ', ' . $per;
@@ -116,11 +127,18 @@ class dindan_model extends CI_Model {
         $rows = $db->query($sql)->result_array();
 
         // test
-        log_message('error', 'ok992, sql = ' . $sql . ', rows = ' . json_encode($rows));
+//        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
 
         if (!empty($rows)) {
-            $finalRet['totalNum'] = count($rows);
             $finalRet['content'] = $rows;
+
+            $rowCount = $db->query($sqlCount)->row_array();
+            if (!empty($rowCount)) {
+                $finalRet['totalNum'] = intval($rowCount['totalNum']);
+            } else {
+                log_message('error', __METHOD__ . ', ' . __LINE__ .
+                    ', db select return empty, db = default_slave' . ', sqlCount = ' . $sqlCount);
+            }
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ .
                 ', db select return empty, db = default_slave' . ', sql = ' . $sql);

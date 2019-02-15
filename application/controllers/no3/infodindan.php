@@ -44,12 +44,7 @@ class Infodindan extends MY_Controller {
     }
 
     public function index() {
-        if (!isset($_POST['searchType']) || !array_key_exists($_POST['searchType'], [1 => 1, 2 => 2])) {
-            log_message('error', __METHOD__ . ', ' . __LINE__
-                . ', invalid param, invalid searchType, param = ' . json_encode($_POST));
-//            $this->session->set_flashdata('error', '参数错误'); // todo
-        }
-        $searchType = intval($_POST['searchType']);
+        $searchType = isset($_POST['searchType']) ? intval($_POST['searchType']) : 2;
 
         $per = 20;
         $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
@@ -58,13 +53,16 @@ class Infodindan extends MY_Controller {
         $finalRet = [];
         $query = [];
 
+        // test
+        log_message('error', 'ok777, post = ' . json_encode($_POST));
+
         if ($searchType === 1) { // 精确搜索
             $userId = isset($_POST['userId']) && !empty($_POST['userId']) ? intval($_POST['userId']) : '';
             $orderId = isset($_POST['orderId']) && !empty($_POST['orderId']) ? trim($_POST['orderId']) : '';
             $agentId = isset($_POST['agentId']) && !empty($_POST['agentId']) ? intval($_POST['agentId']) : '';
             $operator = isset($_POST['operator']) && !empty($_POST['operator']) ? trim($_POST['operator']) : '';
 
-            if ($userId <= 0 || $agentId <= 0
+            if ($userId <= 0
                 || ($userId === '' && $orderId === '' && $agentId === '' && $operator === '')
             ) {
                 log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
@@ -79,7 +77,9 @@ class Infodindan extends MY_Controller {
                 'userId' => $userId,
                 'orderId' => $orderId,
                 'agentId' => $agentId,
-                'operator' => $operator
+                'operator' => $operator,
+
+                'searchType' => $searchType
             ];
 
         } else {
@@ -113,11 +113,6 @@ class Infodindan extends MY_Controller {
                 $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
             }
 
-            // test
-            log_message('error', 'ok994, min = ' . $amountMin . ', max = ' . $amountMax
-                . ', minO = ' . $amountMinOriginal . ', maxO = ' . $amountMaxOriginal
-                . ', timeB = ' . $dateTimeBegin . ', timeE = ' . $dateTimeEnd);
-
             $finalRet = $this->dindan_model->getOrderListByTypeTwo($payType, $payStatus, $paySituation, $amountMin, $amountMax,
                 $dateTimeBegin, $dateTimeEnd, $start, $per);
 
@@ -131,6 +126,7 @@ class Infodindan extends MY_Controller {
 
                 'dateTimeBegin' => $dateTimeBeginOriginal,
                 'dateTimeEnd' => $dateTimeEndOriginal,
+                'searchType' => $searchType
             ];
         }
 
@@ -162,9 +158,6 @@ class Infodindan extends MY_Controller {
         }
         $totalNum = $finalRet['totalNum'];
 
-        // test
-        log_message('error', 'ok993, orderList = ' . json_encode($orderList));
-
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),
             "choose" => array(
@@ -195,6 +188,7 @@ class Infodindan extends MY_Controller {
         $config ['base_url'] = $url;
         $config ['total_rows'] = $data ['total_rows'];
         $config ['per_page'] = $per;
+
         $this->pagination->initialize($config);
 
         $this->load->view('no3/infodindanview', $data);

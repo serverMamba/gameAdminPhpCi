@@ -148,7 +148,7 @@
 
                                             </form>
 
-                                            <input type="checkbox" id="hide_pay" value="1"  <?php if($query['is_show_pay'] == 1){ ?> checked="checked" <?php } ?> /> 显示支付平台
+                                            <input type="checkbox" id="hide_pay" value="1"  <?php if($query['isShowPay'] == 1){ ?> checked="checked" <?php } ?> /> 显示支付平台
                                         </div>
                                         <?php if($isNormal){?>
 										<div class="widget-body">
@@ -172,7 +172,7 @@
 															<th>来源</th>
 															<th>支付方式</th>
 
-															<?php if($query['is_show_pay'] == 1){ ?>
+															<?php if($query['isShowPay'] == 1){ ?>
 															<th>支付平台</th>
 															<?php } ?>
 															<th>备注</th>
@@ -196,7 +196,7 @@
 															<td><?php if($v['refer'] == 2){echo 'Android'; }else{echo 'Ios'; } ?></td>
 															<td><?php if($v['pay_type']){echo $v['pay_type'];}else{echo '--';} ?></td>
 
-															<?php if($query['is_show_pay'] == 1){ ?>
+															<?php if($query['isShowPay'] == 1){ ?>
 															<td><?php echo $v['pay_platform']; ?></td>
 															<?php } ?>
 															<td><?php if($v['pay_platform'] == '支付宝web转账' && $v['is_image']){ ?>
@@ -234,7 +234,7 @@
 															<th>状态</th>
 															<th>来源</th>
 															<th>支付方式</th>
-															<?php if($query['is_show_pay'] == 1){ ?>
+															<?php if($query['isShowPay'] == 1){ ?>
 															<th>支付平台</th>
 															<?php } ?>
 															<th>游戏种类</th>
@@ -255,7 +255,7 @@
 															<td><?php echo $v['status']; ?></td>
 															<td><?php if($v['refer'] == 2){echo 'Android'; }else{echo 'Ios'; } ?></td>
 															<td><?php if($v['pay_type']){echo $v['pay_type'];}else{echo '--';} ?></td>
-															<?php if($query['is_show_pay'] == 1){ ?>
+															<?php if($query['isShowPay'] == 1){ ?>
 															<td><?php echo $v['pay_platform']; ?></td>
 															<?php } ?>
 															<td><?php echo $game_codes[$v['game_code']]; ?></td>
@@ -324,6 +324,29 @@
 	<script src="<?php echo base_url().'res/js/date-time/daterangepicker.min.js'; ?>"></script>
 
 	<script type="text/javascript">
+//        // 今天
+//        var myDate = new Date(), Y = myDate.getFullYear(), M = myDate.getMonth() + 1, D = myDate.getDate();
+//        if((M + '').length == 1){ // 处理月是一位的情况
+//            M = '0' + (M + '');
+//        }
+//        if((D + '').length == 1){ // 处理日是一位的情况
+//            D = '0' + (D + '')
+//        }
+//        var curDay = Y + '-' + M + '-' + D;
+//        $('#dateTimeBegin').val(curDay + 'T00:00');
+//
+//        // 明天
+//        myDate.setDate(myDate.getDate() + 1);
+//        var Y1 = myDate.getFullYear(), M1 = myDate.getMonth() + 1, D1 = myDate.getDate();
+//        if((M1 + '').length == 1){
+//            M1 = '0' + (M1 + '');
+//        }
+//        if((D1 + '').length == 1){
+//            D1 = '0' + (D1 + '')
+//        }
+//        var curDay1 = Y1 + '-' + M1 + '-' + D1;
+//        $('#dateTimeEnd').val(curDay1 + 'T00:00');
+
 	$(function(){
 		$('#id_date_picker_1').datepicker({autoclose:true}).on(ace.click_event, function(){
 			$("#id_date_picker_1").focus();
@@ -357,9 +380,9 @@
 
 		$('#hide_pay').change(function(){
 			if($('#hide_pay').is(':checked')){
-				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&is_show_pay=1&page=<?php echo $page; ?>';
+				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&isShowPay=1&page=<?php echo $page; ?>';
 			}else{
-				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&is_show_pay=2&page=<?php echo $page; ?>';
+				var tourl = '<?php echo site_url('no3/infodindan'); ?>?user_id=<?php echo $query['user_id']; ?>&order_sn=<?php echo $query['order_sn']; ?>&third_order_sn=<?php echo $query['third_order_sn']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeBegin=<?php echo $query['timeBegin']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&timeEnd=<?php echo $query['timeEnd']; ?>&account=<?php echo $query['account']; ?>&order_status=<?php echo $query['order_status']; ?>&pay_platform=<?php echo $query['pay_platform']; ?>&game_code=<?php echo $query['game_code']; ?>&isShowPay=2&page=<?php echo $page; ?>';
 			}
 			location.href = tourl;
 		});
@@ -431,7 +454,7 @@
      */
     function onSearch1(type) {
         if (type == 1) { // 查询
-            var param = "infodindan"
+            var param = "infodindan";
         } else { // 导出
             var param = "infodindan/exportData"
         }

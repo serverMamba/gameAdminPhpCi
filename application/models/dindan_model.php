@@ -204,13 +204,33 @@ class dindan_model extends CI_Model {
         $rows = $finalRet['content'];
         $this->formatOrderList($rows);
 
+        $ret = [];
+        foreach ($rows as $row) {
+            $tmpArr = [];
+            $tmpArr['userId'] = $row['id'];
+            $tmpArr['paySituation'] = isset($row['paySituation']) ? $row['paySituation'] : '';
+            $tmpArr['money'] = $row['money'];
+            $tmpArr['before_chips'] = $row['before_chips'];
+
+            $tmpArr['after_chips'] = $row['after_chips'];
+            $tmpArr['order_sn'] = $row['order_sn'];
+            $tmpArr['param'] = $row['param'];
+            $tmpArr['add_time'] = $row['add_time'];
+
+            $tmpArr['pay_success_time'] = $row['pay_success_time'];
+            $tmpArr['status'] = $row['status'];
+            $tmpArr['refer'] = $row['refer'] == 2 ? 'Android' : 'Ios';
+            $tmpArr['pay_type'] = $row['pay_type'] ? $row['pay_type'] : '--';
+
+            $ret[] = $tmpArr;
+        }
+
         $fp = fopen('php://output', 'a');
 
         $head = [
             "玩家ID", "充值情况", "充值金额", "充值前金币",
             "充值后金币", "订单号", "参数", "提交时间",
-            "到账时间", "状态", "	来源", "支付方式",
-            "备注"
+            "到账时间", "状态", "	来源", "支付方式"
         ];
         foreach ($head as $i => $v) {
             $head[$i] = iconv('utf-8', 'gbk', $v);
@@ -221,7 +241,7 @@ class dindan_model extends CI_Model {
         $cnt = 0;
         $limit = 100000;
 
-        foreach ($rows as $index => $row) {
+        foreach ($ret as $index => $row) {
             $cnt++;
             if ($limit == $cnt) {
                 ob_flush();

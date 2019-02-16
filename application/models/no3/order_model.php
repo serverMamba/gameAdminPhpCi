@@ -454,13 +454,38 @@ class Order_model extends CI_Model {
         $finalRet = $this->getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd, 0, 0, true);
         $rows = $finalRet['content'];
 
+        $ret = [];
+        foreach ($rows as $row) {
+            $tmpArr = [];
+            $tmpArr['userId'] = $row['id'];
+            $tmpArr['order_sn'] = $row['order_sn'];
+            $tmpArr['totalBuy'] = $row['totalBuy'];
+            $tmpArr['cash_total_money'] = $row['cash_total_money'];
+
+            $tmpArr['cash_money'] = $row['cash_money'];
+            $tmpArr['cut_money'] = $row['cut_money'];
+            $tmpArr['cash_send_money'] = $row['cash_send_money'];
+            $tmpArr['balance'] = $row['balance'];
+
+            $tmpArr['add_time'] = date('Y-m-d H:i:s', $row['add_time']);
+            $tmpArr['alipay_account'] = $row['alipay_account'];
+            $tmpArr['alipay_real_name'] = $row['alipay_real_name'];
+            $tmpArr['channel'] = $row['channel'];
+
+            $tmpArr['status'] = $row['status'];
+            $tmpArr['update_time'] = $row['update_time'] ? $row['update_time'] : '-';
+            $tmpArr['discribe'] = $row['discribe'];
+
+            $ret[] = $tmpArr;
+        }
+
         $fp = fopen('php://output', 'a');
 
         $head = [
             "用户ID", "提现订单号", "总充值", "总提现",
             "实际提现金额", "扣除手续费后金额", "提现赠送金额", "提现后金币",
             "提现时间", "支付宝账号", "支付宝实名", "渠道",
-            "状态", "处理完成/退款时间", "	描述", "人工提现"
+            "状态", "处理完成/退款时间", "	描述"
         ];
         foreach ($head as $i => $v) {
             $head[$i] = iconv('utf-8', 'gbk', $v);
@@ -471,7 +496,7 @@ class Order_model extends CI_Model {
         $cnt = 0;
         $limit = 100000;
 
-        foreach ($rows as $index => $row) {
+        foreach ($ret as $index => $row) {
             $cnt++;
             if ($limit == $cnt) {
                 ob_flush();

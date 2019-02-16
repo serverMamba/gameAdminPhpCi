@@ -46,6 +46,7 @@ class Infodindan extends MY_Controller {
     // searchType: 1精确搜索, 2范围搜索, 3搜索条件错误返回空结果
     public function index() {
         $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
+        $isShowPay = $this->input->get ( 'isShowPay', true ) ? intval($this->input->get ( 'isShowPay', true )) : 1;
 
         $per = 20;
         $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
@@ -78,7 +79,8 @@ class Infodindan extends MY_Controller {
                 'agentId' => $agentId,
                 'operator' => $operator,
 
-                'searchType' => $searchType
+                'searchType' => $searchType,
+                'isShowPay' => $isShowPay
             ];
 
         } else if ($searchType === 2) {
@@ -127,7 +129,8 @@ class Infodindan extends MY_Controller {
 
                 'dateTimeBegin' => $dateTimeBeginOriginal,
                 'dateTimeEnd' => $dateTimeEndOriginal,
-                'searchType' => $searchType
+                'searchType' => $searchType,
+                'isShowPay' => $isShowPay
             ];
         }
 

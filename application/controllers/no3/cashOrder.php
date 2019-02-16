@@ -19,26 +19,29 @@ class CashOrder extends CI_Controller {
     }
 
     public function index() {
-        $searchType = isset($_POST['searchType']) ? intval($_POST['searchType']) : 2;
+        $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
 
         $per = 20;
         $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
         $start = ($page - 1) * $per;
 
-        $finalRet = [];
+        $finalRet = [
+            'content' =>[],
+            'totalNum' => 0
+        ];
         $query = [];
 
         if ($searchType === 1) { // 精确搜索
-            $userId = isset($_POST['userId']) && !empty($_POST['userId']) ? intval($_POST['userId']) : '';
-            $aliPayAccount = isset($_POST['aliPayAccount']) && !empty($_POST['aliPayAccount']) ? trim($_POST['aliPayAccount']) : '';
-            $orderId = isset($_POST['orderId']) && !empty($_POST['orderId']) ? intval($_POST['orderId']) : '';
-            $operator = isset($_POST['operator']) && !empty($_POST['operator']) ? trim($_POST['operator']) : '';
+            $userId = isset($_REQUEST['userId']) && !empty($_REQUEST['userId']) ? intval($_REQUEST['userId']) : '';
+            $aliPayAccount = isset($_REQUEST['aliPayAccount']) && !empty($_REQUEST['aliPayAccount']) ? trim($_REQUEST['aliPayAccount']) : '';
+            $orderId = isset($_REQUEST['orderId']) && !empty($_REQUEST['orderId']) ? intval($_REQUEST['orderId']) : '';
+            $operator = isset($_REQUEST['operator']) && !empty($_REQUEST['operator']) ? trim($_REQUEST['operator']) : '';
 
             if ($userId === '' && $aliPayAccount === '' && $orderId === '' && $operator === '') {
                 log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
-                    . json_encode($_POST));
+                    . json_encode($_REQUEST));
                 $this->session->set_flashdata('error', '参数错误');
-                redirect('no3/cashOrder');
+                redirect('no3/cashOrder?searchType=3'); // 参数错误, 返回空查询结果
             }
 
             $finalRet = $this->Order_model->getCashOrderListByTypeOne($userId, $aliPayAccount, $orderId, $operator, $start, $per);
@@ -52,9 +55,9 @@ class CashOrder extends CI_Controller {
                 'searchType' => $searchType
             ];
 
-        } else {
-            $amountMinOriginal = isset($_POST['amountMin']) && !empty($_POST['amountMin']) ? trim($_POST['amountMin']) : '';
-            $amountMaxOriginal = isset($_POST['amountMax']) && !empty($_POST['amountMin']) ? trim($_POST['amountMax']) : '';
+        } else if ($searchType === 2) {
+            $amountMinOriginal = isset($_REQUEST['amountMin']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMin']) : '';
+            $amountMaxOriginal = isset($_REQUEST['amountMax']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMax']) : '';
             $amountMin = $amountMax = '';
 
             if ($amountMinOriginal !== '') {
@@ -67,12 +70,12 @@ class CashOrder extends CI_Controller {
             if ($amountMin !== '' && $amountMax !== '') {
                 if ($amountMax < $amountMin) {
                     $this->session->set_flashdata('error', '金额范围不合法');
-                    redirect('no3/cashOrder');
+                    redirect('no3/cashOrder?searchType=3');
                 }
             }
 
-            $dateTimeBeginOriginal = isset($_POST['dateTimeBegin']) ? trim($_POST['dateTimeBegin']) : '';
-            $dateTimeEndOriginal = isset($_POST['dateTimeEnd']) ? trim($_POST['dateTimeEnd']) : '';
+            $dateTimeBeginOriginal = isset($_REQUEST['dateTimeBegin']) ? trim($_REQUEST['dateTimeBegin']) : '';
+            $dateTimeEndOriginal = isset($_REQUEST['dateTimeEnd']) ? trim($_REQUEST['dateTimeEnd']) : '';
             $dateTimeBegin = $dateTimeEnd = '';
             if ($dateTimeBeginOriginal !== '') {
                 $dateTimeBegin = str_replace('T', ' ', $dateTimeBeginOriginal);
@@ -92,9 +95,6 @@ class CashOrder extends CI_Controller {
                 'searchType' => $searchType
             ];
         }
-
-        // test
-        log_message('error', 'ok661, finalRet = ' . json_encode($finalRet));
 
         $cashOrderList = $finalRet['content'];
         $totalNum = $finalRet['totalNum'];
@@ -136,8 +136,6 @@ class CashOrder extends CI_Controller {
      * 导出
      */
     public function exportData() {
-        // test
-        log_message('error', 'ko11, post = ' . json_encode($_POST));
         $amountMinOriginal = isset($_POST['amountMin']) && !empty($_POST['amountMin']) ? trim($_POST['amountMin']) : '';
         $amountMaxOriginal = isset($_POST['amountMax']) && !empty($_POST['amountMin']) ? trim($_POST['amountMax']) : '';
         $amountMin = $amountMax = '';

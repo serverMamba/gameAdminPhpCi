@@ -57,73 +57,70 @@
 								<div class="col-xs-12 col-sm-12 widget-container-span">
 									<div class="widget-box">
 										<div class="widget-toolbox padding-8 clearfix">
-											<form action="<?php echo site_url('no3/infodindan/index');?>" id="form" method="post">
+                                            <input value="2" type="hidden" name="searchType"/>
 
-                                                <input value="2" type="hidden" name="searchType"/>
-
-                                                <div style="margin-bottom: 20px">
-                                                    支付方式:
-                                                    <select name="payType" id="payType"
-                                                            style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($payType as $k => $v) {
-                                                            if (isset($query['payType']) && $k == $query['payType']) {
-                                                                ?>
-                                                                <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
-                                                            <?php } else { ?>
-                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                                            <?php } ?>
+                                            <div style="margin-bottom: 20px">
+                                                支付方式:
+                                                <select name="payType" id="payType"
+                                                        style="margin-left: 0px; width: 120px;">
+                                                    <?php foreach ($payType as $k => $v) {
+                                                        if (isset($query['payType']) && $k == $query['payType']) {
+                                                            ?>
+                                                            <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
+                                                        <?php } else { ?>
+                                                            <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
                                                         <?php } ?>
-                                                    </select>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <?php } ?>
+                                                </select>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                                    支付状态
-                                                    <select name="payStatus" id="payStatus"
-                                                            style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($payStatus as $k => $v) {
-                                                            if (isset($query['payStatus']) && intval($k) === intval($query['payStatus'])) {
-                                                                ?>
-                                                                <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
-                                                            <?php } else { ?>
-                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                                            <?php } ?>
+                                                支付状态
+                                                <select name="payStatus" id="payStatus"
+                                                        style="margin-left: 0px; width: 120px;">
+                                                    <?php foreach ($payStatus as $k => $v) {
+                                                        if (isset($query['payStatus']) && intval($k) === intval($query['payStatus'])) {
+                                                            ?>
+                                                            <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
+                                                        <?php } else { ?>
+                                                            <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
                                                         <?php } ?>
-                                                    </select>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <?php } ?>
+                                                </select>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                                    充值情况
-                                                    <select name="paySituation" id="paySituation"
-                                                            style="margin-left: 0px; width: 120px;">
-                                                        <?php foreach ($paySituation as $k => $v) {
-                                                            if (isset($query['paySituation']) && intval($k) === intval($query['paySituation'])) {
-                                                                ?>
-                                                                <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
-                                                            <?php } else { ?>
-                                                                <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                                            <?php } ?>
+                                                充值情况
+                                                <select name="paySituation" id="paySituation"
+                                                        style="margin-left: 0px; width: 120px;">
+                                                    <?php foreach ($paySituation as $k => $v) {
+                                                        if (isset($query['paySituation']) && intval($k) === intval($query['paySituation'])) {
+                                                            ?>
+                                                            <option value="<?php echo $k; ?>" selected><?php echo $v; ?></option>
+                                                        <?php } else { ?>
+                                                            <option value="<?php echo $k; ?>"><?php echo $v; ?></option>
                                                         <?php } ?>
-                                                    </select>
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                                </div>
+                                                    <?php } ?>
+                                                </select>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                            </div>
 
-                                                <div style="margin-bottom: 20px">
-                                                    金额范围<input value="<?php if($query['amountMin']){echo $query['amountMin']; }?>"  type="text" placeholder="最小金额" name="amountMin" style="margin-left: 10px"/>
-                                                    至<input value="<?php if($query['amountMax']){echo $query['amountMax']; }?>"  type="text" placeholder="最大金额" name="amountMax" style="margin-left: 10px"/>
-                                                </div>
+                                            <div style="margin-bottom: 20px">
+                                                金额范围<input value="<?php if($query['amountMin']){echo $query['amountMin']; }?>"  type="text" placeholder="最小金额" name="amountMin" id="amountMin" style="margin-left: 10px"/>
+                                                至<input value="<?php if($query['amountMax']){echo $query['amountMax']; }?>"  type="text" placeholder="最大金额" name="amountMax" id="amountMax" style="margin-left: 10px"/>
+                                            </div>
 
-                                                <div style="margin-bottom: 20px">
-                                                    统计时间<input value="<?php if($query['dateTimeBegin']){echo $query['dateTimeBegin']; }?>" name="dateTimeBegin" placeholder="开始时间" type="datetime-local" />
-                                                    至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd"  placeholder="终止时间" type="datetime-local" style="margin-left: 10px"/>
+                                            <div style="margin-bottom: 20px">
+                                                统计时间<input value="<?php if($query['dateTimeBegin']){echo $query['dateTimeBegin']; }?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间" type="datetime-local" />
+                                                至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间" type="datetime-local" style="margin-left: 10px"/>
 
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">查询</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">导出</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                </div>
-                                            </form>
+                                                <button onclick="javascript:onSearch1(1)" class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                    <span class="bigger-110">查询</span>
+                                                    <i class="icon-search icon-on-right"></i>
+                                                </button>
+                                                <button onclick="javascript:onSearch1(2)" class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                    <span class="bigger-110">导出EXCEL</span>
+                                                    <i class="icon-search icon-on-right"></i>
+                                                </button>
+                                            </div>
 
                                             <form action="<?php echo site_url('no3/infodindan/index');?>" id="form" method="post">
 
@@ -131,10 +128,10 @@
 
                                                 <div style="margin-bottom: 20px">
                                                     精确搜索
-                                                    <input value="<?php if($query['userId']){echo $query['userId']; }?>"  type="text" placeholder="玩家ID" name="userId" style="margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['orderId']){echo $query['orderId']; }?>" type="text" placeholder="充值订单号" name="orderId" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['agentId']){echo $query['agentId']; }?>" type="text" placeholder="所属代理" name="agentId" style = "margin-left:5px;height:34px;width:160px;"/>
-                                                    <input value="<?php if($query['operator']){echo $query['operator']; }?>" type="text" placeholder="操作员" name="operator"  style = "margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if(isset($query['userId'])){echo $query['userId']; }?>"  type="text" placeholder="玩家ID" name="userId" style="margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if(isset($query['orderId'])){echo $query['orderId']; }?>" type="text" placeholder="充值订单号" name="orderId" style = "margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if(isset($query['agentId'])){echo $query['agentId']; }?>" type="text" placeholder="所属代理" name="agentId" style = "margin-left:5px;height:34px;width:160px;"/>
+                                                    <input value="<?php if(isset($query['operator'])){echo $query['operator']; }?>" type="text" placeholder="操作员" name="operator"  style = "margin-left:5px;height:34px;width:160px;"/>
 
                                                     <button class="btn btn-xs btn-success " style="margin-top:3px;">
                                                         <span class="bigger-110">查询</span>
@@ -427,6 +424,73 @@
 		// submit
 		$('#form').submit();
 	}
+
+    /**
+     * 查询/导出excel
+     * @param type
+     */
+    function onSearch1(type) {
+        if (type == 1) { // 查询
+            var param = "infodindan"
+        } else { // 导出
+            var param = "infodindan/exportData"
+        }
+
+        var form = $("<form>");
+        form.attr("style", "display:none");
+        form.attr("target", "");
+        form.attr("method", "post");
+        form.attr("action", param);
+
+        var input1 = $("<input>");
+        input1.attr("type", "hidden");
+        input1.attr("name", "exportData");
+        input1.attr("value", (new Date()).getMilliseconds());
+
+        var input2 = $("<input>");
+        input2.attr("type", "hidden");
+        input2.attr("name", "payType");
+        input2.attr("value", $("#payType").val());
+
+        var input3 = $("<input>");
+        input3.attr("type", "hidden");
+        input3.attr("name", "payStatus");
+        input3.attr("value", $("#payStatus").val());
+
+        var input4 = $("<input>");
+        input4.attr("type", "hidden");
+        input4.attr("name", "paySituation");
+        input4.attr("value", $("#paySituation").val());
+
+        var input5 = $("<input>");
+        input5.attr("type", "hidden");
+        input5.attr("name", "amountMin");
+        input5.attr("value", $("#amountMin").val());
+
+        var input6 = $("<input>");
+        input6.attr("type", "hidden");
+        input6.attr("name", "amountMax");
+        input6.attr("value", $("#amountMax").val());
+
+        var input7 = $("<input>");
+        input7.attr("type", "hidden");
+        input7.attr("name", "dateTimeBegin");
+        input7.attr("value", $("#dateTimeBegin").val());
+
+        var input8 = $("<input>");
+        input8.attr("type", "hidden");
+        input8.attr("name", "dateTimeEnd");
+        input8.attr("value", $("#dateTimeEnd").val());
+
+        var input9 = $("<input>");
+        input9.attr("type", "hidden");
+        input9.attr("name", "searchType");
+        input9.attr("value", 2);
+
+        $("body").append(form);
+        form.append(input1, input2, input3, input4, input5, input6, input7, input8, input9);
+        form.submit();
+    }
 	</script>
 </body>
 </html>

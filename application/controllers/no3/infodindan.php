@@ -43,27 +43,31 @@ class Infodindan extends MY_Controller {
         echo json_encode($res);
     }
 
+    // searchType: 1精确搜索, 2范围搜索, 3搜索条件错误返回空结果
     public function index() {
-        $searchType = isset($_POST['searchType']) ? intval($_POST['searchType']) : 2;
+        $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
 
         $per = 20;
         $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
         $start = ($page - 1) * $per;
 
-        $finalRet = [];
+        $finalRet = [
+            'content' =>[],
+            'totalNum' => 0
+        ];
         $query = [];
 
         if ($searchType === 1) { // 精确搜索
-            $userId = isset($_POST['userId']) && !empty($_POST['userId']) ? intval($_POST['userId']) : '';
-            $orderId = isset($_POST['orderId']) && !empty($_POST['orderId']) ? trim($_POST['orderId']) : '';
-            $agentId = isset($_POST['agentId']) && !empty($_POST['agentId']) ? intval($_POST['agentId']) : '';
-            $operator = isset($_POST['operator']) && !empty($_POST['operator']) ? trim($_POST['operator']) : '';
+            $userId = isset($_REQUEST['userId']) && !empty($_REQUEST['userId']) ? intval($_REQUEST['userId']) : '';
+            $orderId = isset($_REQUEST['orderId']) && !empty($_REQUEST['orderId']) ? trim($_REQUEST['orderId']) : '';
+            $agentId = isset($_REQUEST['agentId']) && !empty($_REQUEST['agentId']) ? intval($_REQUEST['agentId']) : '';
+            $operator = isset($_REQUEST['operator']) && !empty($_REQUEST['operator']) ? trim($_REQUEST['operator']) : '';
 
             if ($userId === '' && $orderId === '' && $agentId === '' && $operator === '') {
                 log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
-                    . json_encode($_POST));
+                    . json_encode($_REQUEST));
                 $this->session->set_flashdata('error', '参数错误');
-                redirect('no3/infodindan');
+                redirect('no3/infodindan?searchType=3'); // 参数错误, 返回空查询结果
             }
 
             $finalRet = $this->dindan_model->getOrderListByTypeOne($userId, $orderId, $agentId, $operator, $start, $per);
@@ -77,13 +81,13 @@ class Infodindan extends MY_Controller {
                 'searchType' => $searchType
             ];
 
-        } else {
-            $payType = isset($_POST['payType']) ? $_POST['payType'] : -1;
-            $payStatus = isset($_POST['payStatus']) ? intval($_POST['payStatus']) : -1;
-            $paySituation = isset($_POST['paySituation']) ? intval($_POST['paySituation']) : -1;
+        } else if ($searchType === 2) {
+            $payType = isset($_REQUEST['payType']) ? $_REQUEST['payType'] : -1;
+            $payStatus = isset($_REQUEST['payStatus']) ? intval($_REQUEST['payStatus']) : -1;
+            $paySituation = isset($_REQUEST['paySituation']) ? intval($_REQUEST['paySituation']) : -1;
 
-            $amountMinOriginal = isset($_POST['amountMin']) && !empty($_POST['amountMin']) ? trim($_POST['amountMin']) : '';
-            $amountMaxOriginal = isset($_POST['amountMax']) && !empty($_POST['amountMin']) ? trim($_POST['amountMax']) : '';
+            $amountMinOriginal = isset($_REQUEST['amountMin']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMin']) : '';
+            $amountMaxOriginal = isset($_REQUEST['amountMax']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMax']) : '';
             $amountMin = $amountMax = '';
 
             if ($amountMinOriginal !== '') {
@@ -96,12 +100,12 @@ class Infodindan extends MY_Controller {
             if ($amountMin !== '' && $amountMax !== '') {
                 if ($amountMax < $amountMin) {
                     $this->session->set_flashdata('error', '金额范围不合法');
-                    redirect('no3/infodindan');
+                    redirect('no3/infodindan?searchType=3');
                 }
             }
 
-            $dateTimeBeginOriginal = isset($_POST['dateTimeBegin']) ? trim($_POST['dateTimeBegin']) : '';
-            $dateTimeEndOriginal = isset($_POST['dateTimeEnd']) ? trim($_POST['dateTimeEnd']) : '';
+            $dateTimeBeginOriginal = isset($_REQUEST['dateTimeBegin']) ? trim($_REQUEST['dateTimeBegin']) : '';
+            $dateTimeEndOriginal = isset($_REQUEST['dateTimeEnd']) ? trim($_REQUEST['dateTimeEnd']) : '';
             $dateTimeBegin = $dateTimeEnd = '';
             if ($dateTimeBeginOriginal !== '') {
                 $dateTimeBegin = str_replace('T', ' ', $dateTimeBeginOriginal);
@@ -130,30 +134,7 @@ class Infodindan extends MY_Controller {
         $orderList = $finalRet['content'];
 
         if (!empty($orderList)) {
-            foreach ($orderList as &$row) { // todo 之前的做法和现在的状态定义不一致
-                $row['money'] = $row['money'] / 100;
-
-                if ($row ['status'] == 1) {
-                    $row ['after_chips'] = $row ['before_chips'] + $row ['money'];
-                } else {
-                    $row['after_chips'] = '--';
-                }
-
-                if ($row ['status'] == 0) {
-                    $row ['status'] = '未支付';
-                } else if ($row['status'] == 1) {
-                    $row ['status'] = '支付成功';
-                } else {
-                    $row ['status'] = '支付失败';
-                }
-
-                $row ['add_time'] = date('Y-m-d H:i:s', $row ['add_time']);
-                if ($row['pay_success_time']) {
-                    $row ['pay_success_time'] = date('Y-m-d H:i:s', $row ['pay_success_time']);
-                } else {
-                    $row ['pay_success_time'] = ' - ';
-                }
-            }
+            $this->dindan_model->formatOrderList($orderList);
         }
         $totalNum = $finalRet['totalNum'];
 
@@ -191,6 +172,49 @@ class Infodindan extends MY_Controller {
         $this->pagination->initialize($config);
 
         $this->load->view('no3/infodindanview', $data);
+    }
+
+    /**
+     * 导出
+     */
+    public function exportData() {
+        $payType = isset($_REQUEST['payType']) ? $_REQUEST['payType'] : -1;
+        $payStatus = isset($_REQUEST['payStatus']) ? intval($_REQUEST['payStatus']) : -1;
+        $paySituation = isset($_REQUEST['paySituation']) ? intval($_REQUEST['paySituation']) : -1;
+
+        $amountMinOriginal = isset($_REQUEST['amountMin']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMin']) : '';
+        $amountMaxOriginal = isset($_REQUEST['amountMax']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMax']) : '';
+        $amountMin = $amountMax = '';
+
+        if ($amountMinOriginal !== '') {
+            $amountMin = $amountMinOriginal * 100; // 数据库中钱的单位是分
+        }
+        if ($amountMaxOriginal !== '') {
+            $amountMax = $amountMaxOriginal * 100;
+        }
+
+        if ($amountMin !== '' && $amountMax !== '') {
+            if ($amountMax < $amountMin) {
+                $this->session->set_flashdata('error', '金额范围不合法');
+                redirect('no3/infodindan?searchType=3');
+            }
+        }
+
+        $dateTimeBeginOriginal = isset($_REQUEST['dateTimeBegin']) ? trim($_REQUEST['dateTimeBegin']) : '';
+        $dateTimeEndOriginal = isset($_REQUEST['dateTimeEnd']) ? trim($_REQUEST['dateTimeEnd']) : '';
+        $dateTimeBegin = $dateTimeEnd = '';
+        if ($dateTimeBeginOriginal !== '') {
+            $dateTimeBegin = str_replace('T', ' ', $dateTimeBeginOriginal);
+        }
+        if ($dateTimeEndOriginal !== '') {
+            $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
+        }
+
+        // test
+        log_message('error', __METHOD__ . ', param = ' . json_encode($_POST));
+
+        $finalRet = $this->dindan_model->exportData($payType, $payStatus, $paySituation, $amountMin, $amountMax,
+            $dateTimeBegin, $dateTimeEnd);
     }
 
     public function frameset() {

@@ -82,29 +82,25 @@ $statusTextColor = array(
 								<div class="col-xs-12 col-sm-12 widget-container-span">
 									<div class="widget-box">		
 										<div class="widget-toolbox padding-8 clearfix">
-											<form action="<?php echo site_url('no3/cashOrder/index');?>" method="post" id="form1">
+                                            <div style="margin-bottom: 20px">
+                                                金额范围<input value="<?php if($query['amountMin']){echo $query['amountMin']; }?>"  type="text" placeholder="最小金额" name="amountMin" id="amountMin" style="margin-left: 10px"/>
+                                                至<input value="<?php if($query['amountMax']){echo $query['amountMax']; }?>"  type="text" placeholder="最大金额" name="amountMax" id="amountMax" style="margin-left: 10px"/>
+                                            </div>
 
-                                                <input value="2" type="hidden" name="searchType"/>
-                                                <div style="margin-bottom: 20px">
-                                                    金额范围<input value="<?php if($query['amountMin']){echo $query['amountMin']; }?>"  type="text" placeholder="最小金额" name="amountMin" id="amountMin" style="margin-left: 10px"/>
-                                                    至<input value="<?php if($query['amountMax']){echo $query['amountMax']; }?>"  type="text" placeholder="最大金额" name="amountMax" id="amountMax" style="margin-left: 10px"/>
-                                                </div>
+                                            <div style="margin-bottom: 20px">
+                                                统计时间<input value="<?php if($query['dateTimeBegin']){echo $query['dateTimeBegin']; }?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间" type="datetime-local" />
+                                                至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间" type="datetime-local" style="margin-left: 10px"/>
 
-                                                <div style="margin-bottom: 20px">
-                                                    统计时间<input value="<?php if($query['dateTimeBegin']){echo $query['dateTimeBegin']; }?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间" type="datetime-local" />
-                                                    至<input value="<?php if($query['dateTimeEnd']){echo $query['dateTimeEnd']; }?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间" type="datetime-local" style="margin-left: 10px"/>
+                                                <button onclick="javascript:onSearch1(1)" class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                    <span class="bigger-110">查询</span>
+                                                    <i class="icon-search icon-on-right"></i>
+                                                </button>
 
-                                                    <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                        <span class="bigger-110">查询</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </button>
-                                                </div>
-                                            </form>
-
-                                            <button onclick="javascript:getexcel()" class="btn btn-xs btn-success " style="margin-top:3px;margin-bottom: 20px">
-                                                <span class="bigger-110">导出EXCEL</span>
-                                                <i class="icon-envelope icon-on-right"></i>
-                                            </button>
+                                                <button onclick="javascript:onSearch1(2)" class="btn btn-xs btn-success " style="margin-top:3px;" >
+                                                    <span class="bigger-110">导出EXCEL</span>
+                                                    <i class="icon-envelope icon-on-right"></i>
+                                                </button>
+                                            </div>
 
 
                                             <form action="<?php echo site_url('no3/cashOrder/index');?>" id="form" method="post">
@@ -400,25 +396,55 @@ $statusTextColor = array(
 		return true;
 	}
 
-    function getexcel() {
-        var param = "cashOrder/exportData?" +
-            "amountMin=" + $("#amountMin").val() +
-            "&amountMax=" + $("#amountMax").val() +
-            "&dateTimeBegin=" + $("#dateTimeBegin").val() +
-            "&dateTimeEnd=" + $("#dateTimeEnd").val();
-
+    /**
+     * 查询/导出excel
+     * @param type
+     */
+    function onSearch1(type) {
+	    if (type == 1) { // 查询
+            var param = 'cashOrder';
+        } else { // 导出
+            var param = 'cashOrder/exportData';
+        }
 
         var form = $("<form>");
         form.attr("style", "display:none");
         form.attr("target", "");
         form.attr("method", "post");
         form.attr("action", param);
+
         var input1 = $("<input>");
         input1.attr("type", "hidden");
         input1.attr("name", "exportData");
         input1.attr("value", (new Date()).getMilliseconds());
+
+        var input2 = $("<input>");
+        input2.attr("type", "hidden");
+        input2.attr("name", "amountMin");
+        input2.attr("value", $("#amountMin").val());
+
+        var input3 = $("<input>");
+        input3.attr("type", "hidden");
+        input3.attr("name", "amountMax");
+        input3.attr("value", $("#amountMax").val());
+
+        var input4 = $("<input>");
+        input4.attr("type", "hidden");
+        input4.attr("name", "dateTimeBegin");
+        input4.attr("value", $("#dateTimeBegin").val());
+
+        var input5 = $("<input>");
+        input5.attr("type", "hidden");
+        input5.attr("name", "dateTimeEnd");
+        input5.attr("value", $("#dateTimeEnd").val());
+
+        var input6 = $("<input>");
+        input5.attr("type", "hidden");
+        input5.attr("name", "searchType");
+        input5.attr("value", 2);
+
         $("body").append(form);
-        form.append(input1);
+        form.append(input1, input2, input3, input4, input5);
         form.submit();
     }
 		

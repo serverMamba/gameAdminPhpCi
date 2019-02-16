@@ -356,9 +356,6 @@ class Order_model extends CI_Model {
 
         $rows = $db->query($sql)->result_array();
 
-        // test
-//        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
-
         if (!empty($rows)) {
             $rows = $this->formatCashOrderList($rows);
             $finalRet['content'] = $rows;
@@ -386,54 +383,56 @@ class Order_model extends CI_Model {
      * @return mixed
      */
     public function formatCashOrderList($return_ary) {
-        $now = time();
+        if (!empty($return_ary)) {
+            $now = time();
 
-        $todayBuyArr = array();
-        $todayCashArr = array();
-        $todayGoldHisArr = array();
-        $this->load->model('api/User_model');
-        foreach ($return_ary as $k => $v) {
-            $return_ary [$k] ['cash_money'] = $v ['cash_money'] / 100;
-            $return_ary [$k] ['cut_money'] = $this->calMoney($return_ary [$k] ['cash_money']);
-            $return_ary[$k]['add_delay_time'] = $this->getDelayTimeText($now - $return_ary[$k]['add_time']);
-            if ($return_ary[$k]['update_time']) {
-                $return_ary[$k]['update_delay_time'] = $this->getDelayTimeText($now - $return_ary[$k]['update_time']);
-            } else {
-                $return_ary[$k]['update_delay_time'] = 0;
-            }
+            $todayBuyArr = array();
+            $todayCashArr = array();
+            $todayGoldHisArr = array();
+            $this->load->model('api/User_model');
+            foreach ($return_ary as $k => $v) {
+                $return_ary [$k] ['cash_money'] = $v ['cash_money'] / 100;
+                $return_ary [$k] ['cut_money'] = $this->calMoney($return_ary [$k] ['cash_money']);
+                $return_ary[$k]['add_delay_time'] = $this->getDelayTimeText($now - $return_ary[$k]['add_time']);
+                if ($return_ary[$k]['update_time']) {
+                    $return_ary[$k]['update_delay_time'] = $this->getDelayTimeText($now - $return_ary[$k]['update_time']);
+                } else {
+                    $return_ary[$k]['update_delay_time'] = 0;
+                }
 
-            $user_db_index = $this->User_model->getUserDBPos($v ['user_id']);
-            if (!empty ($user_db_index)) {
-                $db1 = $this->load->database('eus' . $user_db_index ['dbindex'], true);
-                $sql = "SELECT total_total_money,totalBuy FROM CASINOUSER_" . $user_db_index ['tableindex'] . " WHERE id = '" . $v ['user_id'] . "'";
-                $q = $db1->query($sql);
-                $db1->close();
-                $return_ary [$k] ['cash_total_money'] = $q->row()->total_total_money / 100;
-                $return_ary [$k] ['totalBuy'] = $q->row()->totalBuy / 100;
-            } else {
-                $return_ary [$k] ['cash_total_money'] = 0;
-                $return_ary [$k] ['totalBuy'] = 0;
-            }
+                $user_db_index = $this->User_model->getUserDBPos($v ['user_id']);
+                if (!empty ($user_db_index)) {
+                    $db1 = $this->load->database('eus' . $user_db_index ['dbindex'], true);
+                    $sql = "SELECT total_total_money,totalBuy FROM CASINOUSER_" . $user_db_index ['tableindex'] . " WHERE id = '" . $v ['user_id'] . "'";
+                    $q = $db1->query($sql);
+                    $db1->close();
+                    $return_ary [$k] ['cash_total_money'] = $q->row()->total_total_money / 100;
+                    $return_ary [$k] ['totalBuy'] = $q->row()->totalBuy / 100;
+                } else {
+                    $return_ary [$k] ['cash_total_money'] = 0;
+                    $return_ary [$k] ['totalBuy'] = 0;
+                }
 
-            if (!array_key_exists($v ['user_id'], $todayBuyArr)) {
-                $todayBuyArr[$v ['user_id']] = $this->getTodayBuy($v ['user_id']);
-            }
-            $return_ary [$k] ['todayBuy'] = intval($todayBuyArr[$v ['user_id']]);
-            if (!array_key_exists($v ['user_id'], $todayCashArr)) {
-                $todayCashArr[$v ['user_id']] = $this->getTodayCash($v ['user_id']);
-            }
-            $return_ary [$k] ['todayCash'] = intval($todayCashArr[$v ['user_id']]);
-            if (!array_key_exists($v ['user_id'], $todayGoldHisArr)) {
-                $todayGoldHisArr[$v ['user_id']] = $this->queryTodayGoldHis($v ['user_id']);
-            }
-            $jd_his = $todayGoldHisArr[$v ['user_id']];
-            $return_ary [$k] ['todayGoldRecNum'] = intval($jd_his['total_num']);
-            $return_ary [$k] ['todayBuyRecNum'] = intval($jd_his['pay_num']);
+                if (!array_key_exists($v ['user_id'], $todayBuyArr)) {
+                    $todayBuyArr[$v ['user_id']] = $this->getTodayBuy($v ['user_id']);
+                }
+                $return_ary [$k] ['todayBuy'] = intval($todayBuyArr[$v ['user_id']]);
+                if (!array_key_exists($v ['user_id'], $todayCashArr)) {
+                    $todayCashArr[$v ['user_id']] = $this->getTodayCash($v ['user_id']);
+                }
+                $return_ary [$k] ['todayCash'] = intval($todayCashArr[$v ['user_id']]);
+                if (!array_key_exists($v ['user_id'], $todayGoldHisArr)) {
+                    $todayGoldHisArr[$v ['user_id']] = $this->queryTodayGoldHis($v ['user_id']);
+                }
+                $jd_his = $todayGoldHisArr[$v ['user_id']];
+                $return_ary [$k] ['todayGoldRecNum'] = intval($jd_his['total_num']);
+                $return_ary [$k] ['todayBuyRecNum'] = intval($jd_his['pay_num']);
 
-            if (isset($channel_list [$v ['channel_id']])) {
-                $return_ary [$k] ['channel'] = $channel_list [$v ['channel_id']];
-            } else {
-                $return_ary [$k] ['channel'] = "--";
+                if (isset($channel_list [$v ['channel_id']])) {
+                    $return_ary [$k] ['channel'] = $channel_list [$v ['channel_id']];
+                } else {
+                    $return_ary [$k] ['channel'] = "--";
+                }
             }
         }
 
@@ -441,7 +440,7 @@ class Order_model extends CI_Model {
     }
 
     /**
-     * 导出 todo now
+     * 导出
      * @param $amountMin
      * @param $amountMax
      * @param $dateTimeBegin

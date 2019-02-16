@@ -81,12 +81,13 @@ class dindan_model extends CI_Model {
      * @param $amountMax
      * @param $dateTimeBegin
      * @param $dateTimeEnd
-     * @param $start
-     * @param $per
+     * @param int $start
+     * @param int $per
+     * @param bool $export
      * @return array
      */
     public function getOrderListByTypeTwo($payType, $payStatus, $paySituation, $amountMin, $amountMax,
-                                          $dateTimeBegin, $dateTimeEnd, $start, $per) {
+                                          $dateTimeBegin, $dateTimeEnd, $start = 0, $per = 0, $export = false) {
         $finalRet = [
             'content' => [],
             'totalNum' => 0
@@ -97,7 +98,7 @@ class dindan_model extends CI_Model {
         $sqlCount = 'select count(*) as totalNum from smc_order';
 
         $itemArr = [];
-        if ($payType !== -1) {
+        if ($payType != -1) {
             $itemArr[] = 'pay_type = ' . $this->db->escape($payType);
         }
         if ($payStatus !== -1) {
@@ -122,12 +123,11 @@ class dindan_model extends CI_Model {
             $sqlCount .= ' where ' . $str;
         }
 
-        $sql .= ' limit ' . $start . ', ' . $per;
+        if (!$export) {
+            $sql .= ' limit ' . $start . ', ' . $per;
+        }
 
         $rows = $db->query($sql)->result_array();
-
-        // test
-//        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
 
         if (!empty($rows)) {
             $finalRet['content'] = $rows;
@@ -147,6 +147,93 @@ class dindan_model extends CI_Model {
         }
 
         return $finalRet;
+    }
+
+    /**
+     * 格式化
+     * @param $orderList
+     */
+    public function formatOrderList(&$orderList) {
+        if (!empty($orderList)) {
+            foreach ($orderList as &$row) { // todo 之前的做法和现在的状态定义不一致
+                $row['money'] = $row['money'] / 100;
+
+                if ($row ['status'] == 1) {
+                    $row ['after_chips'] = $row ['before_chips'] + $row ['money'];
+                } else {
+                    $row['after_chips'] = '--';
+                }
+
+                if ($row ['status'] == 0) {
+                    $row ['status'] = '未支付';
+                } else if ($row['status'] == 1) {
+                    $row ['status'] = '支付成功';
+                } else {
+                    $row ['status'] = '支付失败';
+                }
+
+                $row ['add_time'] = date('Y-m-d H:i:s', $row ['add_time']);
+                if ($row['pay_success_time']) {
+                    $row ['pay_success_time'] = date('Y-m-d H:i:s', $row ['pay_success_time']);
+                } else {
+                    $row ['pay_success_time'] = ' - ';
+                }
+            }
+            unset($row);
+        }
+    }
+
+    /**
+     * 导出
+     * @param $payType
+     * @param $payStatus
+     * @param $paySituation
+     * @param $amountMin
+     * @param $amountMax
+     * @param $dateTimeBegin
+     * @param $dateTimeEnd
+     */
+    public function exportData($payType, $payStatus, $paySituation, $amountMin, $amountMax,
+                               $dateTimeBegin, $dateTimeEnd) {
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="充值订单.csv"');
+        header('Cache-Control: max-age=0');
+
+        $finalRet = $this->getOrderListByTypeTwo($payType, $payStatus, $paySituation, $amountMin, $amountMax,
+            $dateTimeBegin, $dateTimeEnd, 0, 0, true);
+        $rows = $finalRet['content'];
+        $this->formatOrderList($rows);
+
+        $fp = fopen('php://output', 'a');
+
+        $head = [
+            "玩家ID", "充值情况", "充值金额", "充值前金币",
+            "充值后金币", "订单号", "参数", "提交时间",
+            "到账时间", "状态", "	来源", "支付方式",
+            "备注"
+        ];
+        foreach ($head as $i => $v) {
+            $head[$i] = iconv('utf-8', 'gbk', $v);
+        }
+
+        fputcsv($fp, $head);
+
+        $cnt = 0;
+        $limit = 100000;
+
+        foreach ($rows as $index => $row) {
+            $cnt++;
+            if ($limit == $cnt) {
+                ob_flush();
+                flush();
+                $cnt = 0;
+            }
+
+            foreach ($row as $i => $v) {
+                $row[$i] = iconv('utf-8', 'gbk', $v) . "\t";
+            }
+            fputcsv($fp, $row);
+        }
     }
 
     public function getPayList() {

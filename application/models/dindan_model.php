@@ -12,7 +12,7 @@ class dindan_model extends CI_Model {
 
     /**
      * 获取订单列表 - 按查询方式1
-     * todo agentId, operator在smc_order表中不存在
+     * todo agentId在smc_order表中不存在
      * @param $userId
      * @param $orderId
      * @param $agentId
@@ -28,10 +28,26 @@ class dindan_model extends CI_Model {
         ];
 
         $db = $this->load->database('default_slave', true);
-        $sql = 'select * from smc_order';
-        $sqlCount = 'select count(*) as totalNum from smc_order';
 
         $itemArr = [];
+
+        // 获取adminId
+        if ($operator !== '') {
+            $sql = 'select id from smc_admin where admin_name = ' . $this->db->escape($operator);
+            $row = $db->query($sql)->row_array();
+            if (empty($row)) {
+                log_message('error', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = default_slave, sql = ' . $sql);
+                return $finalRet;
+            }
+            $adminId = intval($row['id']);
+            if ($adminId) {
+                $itemArr[] = 'refer = ' . $adminId;
+            }
+        }
+
+        $sql = 'select o.*, a.admin_name from smc_order o left join smc_admin a on o.refer = a.id';
+        $sqlCount = 'select count(*) as totalNum from smc_order o left join smc_admin a on o.refer = a.id';
+
         if ($userId !== '') {
             $itemArr[] = 'user_id = ' . $userId;
         }
@@ -47,9 +63,6 @@ class dindan_model extends CI_Model {
         $sql .= ' limit ' . $start . ', ' . $per;
 
         $rows = $db->query($sql)->result_array();
-
-        // test
-        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
 
         if (!empty($rows)) {
             $finalRet['content'] = $rows;
@@ -73,7 +86,6 @@ class dindan_model extends CI_Model {
 
     /**
      * 获取订单列表 - 按查询方式2
-     * todo paySituation怎么判断
      * @param $payType
      * @param $payStatus
      * @param $paySituation
@@ -94,27 +106,47 @@ class dindan_model extends CI_Model {
         ];
 
         $db = $this->load->database('default_slave', true);
-        $sql = 'select * from smc_order';
-        $sqlCount = 'select count(*) as totalNum from smc_order';
+
+        // 获取首充或二次充值的user_id
+        $userIdArr = [];
+        if ($paySituation !== -1) {
+            if ($paySituation === 1) { // 首充
+                $sql = 'select a.user_id from (select user_id, count(*) as num from smc_order group by user_id) a where a.num = 1';
+            } else { // 二次充值
+                $sql = 'select a.user_id from (select user_id, count(*) as num from smc_order group by user_id) a where a.num > 1';
+            }
+            $rows = $db->query($sql)->result_array();
+            $userIdArr = array_column($rows, 'user_id');
+            if (empty($userIdArr)) {
+                return $finalRet;
+            }
+        }
+
+        $sql = 'select o.*, a.admin_name from smc_order o left join smc_admin a on o.refer = a.id';
+        $sqlCount = 'select count(*) as totalNum from smc_order o left join smc_admin a on o.refer = a.id';
 
         $itemArr = [];
         if ($payType != -1) {
-            $itemArr[] = 'pay_type = ' . $this->db->escape($payType);
+            $itemArr[] = 'o.pay_type = ' . $this->db->escape($payType);
         }
         if ($payStatus !== -1) {
-            $itemArr[] = 'status = ' . $payStatus;
+            $itemArr[] = 'o.status = ' . $payStatus;
         }
         if ($amountMin !== '') {
-            $itemArr[] = 'money >= ' . $amountMin;
+            $itemArr[] = 'o.money >= ' . $amountMin;
         }
         if ($amountMax !== '') {
-            $itemArr[] = 'money <= ' . $amountMax;
+            $itemArr[] = 'o.money <= ' . $amountMax;
         }
         if ($dateTimeBegin !== '') {
-            $itemArr[] = 'add_time >= ' . strtotime($dateTimeBegin);
+            $itemArr[] = 'o.add_time >= ' . strtotime($dateTimeBegin);
         }
         if ($dateTimeEnd !== '') {
-            $itemArr[] = 'add_time <= ' . strtotime($dateTimeEnd);
+            $itemArr[] = 'o.add_time <= ' . strtotime($dateTimeEnd);
+        }
+        if (!empty($userIdArr)) {
+            $str = implode(',', $userIdArr);
+            $itemArr[] = 'o.user_id in (' . $str . ')';
         }
 
         if (!empty($itemArr)) {
@@ -128,6 +160,10 @@ class dindan_model extends CI_Model {
         }
 
         $rows = $db->query($sql)->result_array();
+
+        // test
+        log_message('error', 'paySituation = ' . $paySituation . ', userIdArr = ' . json_encode($userIdArr)
+            . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
 
         if (!empty($rows)) {
             $finalRet['content'] = $rows;
@@ -178,6 +214,8 @@ class dindan_model extends CI_Model {
                 } else {
                     $row ['pay_success_time'] = ' - ';
                 }
+
+                $row['refer'] = $row['admin_name'];
             }
             unset($row);
         }

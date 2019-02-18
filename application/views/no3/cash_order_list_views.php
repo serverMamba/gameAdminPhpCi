@@ -120,13 +120,6 @@ $statusTextColor = array(
                                                     </button>
                                                 </div>
 
-                                                <div>
-                                                    <a class="btn btn-xs btn-danger " style="margin-top:3px;margin-left:3px;margin-bottom:20px" onclick="onclickCheckDelayOrders();">
-                                                        <span class="bigger-110">查询延时订单</span>
-                                                        <i class="icon-search icon-on-right"></i>
-                                                    </a>
-                                                </div>
-
                                             </form>
 
 	                                         <span>未处理订单数：<?php echo $no_process_num; ?></span>
@@ -163,6 +156,7 @@ $statusTextColor = array(
 																<th>描述</th>
 																<th>操作</th>
 																<th>人工提现</th>
+                                                                <th>操作员</th>
 															</tr>
 														</thead>
 														<tbody id="tbody">
@@ -252,16 +246,12 @@ $statusTextColor = array(
 																		echo "-----";
 																	}?>
 																</td>
+                                                                <td><?php echo $v['refer']; ?></td>
 															</tr>
 														<?php }} ?>
 														</tbody>
 													</table>
 													</form>
-
-                                                <div class="modal-footer no-margin-top">
-                                                    <?php echo $this->pagination->create_links();?>
-                                                </div>
-
 
 												<div class="modal-footer no-margin-top">
 													<?php //echo $this->pagination->create_links();?>	

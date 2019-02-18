@@ -169,7 +169,7 @@
 
 															<th>到帐时间</th>
 															<th>状态</th>
-															<th>来源</th>
+															<th>操作员</th>
 															<th>支付方式</th>
 
 															<?php if($query['isShowPay'] == 1){ ?>
@@ -193,7 +193,7 @@
 
 															<td><?php echo $v['pay_success_time'];?></td>
 															<td><?php echo $v['status']; ?></td>
-															<td><?php if($v['refer'] == 2){echo 'Android'; }else{echo 'Ios'; } ?></td>
+															<td><?php echo $v['refer'] ?></td>
 															<td><?php if($v['pay_type']){echo $v['pay_type'];}else{echo '--';} ?></td>
 
 															<?php if($query['isShowPay'] == 1){ ?>
@@ -232,7 +232,7 @@
 															<th>到帐时间</th>
 															<th>时间延迟</th>
 															<th>状态</th>
-															<th>来源</th>
+															<th>操作员</th>
 															<th>支付方式</th>
 															<?php if($query['isShowPay'] == 1){ ?>
 															<th>支付平台</th>
@@ -253,7 +253,7 @@
 															<td><?php echo $v['pay_success_time'];?></td>
 															<td style="color:red"><?php echo $v['delayTime'];?></td>
 															<td><?php echo $v['status']; ?></td>
-															<td><?php if($v['refer'] == 2){echo 'Android'; }else{echo 'Ios'; } ?></td>
+                                                            <td><?php echo $v['refer'] ?></td>
 															<td><?php if($v['pay_type']){echo $v['pay_type'];}else{echo '--';} ?></td>
 															<?php if($query['isShowPay'] == 1){ ?>
 															<td><?php echo $v['pay_platform']; ?></td>

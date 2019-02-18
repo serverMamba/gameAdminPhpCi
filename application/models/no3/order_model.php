@@ -245,24 +245,40 @@ class Order_model extends CI_Model {
 
     /**
      * 获取提现订单列表 - 按查询方式1
-     * todo 没有operator字段
      * @param $userId
      * @param $aliPayAccount
      * @param $orderId
      * @param $operator
-     * @param $start
-     * @param $per
      * @return array
      */
-    public function getCashOrderListByTypeOne($userId, $aliPayAccount, $orderId, $operator, $start, $per) {
+    public function getCashOrderListByTypeOne($userId, $aliPayAccount, $orderId, $operator) {
         $finalRet = [
             'content' => [],
             'totalNum' => 0
         ];
 
-        $db = $this->load->database('cashorder1_slave', true);
-        $sql = 'select * from smc_cash_order';
-        $sqlCount = 'select count(*) as totalNum from smc_cash_order';
+        $itemArr = [];
+
+        // 获取adminId
+        if ($operator !== '') {
+            $db = $this->load->database('default_slave', true);
+            $sql = 'select id from smc_admin where admin_name = ' . $this->db->escape($operator);
+            $row = $db->query($sql)->row_array();
+            if (empty($row)) {
+                log_message('error', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = default_slave, sql = ' . $sql);
+                return $finalRet;
+            }
+            $adminId = intval($row['id']);
+            if ($adminId) {
+                $itemArr[] = 'refer = ' . $adminId;
+            }
+        }
+
+        $db1 = $this->load->database('cashorder1_slave', true);
+        $sql1 = 'select * from smc_cash_order';
+
+        $db2 = $this->load->database('cashorder2_slave', true);
+        $sql2 = 'select * from smc_cash_order';
 
         $itemArr = [];
         if ($userId !== '') {
@@ -277,30 +293,35 @@ class Order_model extends CI_Model {
 
         if (!empty($itemArr)) {
             $str = implode(' and ', $itemArr);
-            $sql .= ' where ' . $str;
-            $sqlCount .= ' where ' . $str;
+
+            $sql1 .= ' where ' . $str;
+
+            $sql2 .= ' where ' . $str;
         }
-        $sql .= ' order by id desc limit ' . $start . ', ' . $per;
+        $sql1 .= ' order by id desc limit 40';
 
-        $rows = $db->query($sql)->result_array();
+        $sql2 .= ' order by id desc limit 50';
 
-        // test
-        log_message('error', __METHOD__ . ', ' . __LINE__ . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
+        $rows1 = $db1->query($sql1)->result_array();
+        $rows2 = $db2->query($sql2)->result_array();
+
+        if (empty($rows1)) {
+            $rows1 = [];
+        }
+        if (empty($rows2)) {
+            $rows2 = [];
+        }
+
+        $rows = array_merge($rows1, $rows2);
+        $this->sortArrByField($rows, 'add_time', true);
 
         if (!empty($rows)) {
             $rows = $this->formatCashOrderList($rows);
             $finalRet['content'] = $rows;
-
-            $rowCount = $db->query($sqlCount)->row_array();
-            if (!empty($rowCount)) {
-                $finalRet['totalNum'] = intval($rowCount['totalNum']);
-            } else {
-                log_message('error', __METHOD__ . ', ' . __LINE__ .
-                    ', db select return empty, db = cashorder1_slave' . ', sqlCount = ' . $sqlCount);
-            }
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ .
-                ', db select return empty, db = cashorder1_slave' . ', sql = ' . $sql);
+                ', db select return empty, db1 = cashorder1_slave, sql1 = ' . $sql1
+                . ', db2 = cashorder2_slave, sql2 = ' . $sql2);
 
             return $finalRet;
         }
@@ -314,21 +335,20 @@ class Order_model extends CI_Model {
      * @param $amountMax
      * @param $dateTimeBegin
      * @param $dateTimeEnd
-     * @param int $start
-     * @param int $per
      * @param bool $export
      * @return array
      */
-    public function getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd,
-                                              $start = 0, $per = 0, $export = false) {
+    public function getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd, $export = false) {
         $finalRet = [
             'content' => [],
             'totalNum' => 0
         ];
 
-        $db = $this->load->database('cashorder1_slave', true);
-        $sql = 'select * from smc_cash_order';
-        $sqlCount = 'select count(*) as totalNum from smc_cash_order';
+        $db1 = $this->load->database('cashorder1_slave', true);
+        $sql1 = 'select * from smc_cash_order';
+
+        $db2 = $this->load->database('cashorder2_slave', true);
+        $sql2 = 'select * from smc_cash_order';
 
         $itemArr = [];
         if ($amountMin !== '') {
@@ -346,30 +366,37 @@ class Order_model extends CI_Model {
 
         if (!empty($itemArr)) {
             $str = implode(' and ', $itemArr);
-            $sql .= ' where ' . $str;
-            $sqlCount .= ' where ' . $str;
+
+            $sql1 .= ' where ' . $str;
+
+            $sql2 .= ' where ' . $str;
         }
 
         if (!$export) {
-            $sql .= ' order by id desc limit ' . $start . ', ' . $per;
+            $sql1 .= ' order by id desc limit 40';
+            $sql2 .= ' order by id desc limit 50';
         }
 
-        $rows = $db->query($sql)->result_array();
+        $rows1 = $db1->query($sql1)->result_array();
+        $rows2 = $db2->query($sql2)->result_array();
+
+        if (empty($rows1)) {
+            $rows1 = [];
+        }
+        if (empty($rows2)) {
+            $rows2 = [];
+        }
+
+        $rows = array_merge($rows1, $rows2);
+        $this->sortArrByField($rows, 'add_time', true);
 
         if (!empty($rows)) {
             $rows = $this->formatCashOrderList($rows);
             $finalRet['content'] = $rows;
-
-            $rowCount = $db->query($sqlCount)->row_array();
-            if (!empty($rowCount)) {
-                $finalRet['totalNum'] = intval($rowCount['totalNum']);
-            } else {
-                log_message('error', __METHOD__ . ', ' . __LINE__ .
-                    ', db select return empty, db = cashorder1_slave' . ', sqlCount = ' . $sqlCount);
-            }
         } else {
             log_message('info', __METHOD__ . ', ' . __LINE__ .
-                ', db select return empty, db = cashorder1_slave' . ', sql = ' . $sql);
+                ', db select return empty, db1 = cashorder1_slave, sql1 = ' . $sql1
+                . ', db2 = cashorder2_slave, sql2 = ' . $sql2);
 
             return $finalRet;
         }
@@ -451,7 +478,7 @@ class Order_model extends CI_Model {
         header('Content-Disposition: attachment;filename="提现订单.csv"');
         header('Cache-Control: max-age=0');
 
-        $finalRet = $this->getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd, 0, 0, true);
+        $finalRet = $this->getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd,  true);
         $rows = $finalRet['content'];
 
         $ret = [];

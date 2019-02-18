@@ -474,9 +474,13 @@ class User_model extends CI_Model {
                 $row['roomBaseScore'] = isset($row['roomBaseScore']) ? $row['roomBaseScore'] : baiRenBaseScore;
                 $row['roomBaseScore'] = number_format($row['roomBaseScore'] / 100, 2, '.', ' ');
 
-                $row['userGameResult'] = number_format($row['userGameResult'] / 100, 2, '.', ' ');
-                $row['userScoreBegin'] = number_format($row['userScoreBegin'] / 100, 2, '.', ' ');
-                $row['userScoreEnd'] = number_format($row['userScoreEnd'] / 100, 2, '.', ' ');
+                $row['userGameResult'] = intval($row['userGameResult'] / 100); // todo 数据库中单位是什么, 需要精确到分
+                $row['userScoreBegin'] = intval($row['userScoreBegin'] / 100);
+                $row['userScoreEnd'] = intval($row['userScoreEnd'] / 100);
+
+//                $row['userGameResult'] = number_format($row['userGameResult'] / 100, 2, '.', ' ');
+//                $row['userScoreBegin'] = number_format($row['userScoreBegin'] / 100, 2, '.', ' ');
+//                $row['userScoreEnd'] = number_format($row['userScoreEnd'] / 100, 2, '.', ' ');
             }
             unset($row);
 

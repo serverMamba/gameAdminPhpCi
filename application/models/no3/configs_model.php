@@ -906,96 +906,96 @@ class Configs_model extends CI_Model {
             )
         );
 
-        $nav_menu ["电玩城项目"] = array(
-            "url" => "#",
-            "ns" => "dianwanchengxianmu",
-            "cls" => "icon-edit",
-            "child" => array(
-                array(
-                    "name" => "抽水监控",
-                    "ns" => "dwcxianmu_choushui",
-                    "url" => site_url('no3/arcadechoushui'),
-                    "cls" => "icon-double-angle-right"
-                ),
-                array(
-                    "name" => "水果机游戏记录",
-                    "ns" => "dwcxianmu_wanshunfish1",
-                    "url" => site_url('no3/wanshunfish1dw'),
-                    "cls" => "icon-double-angle-right"
-                ),
-                array(
-                    "name" => "水果机猜大小记录",
-                    "ns" => "dwcxianmu_wanshunfish2",
-                    "url" => site_url('no3/wanshunfish2dw'),
-                    "cls" => "icon-double-angle-right"
-                ),
-                array(
-                    "name" => "寻宝记录",
-                    "ns" => "dwcxianmu_wanshunfish3",
-                    "url" => site_url('no3/wanshunfish3dw'),
-                    "cls" => "icon-double-angle-right"
-                )
-            )
-
-        );
-
-        $nav_menu ["平安游戏项目"] = array(
-            "url" => "#",
-            "ns" => "lhpxiangmu",
-            "cls" => "icon-edit",
-            "child" => array(
-                /**
-                 * array (
-                 * "name" => "抽水监控",
-                 * "ns" => "lhp_choushui",
-                 * "url" => site_url('no3/lhpchoushui'),
-                 * "cls" => "icon-double-angle-right"
-                 * ),
-                 * array (
-                 * "name" => "连环炮游戏记录",
-                 * "ns" => "lhp_gamerecord",
-                 * "url" => site_url('no3/lhpgamerecord'),
-                 * "cls" => "icon-double-angle-right"
-                 * ),
-                 * array (
-                 * "name" => "运营总表",
-                 * "ns" => "lhp_operation_summary",
-                 * "url" => site_url('no3/lhpoperation'),
-                 * "cls" => "icon-double-angle-right"
-                 * ),**/
-                array(
-                    "name" => "游戏开关",
-                    "ns" => "lhp_gameswitch",
-                    "url" => site_url('no3/lhpgameswitch'),
-                    "cls" => "icon-double-angle-right"
-                ),
-                array(
-                    "name" => "财务统计",
-                    "ns" => "lhp_cwtongji",
-                    "url" => site_url('no3/lhpcaiwuReport'),
-                    "cls" => "icon-double-angle-right"
-                ),
-                array(
-                    "name" => "玩家兑换统计",
-                    "ns" => "lhp_golduser",
-                    "url" => site_url('no3/lhpgolduser'),
-                    "cls" => "icon-double-angle-right"
-                ),
-                array(
-                    "name" => "金币兑换记录",
-                    "ns" => "lhp_goldrecord",
-                    "url" => site_url('no3/lhpgoldrecord'),
-                    "cls" => "icon-double-angle-right"
-                ),
-                array(
-                    "name" => "金币兑换曲线",
-                    "ns" => "lhpgold_statistics",
-                    "url" => site_url('no3/lhpgoldStatistsics'),
-                    "cls" => "icon-double-angle-right"
-                ),
-            )
-
-        );
+//        $nav_menu ["电玩城项目"] = array(
+//            "url" => "#",
+//            "ns" => "dianwanchengxianmu",
+//            "cls" => "icon-edit",
+//            "child" => array(
+//                array(
+//                    "name" => "抽水监控",
+//                    "ns" => "dwcxianmu_choushui",
+//                    "url" => site_url('no3/arcadechoushui'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//                array(
+//                    "name" => "水果机游戏记录",
+//                    "ns" => "dwcxianmu_wanshunfish1",
+//                    "url" => site_url('no3/wanshunfish1dw'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//                array(
+//                    "name" => "水果机猜大小记录",
+//                    "ns" => "dwcxianmu_wanshunfish2",
+//                    "url" => site_url('no3/wanshunfish2dw'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//                array(
+//                    "name" => "寻宝记录",
+//                    "ns" => "dwcxianmu_wanshunfish3",
+//                    "url" => site_url('no3/wanshunfish3dw'),
+//                    "cls" => "icon-double-angle-right"
+//                )
+//            )
+//
+//        );
+//
+//        $nav_menu ["平安游戏项目"] = array(
+//            "url" => "#",
+//            "ns" => "lhpxiangmu",
+//            "cls" => "icon-edit",
+//            "child" => array(
+//                /**
+//                 * array (
+//                 * "name" => "抽水监控",
+//                 * "ns" => "lhp_choushui",
+//                 * "url" => site_url('no3/lhpchoushui'),
+//                 * "cls" => "icon-double-angle-right"
+//                 * ),
+//                 * array (
+//                 * "name" => "连环炮游戏记录",
+//                 * "ns" => "lhp_gamerecord",
+//                 * "url" => site_url('no3/lhpgamerecord'),
+//                 * "cls" => "icon-double-angle-right"
+//                 * ),
+//                 * array (
+//                 * "name" => "运营总表",
+//                 * "ns" => "lhp_operation_summary",
+//                 * "url" => site_url('no3/lhpoperation'),
+//                 * "cls" => "icon-double-angle-right"
+//                 * ),**/
+//                array(
+//                    "name" => "游戏开关",
+//                    "ns" => "lhp_gameswitch",
+//                    "url" => site_url('no3/lhpgameswitch'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//                array(
+//                    "name" => "财务统计",
+//                    "ns" => "lhp_cwtongji",
+//                    "url" => site_url('no3/lhpcaiwuReport'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//                array(
+//                    "name" => "玩家兑换统计",
+//                    "ns" => "lhp_golduser",
+//                    "url" => site_url('no3/lhpgolduser'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//                array(
+//                    "name" => "金币兑换记录",
+//                    "ns" => "lhp_goldrecord",
+//                    "url" => site_url('no3/lhpgoldrecord'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//                array(
+//                    "name" => "金币兑换曲线",
+//                    "ns" => "lhpgold_statistics",
+//                    "url" => site_url('no3/lhpgoldStatistsics'),
+//                    "cls" => "icon-double-angle-right"
+//                ),
+//            )
+//
+//        );
 
 
         // $nav_menu["渠道管理"] =array("url"=>"qudao.html","cls"=>"icon-edit");

@@ -144,7 +144,7 @@
                                                                 <font color="red">&#10006;</font>
                                                             <?php } ?>
                                                         </td>
-                                                        <td><?php echo $v['id']; ?></td>
+                                                        <td><a href="<?php echo site_url('no3/userList/userDetailGet') . "?userId=" . $v['id']; ?>"><?php echo $v['id']; ?></a></td>
                                                         <td><?php echo $v['user_email']; ?></td>
                                                         <td><?php echo $v['userIDCardName']; ?></td>
 
@@ -221,11 +221,12 @@
 <script src="<?php echo base_url().'res/js/ace-elements.min.js'; ?>"></script>
 <script src="<?php echo base_url().'res/js/ace.min.js'; ?>"></script>
 
-<script src="../res/js/date-time/bootstrap-datepicker.min.js"></script>
-<script src="../res/js/date-time/bootstrap-timepicker.min.js"></script>
-<script src="../res/js/date-time/moment.min.js"></script>
-<script src="../res/js/date-time/daterangepicker.min.js"></script>
-<script src="../res/js/date-time/daterangepicker.min.js"></script>
+<script src="<?php echo base_url().'res/js/date-time/bootstrap-datepicker.min.js'; ?>"></script>
+<script src="<?php echo base_url().'res/js/date-time/bootstrap-timepicker.min.js'; ?>"></script>
+<script src="<?php echo base_url().'res/js/date-time/moment.min.js'; ?>"></script>
+<script src="<?php echo base_url().'res/js/date-time/daterangepicker.min.js'; ?>"></script>
+<script src="<?php echo base_url().'res/js/date-time/daterangepicker.min.js'; ?>"></script>
+
 <script type="text/javascript">
     $(function(){
         $('#dateBegin').datepicker({autoclose:true}).on(ace.click_event, function(){

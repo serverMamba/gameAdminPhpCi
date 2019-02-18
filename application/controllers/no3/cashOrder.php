@@ -21,13 +21,8 @@ class CashOrder extends CI_Controller {
     public function index() {
         $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
 
-        $per = 20;
-        $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
-        $start = ($page - 1) * $per;
-
         $finalRet = [
-            'content' =>[],
-            'totalNum' => 0
+            'content' =>[]
         ];
         $query = [];
 
@@ -44,7 +39,7 @@ class CashOrder extends CI_Controller {
                 redirect('no3/cashOrder?searchType=3'); // 参数错误, 返回空查询结果
             }
 
-            $finalRet = $this->Order_model->getCashOrderListByTypeOne($userId, $aliPayAccount, $orderId, $operator, $start, $per);
+            $finalRet = $this->Order_model->getCashOrderListByTypeOne($userId, $aliPayAccount, $orderId, $operator);
 
             $query = [
                 'userId' => $userId,
@@ -84,7 +79,7 @@ class CashOrder extends CI_Controller {
                 $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
             }
 
-            $finalRet = $this->Order_model->getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd, $start, $per);
+            $finalRet = $this->Order_model->getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);
 
             $query = [
                 'amountMin' => $amountMinOriginal,
@@ -97,7 +92,6 @@ class CashOrder extends CI_Controller {
         }
 
         $cashOrderList = $finalRet['content'];
-        $totalNum = $finalRet['totalNum'];
 
         $tip_msg = "11";
         $goto_artificial = $this->ifGotoArtificialCash($tip_msg);
@@ -117,17 +111,6 @@ class CashOrder extends CI_Controller {
             'query' => $query,
             'no_process_num' => $this->Order_model->getNoPorcessCashOrderNum()
         );
-
-        $data ['total_rows'] = $totalNum;
-        $data['page'] = $page;
-
-        $this->load->library('pagination');
-        $url = site_url('no3/cashOrder/index') . '?' . http_build_query($query);
-        $config ['base_url'] = $url;
-        $config ['total_rows'] = $data ['total_rows'];
-        $config ['per_page'] = $per;
-
-        $this->pagination->initialize($config);
 
         $this->load->view('no3/cash_order_list_views', $data);
     }

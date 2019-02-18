@@ -156,6 +156,8 @@ class Infodindan extends MY_Controller {
                 "child" => "浏览玩家订单数据 "
             ),
             'orderList' => $orderList,
+            'pay_platform_list' => $this->dindan_model->getPayList(),
+            'game_codes' => $this->config->item ( 'game_codes' ),
             'query' => $query,
             'isNormal' => true,
             'payType' => payType,

@@ -30,6 +30,8 @@ class Brecharge extends CI_Controller {
 	}
 	public function recharge() {
 		$admin_id = $_SESSION ['smc_id'];
+		// test
+        log_message('error', 'admin_id = ' . $admin_id);
 		$user_id = $this->input->post ( 'user_id', true ) ? intval ( $this->input->post ( 'user_id', true ) ) : 0;
 		$money = $this->input->post ( 'money', true ) ? intval ( $this->input->post ( 'money', true ) ) : 0;
 		$third_order_sn = $this->input->post ( 'third_order_sn', true ) ? $this->input->post ( 'third_order_sn', true ) : '';

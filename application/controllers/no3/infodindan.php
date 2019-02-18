@@ -43,7 +43,7 @@ class Infodindan extends MY_Controller {
         echo json_encode($res);
     }
 
-    // searchType: 1精确搜索, 2范围搜索, 3搜索条件错误返回空结果
+    // searchType: 1精确搜索, 2范围搜索, 3快速查询(今日, 昨日...), 100搜索条件错误返回空结果
     public function index() {
         $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
         $isShowPay = $this->input->get('isShowPay', true) ? intval($this->input->get('isShowPay', true)) : 1;
@@ -66,7 +66,7 @@ class Infodindan extends MY_Controller {
 
             $operator = isset($_REQUEST['operator']) && !empty($_REQUEST['operator']) ? trim($_REQUEST['operator']) : '';
 
-            if ($userId === '' && $orderId === '' && $agentId === '' && $operator === '') {
+            if ($userId === '' && $orderId === '' && $thirdOrderId === '' && $agentId === '' && $operator === '') {
                 log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
                     . json_encode($_REQUEST));
                 $this->session->set_flashdata('error', '参数错误');

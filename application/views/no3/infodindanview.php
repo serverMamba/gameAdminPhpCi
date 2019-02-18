@@ -64,9 +64,9 @@
                                         <input value="2" type="hidden" name="searchType"/>
 
                                         <div style="margin-bottom: 20px">
-                                            支付方式
+                                            <span style="margin-left: 0px">支付方式</span>
                                             <select name="payType" id="payType"
-                                                    style="margin-left: 0px; width: 120px;">
+                                                    style="margin-left: 0px; width: 120px;height: 34px">
                                                 <?php foreach ($payType as $k => $v) {
                                                     if (isset($query['payType']) && $k == $query['payType']) {
                                                         ?>
@@ -79,9 +79,9 @@
                                             </select>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            支付状态
+                                            <span style="margin-left: 0px">支付状态</span>
                                             <select name="payStatus" id="payStatus"
-                                                    style="margin-left: 0px; width: 120px;">
+                                                    style="margin-left: 0px; width: 120px; height: 34px">
                                                 <?php foreach ($payStatus as $k => $v) {
                                                     if (isset($query['payStatus']) && intval($k) === intval($query['payStatus'])) {
                                                         ?>
@@ -94,9 +94,9 @@
                                             </select>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            充值情况
+                                            <span style="margin-left: 0px">充值情况</span>
                                             <select name="paySituation" id="paySituation"
-                                                    style="margin-left: 0px; width: 120px;">
+                                                    style="margin-left: 0px; width: 120px; height: 34px">
                                                 <?php foreach ($paySituation as $k => $v) {
                                                     if (isset($query['paySituation']) && intval($k) === intval($query['paySituation'])) {
                                                         ?>
@@ -109,9 +109,9 @@
                                             </select>
 
 
-                                            支付平台
+                                            <span style="margin-left: 15px">支付平台</span>
                                             <select name="pay_platform" id="pay_platform"
-                                                    style="margin-left: 0px; width: 120px;">
+                                                    style="margin-left: 0px; width: 120px; height: 34px">
                                                 <option value="-1">全部</option>
                                                 <?php foreach ($pay_platform_list as $k => $v) { ?>
                                                     <option <?php if ($query['pay_platform'] == $k) { ?> selected="selected"
@@ -120,9 +120,9 @@
                                             </select>
 
 
-                                            游戏种类
+                                            <span style="margin-left: 15px">游戏种类</span>
                                             <select name="game_code" id="game_code"
-                                                    style="margin-left: 0px; width: 120px;">
+                                                    style="margin-left: 0px; width: 120px; height: 34px">
                                                 <?php foreach ($game_codes as $k => $v) { ?>
                                                     <option <?php if ($query['game_code'] == $k) { ?> selected="selected"
                                                     <?php } ?> value="<?php echo $k; ?>"><?php echo $v; ?></option>
@@ -131,26 +131,26 @@
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                         </div>
 
-                                        <div style="margin-bottom: 20px">
+                                        <div style="margin-bottom: 20px;">
                                             金额范围<input value="<?php if ($query['amountMin']) {
                                                 echo $query['amountMin'];
                                             } ?>" type="text" placeholder="最小金额" name="amountMin" id="amountMin"
-                                                       style="margin-left: 10px"/>
+                                                       style="margin-left:5px;height:34px;width:160px;"/>
                                             至<input value="<?php if ($query['amountMax']) {
                                                 echo $query['amountMax'];
                                             } ?>" type="text" placeholder="最大金额" name="amountMax" id="amountMax"
-                                                    style="margin-left: 10px"/>
+                                                    style="margin-left:5px;height:34px;width:160px;"/>
                                         </div>
 
                                         <div style="margin-bottom: 20px">
                                             统计时间<input value="<?php if ($query['dateTimeBegin']) {
                                                 echo $query['dateTimeBegin'];
                                             } ?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间"
-                                                       type="datetime-local"/>
+                                                       type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
                                             至<input value="<?php if ($query['dateTimeEnd']) {
                                                 echo $query['dateTimeEnd'];
                                             } ?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间"
-                                                    type="datetime-local" style="margin-left: 10px"/>
+                                                    type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
 
                                             <button onclick="javascript:onSearch1(1)" class="btn btn-xs btn-success "
                                                     style="margin-top:3px;">
@@ -160,42 +160,6 @@
                                             <button onclick="javascript:onSearch1(2)" class="btn btn-xs btn-success "
                                                     style="margin-top:3px;">
                                                 <span class="bigger-110">导出EXCEL</span>
-                                                <i class="icon-search icon-on-right"></i>
-                                            </button>
-                                        </div>
-
-                                        <div style="margin-bottom: 0px">
-                                            <button onclick="javascript:onQuickSearch(1)"
-                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                <span class="bigger-110">今日</span>
-                                                <i class="icon-search icon-on-right"></i>
-                                            </button>
-                                            <button onclick="javascript:onQuickSearch(2)"
-                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                <span class="bigger-110">昨日</span>
-                                                <i class="icon-search icon-on-right"></i>
-                                            </button>
-                                            <button onclick="javascript:onQuickSearch(3)"
-                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                <span class="bigger-110">本周</span>
-                                                <i class="icon-search icon-on-right"></i>
-                                            </button>
-                                        </div>
-
-                                        <div style="margin-bottom: 20px">
-                                            <button onclick="javascript:onQuickSearch(4)"
-                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                <span class="bigger-110">上周</span>
-                                                <i class="icon-search icon-on-right"></i>
-                                            </button>
-                                            <button onclick="javascript:onQuickSearch(5)"
-                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                <span class="bigger-110">本月</span>
-                                                <i class="icon-search icon-on-right"></i>
-                                            </button>
-                                            <button onclick="javascript:onQuickSearch(6)"
-                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                <span class="bigger-110">上月</span>
                                                 <i class="icon-search icon-on-right"></i>
                                             </button>
                                         </div>
@@ -234,16 +198,52 @@
                                                 </button>
                                             </div>
 
-                                            <div>
-                                                <a class="btn btn-xs btn-danger "
-                                                   style="margin-top:3px;margin-left:3px;margin-bottom:20px"
-                                                   onclick="onclickCheckDelayOrders();">
-                                                    <span class="bigger-110">查询延时订单</span>
-                                                    <i class="icon-search icon-on-right"></i>
-                                                </a>
-                                            </div>
-
                                         </form>
+
+                                        <div style="margin-bottom: 0px">
+                                            <button onclick="javascript:onQuickSearch(1)"
+                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                <span class="bigger-110">今日</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </button>
+                                            <button onclick="javascript:onQuickSearch(2)"
+                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                <span class="bigger-110">昨日</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </button>
+                                            <button onclick="javascript:onQuickSearch(3)"
+                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                <span class="bigger-110">本周</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </button>
+                                        </div>
+
+                                        <div style="margin-bottom: 20px">
+                                            <button onclick="javascript:onQuickSearch(4)"
+                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                <span class="bigger-110">上周</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </button>
+                                            <button onclick="javascript:onQuickSearch(5)"
+                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                <span class="bigger-110">本月</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </button>
+                                            <button onclick="javascript:onQuickSearch(6)"
+                                                    class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                <span class="bigger-110">上月</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </button>
+                                        </div>
+
+                                        <div>
+                                            <a class="btn btn-xs btn-danger "
+                                               style="margin-top:3px;margin-left:3px;margin-bottom:20px"
+                                               onclick="onclickCheckDelayOrders();">
+                                                <span class="bigger-110">查询延时订单</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </a>
+                                        </div>
 
                                         <input type="checkbox" id="hide_pay"
                                                value="1" <?php if ($query['isShowPay'] == 1) { ?> checked="checked" <?php } ?> />

@@ -89,7 +89,7 @@ $statusTextColor = array(
 
                                         <div style="margin-bottom: 20px">
                                             提现状态
-                                            <select name="orderStatus" id="orderStatus">
+                                            <select name="orderStatus" id="orderStatus" style="margin-left: 0px; width: 120px; height: 34px">
                                                 <?php foreach ($statusShowText as $k => $v) { ?>
                                                     <option <?php if ($query['orderStatus'] == $k) { ?> selected="selected" <?php } ?>
                                                             value="<?php echo $k ?>"><?php echo $v ?></option>
@@ -101,22 +101,22 @@ $statusTextColor = array(
                                             金额范围<input value="<?php if ($query['amountMin']) {
                                                 echo $query['amountMin'];
                                             } ?>" type="text" placeholder="最小金额" name="amountMin" id="amountMin"
-                                                       style="margin-left: 10px"/>
+                                                       style="margin-left:5px;height:34px;width:160px;"/>
                                             至<input value="<?php if ($query['amountMax']) {
                                                 echo $query['amountMax'];
                                             } ?>" type="text" placeholder="最大金额" name="amountMax" id="amountMax"
-                                                    style="margin-left: 10px"/>
+                                                    style="margin-left:5px;height:34px;width:160px;"/>
                                         </div>
 
                                         <div style="margin-bottom: 20px">
                                             统计时间<input value="<?php if ($query['dateTimeBegin']) {
                                                 echo $query['dateTimeBegin'];
                                             } ?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间"
-                                                       type="datetime-local"/>
+                                                       type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
                                             至<input value="<?php if ($query['dateTimeEnd']) {
                                                 echo $query['dateTimeEnd'];
                                             } ?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间"
-                                                    type="datetime-local" style="margin-left: 10px"/>
+                                                    type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
 
                                             <button onclick="javascript:onSearch1(1)" class="btn btn-xs btn-success "
                                                     style="margin-top:3px;">
@@ -130,6 +130,38 @@ $statusTextColor = array(
                                                 <i class="icon-envelope icon-on-right"></i>
                                             </button>
                                         </div>
+
+                                        <form action="<?php echo site_url('no3/cashOrder/index'); ?>" id="form"
+                                              method="post">
+
+                                            <input value="1" type="hidden" name="searchType"/>
+
+                                            <div style="margin-bottom: 20px">
+                                                精确搜索
+                                                <input value="<?php if ($query['userId']) {
+                                                    echo $query['userId'];
+                                                } ?>" type="text" placeholder="玩家ID" name="userId"
+                                                       style="margin-left:5px;height:34px;width:160px;"/>
+                                                <input value="<?php if ($query['aliPayAccount']) {
+                                                    echo $query['aliPayAccount'];
+                                                } ?>" type="text" placeholder="支付宝账号" name="aliPayAccount"
+                                                       style="margin-left:5px;height:34px;width:160px;"/>
+                                                <input value="<?php if ($query['orderId']) {
+                                                    echo $query['orderId'];
+                                                } ?>" type="text" placeholder="订单号" name="orderId"
+                                                       style="margin-left:5px;height:34px;width:160px;"/>
+<!--                                                <input value="--><?php //if ($query['operator']) {
+//                                                    echo $query['operator'];
+//                                                } ?><!--" type="text" placeholder="操作员" name="operator"-->
+<!--                                                       style="margin-left:5px;height:34px;width:160px;"/>-->
+
+                                                <button class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                    <span class="bigger-110">查询</span>
+                                                    <i class="icon-search icon-on-right"></i>
+                                                </button>
+                                            </div>
+
+                                        </form>
 
                                         <div style="margin-bottom: 0px">
                                             <button onclick="javascript:onQuickSearch(1)"
@@ -166,39 +198,6 @@ $statusTextColor = array(
                                                 <i class="icon-search icon-on-right"></i>
                                             </button>
                                         </div>
-
-
-                                        <form action="<?php echo site_url('no3/cashOrder/index'); ?>" id="form"
-                                              method="post">
-
-                                            <input value="1" type="hidden" name="searchType"/>
-
-                                            <div style="margin-bottom: 20px">
-                                                精确搜索
-                                                <input value="<?php if ($query['userId']) {
-                                                    echo $query['userId'];
-                                                } ?>" type="text" placeholder="玩家ID" name="userId"
-                                                       style="margin-left:5px;height:34px;width:160px;"/>
-                                                <input value="<?php if ($query['aliPayAccount']) {
-                                                    echo $query['aliPayAccount'];
-                                                } ?>" type="text" placeholder="支付宝账号" name="aliPayAccount"
-                                                       style="margin-left:5px;height:34px;width:160px;"/>
-                                                <input value="<?php if ($query['orderId']) {
-                                                    echo $query['orderId'];
-                                                } ?>" type="text" placeholder="订单号" name="orderId"
-                                                       style="margin-left:5px;height:34px;width:160px;"/>
-<!--                                                <input value="--><?php //if ($query['operator']) {
-//                                                    echo $query['operator'];
-//                                                } ?><!--" type="text" placeholder="操作员" name="operator"-->
-<!--                                                       style="margin-left:5px;height:34px;width:160px;"/>-->
-
-                                                <button class="btn btn-xs btn-success " style="margin-top:3px;">
-                                                    <span class="bigger-110">查询</span>
-                                                    <i class="icon-search icon-on-right"></i>
-                                                </button>
-                                            </div>
-
-                                        </form>
 
                                         <span>未处理订单数：<?php echo $no_process_num; ?></span>
                                         <button onclick="deleteblack('<?php echo site_url('no3/cashOrder/clearBlackAlipayAccount'); ?>');"

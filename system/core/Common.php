@@ -498,6 +498,32 @@ function checkColumnExist($columnName, $tableName, &$db) {
     return true;
 }
 
+/**
+ * 获取本周开始结束时间 - 周一0点到周日24点
+ * @return array
+ */
+function getWeek() {
+    $today = date("Y-m-d");
+
+    // $first =1 表示每周星期一为开始日期 0表示每周日为开始日期
+    $first = 1;
+
+    // 获取当前周的第几天 周日是 0 周一到周六是 1 - 6
+    $w = date('w', strtotime($today));
+
+    // 获取本周开始日期，如果$w是0，则表示周日，减去 6 天
+    $weekStart = date('Y-m-d', strtotime("$today -" . ($w ? $w - $first : 6) . ' days'));
+
+    // 本周结束日期
+    $weekEnd = date('Y-m-d', strtotime("$weekStart +7 days"));
+
+    return [
+        'start' => $weekStart,
+        'end' => $weekEnd
+    ];
+}
+
 
 /* End of file Common.php */
 /* Location: ./system/core/Common.php */
+

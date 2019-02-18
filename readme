@@ -34,3 +34,7 @@ base on codeigniter
             userListView.php, userDetailView.php, userLoginLogView.php, userBetRecordView.php,
             userLvView.php, userLvAddView.php, userLvEditView.php,
             userTagView.php, userTagAddView.php, userTagEditView.php,
+
+
+财务管理 -
+    玩家订单查询: alter table smc_order add column game_code varchar(10) not null default '999990' comment '游戏种类' after param;

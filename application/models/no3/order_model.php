@@ -331,6 +331,7 @@ class Order_model extends CI_Model {
 
     /**
      * 获取提现订单列表 - 按查询方式2
+     * @param $orderStatus
      * @param $amountMin
      * @param $amountMax
      * @param $dateTimeBegin
@@ -338,7 +339,7 @@ class Order_model extends CI_Model {
      * @param bool $export
      * @return array
      */
-    public function getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd, $export = false) {
+    public function getCashOrderListByTypeTwo($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd, $export = false) {
         $finalRet = [
             'content' => [],
             'totalNum' => 0
@@ -351,6 +352,9 @@ class Order_model extends CI_Model {
         $sql2 = 'select * from smc_cash_order';
 
         $itemArr = [];
+        if ($orderStatus !== CASH_ORDER_STATUS_ALL) {
+            $itemArr[] = 'status = ' . $orderStatus;
+        }
         if ($amountMin !== '') {
             $itemArr[] = 'cash_money >= ' . $amountMin;
         }
@@ -468,17 +472,18 @@ class Order_model extends CI_Model {
 
     /**
      * 导出
+     * @param $orderStatus
      * @param $amountMin
      * @param $amountMax
      * @param $dateTimeBegin
      * @param $dateTimeEnd
      */
-    public function exportData($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd) {
+    public function exportData($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd) {
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="提现订单.csv"');
         header('Cache-Control: max-age=0');
 
-        $finalRet = $this->getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd,  true);
+        $finalRet = $this->getCashOrderListByTypeTwo($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd,  true);
         $rows = $finalRet['content'];
 
         $ret = [];

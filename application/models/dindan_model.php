@@ -12,16 +12,16 @@ class dindan_model extends CI_Model {
 
     /**
      * 获取订单列表 - 按查询方式1
-     * todo agentId在smc_order表中不存在
      * @param $userId
      * @param $orderId
+     * @param $thirdOrderId
      * @param $agentId
      * @param $operator
      * @param $start
      * @param $per
      * @return array
      */
-    public function getOrderListByTypeOne($userId, $orderId, $agentId, $operator, $start, $per) {
+    public function getOrderListByTypeOne($userId, $orderId, $thirdOrderId, $agentId, $operator, $start, $per) {
         $finalRet = [
             'content' => [],
             'totalNum' => 0
@@ -49,10 +49,13 @@ class dindan_model extends CI_Model {
         $sqlCount = 'select count(*) as totalNum from smc_order o left join smc_admin a on o.refer = a.id';
 
         if ($userId !== '') {
-            $itemArr[] = 'user_id = ' . $userId;
+            $itemArr[] = 'o.user_id = ' . $userId;
         }
         if ($orderId !== '') {
-            $itemArr[] = 'order_sn = ' . $this->db->escape($orderId);
+            $itemArr[] = 'o.order_sn = ' . $this->db->escape($orderId);
+        }
+        if ($thirdOrderId !== '') {
+            $itemArr[] = 'o.third_order_sn = ' . $this->db->escape($thirdOrderId);
         }
 
         if (!empty($itemArr)) {
@@ -89,6 +92,8 @@ class dindan_model extends CI_Model {
      * @param $payType
      * @param $payStatus
      * @param $paySituation
+     * @param $payPlatform
+     * @param $gameCode
      * @param $amountMin
      * @param $amountMax
      * @param $dateTimeBegin
@@ -98,7 +103,7 @@ class dindan_model extends CI_Model {
      * @param bool $export
      * @return array
      */
-    public function getOrderListByTypeTwo($payType, $payStatus, $paySituation, $amountMin, $amountMax,
+    public function getOrderListByTypeTwo($payType, $payStatus, $paySituation, $payPlatform, $gameCode, $amountMin, $amountMax,
                                           $dateTimeBegin, $dateTimeEnd, $start = 0, $per = 0, $export = false) {
         $finalRet = [
             'content' => [],
@@ -148,6 +153,12 @@ class dindan_model extends CI_Model {
             $str = implode(',', $userIdArr);
             $itemArr[] = 'o.user_id in (' . $str . ')';
         }
+        if ($payPlatform !== -1) {
+            $itemArr[] = 'o.pay_platform = ' . $payPlatform;
+        }
+        if (!empty($gameCode)) {
+            $itemArr[] = 'o.game_code = ' . $gameCode; // todo smc_order表需要增加game_code字段, 默认值设为多少
+        }
 
         if (!empty($itemArr)) {
             $str = implode(' and ', $itemArr);
@@ -160,10 +171,6 @@ class dindan_model extends CI_Model {
         }
 
         $rows = $db->query($sql)->result_array();
-
-        // test
-        log_message('error', 'paySituation = ' . $paySituation . ', userIdArr = ' . json_encode($userIdArr)
-            . ', sql = ' . $sql . ', rows = ' . json_encode($rows));
 
         if (!empty($rows)) {
             $finalRet['content'] = $rows;
@@ -215,6 +222,12 @@ class dindan_model extends CI_Model {
                     $row ['pay_success_time'] = ' - ';
                 }
 
+                if (isset ($this->pay_platform_list [$row ['pay_platform']])) {
+                    $row['pay_platform'] = $this->pay_platform_list [$row ['pay_platform']];
+                } else {
+                    $row['pay_platform'] = '--';
+                }
+
                 $row['refer'] = $row['admin_name'];
             }
             unset($row);
@@ -226,18 +239,22 @@ class dindan_model extends CI_Model {
      * @param $payType
      * @param $payStatus
      * @param $paySituation
+     * @param $payPlatform
+     * @param $gameCode
      * @param $amountMin
      * @param $amountMax
      * @param $dateTimeBegin
      * @param $dateTimeEnd
      */
-    public function exportData($payType, $payStatus, $paySituation, $amountMin, $amountMax,
+    public function exportData($payType, $payStatus, $paySituation,
+                               $payPlatform, $gameCode, $amountMin, $amountMax,
                                $dateTimeBegin, $dateTimeEnd) {
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="充值订单.csv"');
         header('Cache-Control: max-age=0');
 
-        $finalRet = $this->getOrderListByTypeTwo($payType, $payStatus, $paySituation, $amountMin, $amountMax,
+        $finalRet = $this->getOrderListByTypeTwo($payType, $payStatus, $paySituation,
+            $payPlatform, $gameCode, $amountMin, $amountMax,
             $dateTimeBegin, $dateTimeEnd, 0, 0, true);
         $rows = $finalRet['content'];
         $this->formatOrderList($rows);
@@ -257,7 +274,7 @@ class dindan_model extends CI_Model {
 
             $tmpArr['pay_success_time'] = $row['pay_success_time'];
             $tmpArr['status'] = $row['status'];
-            $tmpArr['refer'] = $row['refer'] == 2 ? 'Android' : 'Ios';
+            $tmpArr['refer'] = $row['refer'];
             $tmpArr['pay_type'] = $row['pay_type'] ? $row['pay_type'] : '--';
 
             $ret[] = $tmpArr;
@@ -268,7 +285,7 @@ class dindan_model extends CI_Model {
         $head = [
             "玩家ID", "充值情况", "充值金额", "充值前金币",
             "充值后金币", "订单号", "参数", "提交时间",
-            "到账时间", "状态", "	来源", "支付方式"
+            "到账时间", "状态", "操作员", "支付方式"
         ];
         foreach ($head as $i => $v) {
             $head[$i] = iconv('utf-8', 'gbk', $v);

@@ -3,6 +3,20 @@ if (!defined('BASEPATH'))
     exit ('No direct script access allowed');
 
 class CashOrder extends CI_Controller {
+
+    // 提现订单状态
+    const orderStatus = [
+        CASH_ORDER_STATUS_ALL => "全部",
+        CASH_ORDER_STATUS_NOT_COMPLETE => "等待处理",
+        CASH_ORDER_STATUS_NEW => "新建",
+        CASH_ORDER_STATUS_SUCCESS => "成功",
+        CASH_ORDER_STATUS_FAIL => "失败",
+        CASH_ORDER_STATUS_WAIT_REVIEW => "被过滤",
+        CASH_ORDER_STATUS_REVIEW_PASS => "审核通过",
+        CASH_ORDER_STATUS_UNKNOWN => "未知状态",
+        CASH_ORDER_STATUS_DEALING => "处理中",
+    ];
+
     public function __construct() {
         parent::__construct(false, false);
         if (!$this->Common_model->isLogin()) {
@@ -36,7 +50,7 @@ class CashOrder extends CI_Controller {
                 log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
                     . json_encode($_REQUEST));
                 $this->session->set_flashdata('error', '参数错误');
-                redirect('no3/cashOrder?searchType=3'); // 参数错误, 返回空查询结果
+                redirect('no3/cashOrder?searchType=100'); // 参数错误, 返回空查询结果
             }
 
             $finalRet = $this->Order_model->getCashOrderListByTypeOne($userId, $aliPayAccount, $orderId, $operator);
@@ -51,6 +65,7 @@ class CashOrder extends CI_Controller {
             ];
 
         } else if ($searchType === 2) {
+            $orderStatus = isset($_REQUEST['orderStatus']) ? intval($_REQUEST['orderStatus']) : CASH_ORDER_STATUS_ALL;
             $amountMinOriginal = isset($_REQUEST['amountMin']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMin']) : '';
             $amountMaxOriginal = isset($_REQUEST['amountMax']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMax']) : '';
             $amountMin = $amountMax = '';
@@ -65,7 +80,7 @@ class CashOrder extends CI_Controller {
             if ($amountMin !== '' && $amountMax !== '') {
                 if ($amountMax < $amountMin) {
                     $this->session->set_flashdata('error', '金额范围不合法');
-                    redirect('no3/cashOrder?searchType=3');
+                    redirect('no3/cashOrder?searchType=100');
                 }
             }
 
@@ -79,9 +94,10 @@ class CashOrder extends CI_Controller {
                 $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
             }
 
-            $finalRet = $this->Order_model->getCashOrderListByTypeTwo($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);
+            $finalRet = $this->Order_model->getCashOrderListByTypeTwo($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);
 
             $query = [
+                'orderStatus' => $orderStatus,
                 'amountMin' => $amountMinOriginal,
                 'amountMax' => $amountMaxOriginal,
 
@@ -89,6 +105,53 @@ class CashOrder extends CI_Controller {
                 'dateTimeEnd' => $dateTimeEndOriginal,
                 'searchType' => $searchType
             ];
+        } else if ($searchType === 3) { // 快速查询 - 今日, 昨日 ...
+            $type = isset($_REQUEST['type']) && !empty($_REQUEST['type']) ? intval($_REQUEST['type']) : 1;
+
+            $orderStatus = CASH_ORDER_STATUS_ALL;
+            $amountMin = $amountMax = '';
+            $now = time();
+
+            $dateTimeBegin = $dateTimeEnd = '';
+            switch ($type) {
+                case 1: // 今日
+                    $dateTimeBegin = date('Y-m-d 00:00:00', $now);
+                    $dateTimeEnd = date('Y-m-d 23:59:59', $now);
+                    break;
+                case 2: // 昨日
+                    $time = strtotime('-1 day', $now);
+                    $dateTimeBegin = date('Y-m-d 00:00:00', $time);
+                    $dateTimeEnd = date('Y-m-d 23:59:59', $time);
+                    break;
+                case 3: // 本周
+                    $time = '1' == date('w') ? strtotime('Monday', $now) : strtotime('last Monday', $now);
+                    $dateTimeBegin = date('Y-m-d 00:00:00', $time);
+                    $dateTimeEnd = date('Y-m-d 23:59:59', strtotime('Sunday', $now));
+                    break;
+                case 4: // 上周
+                    // 本周一
+                    $thisMonday = '1' == date('w') ? strtotime('Monday', $now) : strtotime('last Monday', $now);
+                    // 上周一
+                    $lastMonday = strtotime('-7 days', $thisMonday);
+                    $dateTimeBegin = date('Y-m-d 00:00:00', $lastMonday);
+                    $dateTimeEnd = date('Y-m-d 23:59:59', strtotime('last sunday', $now));
+                    break;
+                case 5: // 本月
+                    $dateTimeBegin = date('Y-m-01 00:00:00', strtotime(date("Y-m-d")));
+                    $dateTimeEnd = date('Y-m-d 23:59:59', strtotime("$dateTimeBegin +1 month -1 day"));
+                    break;
+                case 6: // 上月
+                    $dateTimeBegin = date('Y-m-d 00:00:00', strtotime(date('Y-m-01') . ' -1 month'));
+                    $dateTimeEnd = date('Y-m-d 23:59:59', strtotime(date('Y-m-01') . ' -1 day'));
+                    break;
+                default:
+                    log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
+                        . json_encode($_REQUEST));
+                    $this->session->set_flashdata('error', '参数错误');
+                    redirect('no3/cashOrder?searchType=100'); // 参数错误, 返回空查询结果
+            }
+
+            $finalRet = $this->Order_model->getCashOrderListByTypeTwo($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);
         }
 
         $cashOrderList = $finalRet['content'];
@@ -119,6 +182,7 @@ class CashOrder extends CI_Controller {
      * 导出
      */
     public function exportData() {
+        $orderStatus = isset($_REQUEST['orderStatus']) ? intval($_REQUEST['orderStatus']) : CASH_ORDER_STATUS_ALL;
         $amountMinOriginal = isset($_POST['amountMin']) && !empty($_POST['amountMin']) ? trim($_POST['amountMin']) : '';
         $amountMaxOriginal = isset($_POST['amountMax']) && !empty($_POST['amountMin']) ? trim($_POST['amountMax']) : '';
         $amountMin = $amountMax = '';
@@ -147,7 +211,7 @@ class CashOrder extends CI_Controller {
             $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
         }
 
-        $res = $this->Order_model->exportData($amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);
+        $res = $this->Order_model->exportData($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);
     }
 
     public function batchFinish() {

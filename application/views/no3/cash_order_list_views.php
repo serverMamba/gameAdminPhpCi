@@ -112,11 +112,11 @@ $statusTextColor = array(
                                             统计时间<input value="<?php if ($query['dateTimeBegin']) {
                                                 echo $query['dateTimeBegin'];
                                             } ?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间"
-                                                       type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
+                                                       type="datetime-local" style="margin-left:5px;height:34px;width:220px;"/>
                                             至<input value="<?php if ($query['dateTimeEnd']) {
                                                 echo $query['dateTimeEnd'];
                                             } ?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间"
-                                                    type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
+                                                    type="datetime-local" style="margin-left:5px;height:34px;width:220px;"/>
 
                                             <button onclick="javascript:onSearch1(1)" class="btn btn-xs btn-success "
                                                     style="margin-top:3px;">
@@ -411,6 +411,34 @@ $statusTextColor = array(
 <script src="<?php echo base_url() . 'res/js/date-time/moment.min.js'; ?>"></script>
 <script src="<?php echo base_url() . 'res/js/date-time/daterangepicker.min.js'; ?>"></script>
 <script type="text/javascript">
+    // 日期控件datetime_local 设置默认值今天
+    var today = "";
+    var useLast = "<?php echo $query['dateTimeBegin'] ?>";
+    // 构造符合datetime-local格式的当前日期
+    function getToday() {
+        format = "";
+        var nTime = new Date();
+        format += nTime.getFullYear() + "-";
+        format += (nTime.getMonth() + 1) < 10 ? "0" + (nTime.getMonth() + 1) : (nTime.getMonth() + 1);
+        format += "-";
+        format += nTime.getDate() < 10 ? "0" + (nTime.getDate()) : (nTime.getDate());
+        format += "T";
+
+        return format;
+    }
+    if (useLast) {
+        document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
+        document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
+    } else {
+        today = getToday();
+        todayBegin = today + '00:00:00';
+        todayEnd = today + '23:59:59';
+
+        document.getElementById('dateTimeBegin').value = todayBegin;
+        document.getElementById('dateTimeEnd').value = todayEnd;
+    }
+
+
     $(function () {
         $('#id_date_picker_1').datepicker({autoclose: true}).on(ace.click_event, function () {
             $("#id_date_picker_1").focus();
@@ -495,9 +523,9 @@ $statusTextColor = array(
      */
     function onSearch1(type) {
         if (type == 1) { // 查询
-            var param = 'cashOrder';
+            var param = "<?php echo site_url('no3/cashOrder'); ?>";
         } else { // 导出
-            var param = 'cashOrder/exportData';
+            var param = "<?php echo site_url('no3/cashOrder/exportData'); ?>";
         }
 
         var form = $("<form>");
@@ -532,17 +560,17 @@ $statusTextColor = array(
         input5.attr("value", $("#dateTimeEnd").val());
 
         var input6 = $("<input>");
-        input5.attr("type", "hidden");
-        input5.attr("name", "searchType");
-        input5.attr("value", 2);
+        input6.attr("type", "hidden");
+        input6.attr("name", "searchType");
+        input6.attr("value", 2);
 
         var input7 = $("<input>");
-        input5.attr("type", "hidden");
-        input5.attr("name", "orderStatus");
-        input5.attr("value", $("#orderStatus").val());
+        input7.attr("type", "hidden");
+        input7.attr("name", "orderStatus");
+        input7.attr("value", $("#orderStatus").val());
 
         $("body").append(form);
-        form.append(input1, input2, input3, input4, input5);
+        form.append(input1, input2, input3, input4, input5, input6, input7);
         form.submit();
     }
 

@@ -175,6 +175,9 @@ class CashOrder extends CI_Controller {
             'no_process_num' => $this->Order_model->getNoPorcessCashOrderNum()
         );
 
+        // test
+        log_message('error', 'query = ' . json_encode($query));
+
         $this->load->view('no3/cash_order_list_views', $data);
     }
 

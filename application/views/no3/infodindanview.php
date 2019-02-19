@@ -146,11 +146,13 @@
                                             统计时间<input value="<?php if ($query['dateTimeBegin']) {
                                                 echo $query['dateTimeBegin'];
                                             } ?>" name="dateTimeBegin" id="dateTimeBegin" placeholder="开始时间"
-                                                       type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
+                                                       type="datetime-local"
+                                                       style="margin-left:5px;height:34px;width:220px;"/>
                                             至<input value="<?php if ($query['dateTimeEnd']) {
                                                 echo $query['dateTimeEnd'];
                                             } ?>" name="dateTimeEnd" id="dateTimeEnd" placeholder="终止时间"
-                                                    type="datetime-local" style="margin-left:5px;height:34px;width:160px;"/>
+                                                    type="datetime-local"
+                                                    style="margin-left:5px;height:34px;width:220px;"/>
 
                                             <button onclick="javascript:onSearch1(1)" class="btn btn-xs btn-success "
                                                     style="margin-top:3px;">
@@ -183,10 +185,11 @@
                                                     echo $query['thirdOrderId'];
                                                 } ?>" type="text" placeholder="第三方订单号" name="thirdOrderId"
                                                        style="margin-left:5px;height:34px;width:160px;"/>
-                                                <input value="<?php if (isset($query['agentId'])) {
-                                                    echo $query['agentId'];
-                                                } ?>" type="text" placeholder="所属代理" name="agentId"
-                                                       style="margin-left:5px;height:34px;width:160px;"/>
+                                                <!--                                                <input value="-->
+                                                <?php //if (isset($query['agentId'])) {
+                                                //                                                    echo $query['agentId'];
+                                                //                                                } ?><!--" type="text" placeholder="所属代理" name="agentId"-->
+                                                <!--                                                       style="margin-left:5px;height:34px;width:160px;"/>-->
                                                 <input value="<?php if (isset($query['operator'])) {
                                                     echo $query['operator'];
                                                 } ?>" type="text" placeholder="操作员" name="operator"
@@ -315,6 +318,16 @@
                                                 </table>
 
                                                 <div class="modal-footer no-margin-top">
+                                                    <div class="dataTables_info pull-left" id="sample-table-2_info">
+                                                        第<span><?php echo $pageInfo['page'] ?></span>页,
+                                                        共<span><?php echo $pageInfo['pageNum'] ?></span>页,
+                                                        跳转到第<input type="text" id="page"
+                                                                   style="margin-left:5px;height:34px;width:100px;"/>页
+                                                        <button onclick="javascript:onJump()"
+                                                                class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                            跳转
+                                                        </button>
+                                                    </div>
                                                     <?php echo $this->pagination->create_links(); ?>
                                                 </div>
 
@@ -437,28 +450,32 @@
 <script src="<?php echo base_url() . 'res/js/date-time/daterangepicker.min.js'; ?>"></script>
 
 <script type="text/javascript">
-    //        // 今天
-    //        var myDate = new Date(), Y = myDate.getFullYear(), M = myDate.getMonth() + 1, D = myDate.getDate();
-    //        if((M + '').length == 1){ // 处理月是一位的情况
-    //            M = '0' + (M + '');
-    //        }
-    //        if((D + '').length == 1){ // 处理日是一位的情况
-    //            D = '0' + (D + '')
-    //        }
-    //        var curDay = Y + '-' + M + '-' + D;
-    //        $('#dateTimeBegin').val(curDay + 'T00:00');
-    //
-    //        // 明天
-    //        myDate.setDate(myDate.getDate() + 1);
-    //        var Y1 = myDate.getFullYear(), M1 = myDate.getMonth() + 1, D1 = myDate.getDate();
-    //        if((M1 + '').length == 1){
-    //            M1 = '0' + (M1 + '');
-    //        }
-    //        if((D1 + '').length == 1){
-    //            D1 = '0' + (D1 + '')
-    //        }
-    //        var curDay1 = Y1 + '-' + M1 + '-' + D1;
-    //        $('#dateTimeEnd').val(curDay1 + 'T00:00');
+    // 日期控件datetime_local 设置默认值今天
+    var today = "";
+    var useLast = "<?php echo $query['dateTimeBegin'] ?>";
+    // 构造符合datetime-local格式的当前日期
+    function getToday() {
+        format = "";
+        var nTime = new Date();
+        format += nTime.getFullYear() + "-";
+        format += (nTime.getMonth() + 1) < 10 ? "0" + (nTime.getMonth() + 1) : (nTime.getMonth() + 1);
+        format += "-";
+        format += nTime.getDate() < 10 ? "0" + (nTime.getDate()) : (nTime.getDate());
+        format += "T";
+
+        return format;
+    }
+    today = getToday();
+    todayBegin = today + '00:00:00';
+    todayEnd = today + '23:59:59';
+    if (useLast) {
+        document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
+        document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
+    } else {
+        document.getElementById('dateTimeBegin').value = todayBegin;
+        document.getElementById('dateTimeEnd').value = todayEnd;
+    }
+
 
     $(function () {
         $('#id_date_picker_1').datepicker({autoclose: true}).on(ace.click_event, function () {
@@ -566,9 +583,9 @@
      */
     function onSearch1(type) {
         if (type == 1) { // 查询
-            var param = "infodindan";
+            var param = "<?php echo site_url('no3/infodindan'); ?>";
         } else { // 导出
-            var param = "infodindan/exportData"
+            var param = "<?php echo site_url('no3/infodindan/exportData'); ?>";
         }
 
         var form = $("<form>");
@@ -664,6 +681,15 @@
         $("body").append(form);
         form.append(input1, input2);
         form.submit();
+    }
+
+    /**
+     * 跳转到第几页
+     */
+    function onJump() {
+        var page = $("#page").val();
+        var url = "<?php echo site_url('no3/infodindan/index') . '?' . http_build_query($query) ?>" + '&page=' + page;
+        location.href = url;
     }
 </script>
 </body>

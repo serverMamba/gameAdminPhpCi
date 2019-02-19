@@ -45,6 +45,8 @@ class Infodindan extends MY_Controller {
 
     // searchType: 1精确搜索, 2范围搜索, 3快速查询(今日, 昨日...), 100搜索条件错误返回空结果
     public function index() {
+        // test
+        log_message('error', 'index ok');
         $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
         $isShowPay = $this->input->get('isShowPay', true) ? intval($this->input->get('isShowPay', true)) : 1;
 
@@ -194,6 +196,24 @@ class Infodindan extends MY_Controller {
             $finalRet = $this->dindan_model->getOrderListByTypeTwo($payType, $payStatus, $paySituation,
                 $payPlatform, $gameCode, $amountMin, $amountMax,
                 $dateTimeBegin, $dateTimeEnd, $start, $per);
+
+            $query = [
+                'payType' => $payType,
+                'payStatus' => $payStatus,
+                'paySituation' => $paySituation,
+                'pay_platform' => $payPlatform,
+
+                'game_code' => $gameCode,
+                'amountMin' => $amountMin,
+                'amountMax' => $amountMax,
+
+                'dateTimeBegin' => '',
+                'dateTimeEnd' => '',
+                'searchType' => $searchType,
+                'isShowPay' => $isShowPay,
+
+                'type' => $type
+            ];
         }
 
         $orderList = $finalRet['content'];
@@ -224,7 +244,11 @@ class Infodindan extends MY_Controller {
             'isNormal' => true,
             'payType' => payType,
             'payStatus' => payStatus,
-            'paySituation' => paySituation
+            'paySituation' => paySituation,
+            'pageInfo' => [
+                'pageNum' => ceil($totalNum / $per),
+                'page' => $page
+            ]
         );
 
         $data ['total_rows'] = $totalNum;
@@ -245,6 +269,8 @@ class Infodindan extends MY_Controller {
      * 导出
      */
     public function exportData() {
+        // test
+        log_message('error', 'exportData ok ');
         $payType = isset($_REQUEST['payType']) ? $_REQUEST['payType'] : -1;
         $payStatus = isset($_REQUEST['payStatus']) ? intval($_REQUEST['payStatus']) : -1;
         $paySituation = isset($_REQUEST['paySituation']) ? intval($_REQUEST['paySituation']) : -1;

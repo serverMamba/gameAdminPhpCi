@@ -22,7 +22,7 @@
             ace.settings.check('main-container', 'fixed')
         } catch (e) {
         }
-    </script
+    </script>
 
     <div class="main-container-inner">
         <a class="menu-toggler" id="menu-toggler" href="#"> <span
@@ -208,7 +208,6 @@
                                                        style="margin-bottom: 10px;">
                                                     <thead id="targethead">
                                                     <tr>
-                                                        <th></th>
                                                         <th>统计时间</th>
                                                         <th>营收</th>
                                                         <th>充值</th>
@@ -225,45 +224,54 @@
                                                     </thead>
                                                     <tbody id="tbody">
                                                     <?php if (!empty($timeData)) {
-                                                        foreach ($timeData as $k => $v) { ?>
-                                                            <tr id="<?php echo $k ?>">
-                                                                <td><a
-                                                                                href="javascript:onDetailTest(<?php echo $k ?>)">详细</a></td>
-                                                                <td id="dateTest"><?php echo $v['date']; ?></td>
+                                                        foreach ($timeData as $v) { ?>
+                                                            <tr>
+                                                                <td><?php echo $v['date']; ?></td>
                                                                 <td>
-                                                                    <?php echo $v['revenue']; ?>
+                                                                    <span style="float: left"><?php echo $v['revenue']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail()">详细</a></span>
                                                                 </td>
                                                                 <td>
-                                                                    <?php echo $v['recharge']; ?>
+                                                                    <span style="float: left"><?php echo $v['recharge']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail(2)">详细</a></span>
                                                                 </td>
                                                                 <td>
-                                                                    <?php echo $v['exchange']; ?>
-                                                                </td>
-
-                                                                <td>
-                                                                    <?php echo $v['totalGold']; ?>
-                                                                </td>
-                                                                <td>
-                                                                    <?php echo $v['registerNum']; ?>
-                                                                </td>
-                                                                <td>
-                                                                    <?php echo $v['loginNum']; ?>
-                                                                </td>
-                                                                <td>
-                                                                    <?php echo $v['totalTax']; ?>
+                                                                    <span style="float: left"><?php echo $v['exchange']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail(3)">详细</a></span>
                                                                 </td>
 
                                                                 <td>
-                                                                    <?php echo $v['gameRecord']; ?>
+                                                                    <span style="float: left;"><?php echo $v['totalGold']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail(4)">详细</a></span>
                                                                 </td>
                                                                 <td>
-                                                                    <?php echo $v['lastUpdateTime']; ?>
+                                                                    <span style="float: left"><?php echo $v['registerNum']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail(5)">详细</a></span>
                                                                 </td>
-                                                            </tr>
+                                                                <td>
+                                                                    <span style="float: left"><?php echo $v['loginNum']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail(6)">详细</a></span>
+                                                                </td>
+                                                                <td>
+                                                                    <span style="float: left"><?php echo $v['totalTax']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail(7)">详细</a></span>
+                                                                </td>
 
-                                                            <tr id="<?php echo $k . '_sun' ?>" style="display: none">
-                                                                <td><span style="float: right;"><a
-                                                                                href="javascript:onHideDetail()">隐藏详细</a></span></td>
+                                                                <td>
+                                                                    <span style="float: left"><?php echo $v['gameRecord']; ?></span>
+                                                                    <span style="float: right;"><a
+                                                                                href="javascript:onDetail(8)">详细</a></span>
+                                                                </td>
+                                                                <td>
+                                                                    <span style="float: left"><?php echo $v['lastUpdateTime']; ?></span>
+                                                                </td>
                                                             </tr>
                                                         <?php }
                                                     } ?>
@@ -288,238 +296,186 @@
                                                 <?php //echo $this->pagination->create_links();?>
                                             </div>
                                         </div>
-<!--                                        <table id="sample-table-2"-->
-<!--                                               class="table table-striped table-bordered table-hover"-->
-<!--                                               style="margin-bottom: 10px;">-->
-<!--                                            <thead>-->
-<!--                                            <tr>-->
-<!--                                                <td>姓名</td>-->
-<!--                                                <td>日期</td>-->
-<!--                                                <td>金额</td>-->
-<!--                                                <td>说明</td>-->
-<!--                                            </tr>-->
-<!--                                            </thead>-->
-<!--                                            <tbody>-->
-<!--                                            <tr id="s1">-->
-<!--                                                <td>张1</td>-->
-<!--                                                <td>2009-01-02</td>-->
-<!--                                                <td>12.35</td>-->
-<!--                                                <td>A股</td>-->
-<!--                                                <td>abc</td>-->
-<!--                                            </tr>-->
-<!--                                            <tr id="c1">-->
-<!--                                                <td>张2</td>-->
-<!--                                                <td>2009-02-02</td>-->
-<!--                                                <td>122.35</td>-->
-<!--                                                <td>B股</td>-->
-<!--                                                <td>abc</td>-->
-<!--                                            </tr>-->
-<!--                                            <tr id="c3">-->
-<!--                                                <td>张4</td>-->
-<!--                                                <td>2009-04-02</td>-->
-<!--                                                <td>142.35</td>-->
-<!--                                                <td>港股</td>-->
-<!--                                                <td>abc</td>-->
-<!--                                            </tr>-->
-<!---->
-<!--                                            </tbody>-->
-<!--                                        </table>-->
-                                        <!-- /.col -->
                                     </div>
-                                    <!-- /.row -->
                                 </div>
-                                <!-- /.page-content -->
                             </div>
-                            <!-- /.main-content -->
-                            <!-- /#ace-settings-container -->
                         </div>
-                        <!-- /.main-container-inner -->
                     </div>
-                    <!-- /.main-container -->
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.page-content -->
+        </div>
+        <!-- /.main-content -->
+        <!-- /#ace-settings-container -->
+    </div>
+    <!-- /.main-container-inner -->
+</div>
+<!-- /.main-container -->
 
-                    <script src="<?php echo base_url() . 'res/js/jquery-2.0.3.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'res/js/jquery-ui-1.10.3.custom.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'res/js/bootstrap.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'res/js/ace-elements.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'res/js/ace.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'js/context.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/jquery-2.0.3.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/jquery-ui-1.10.3.custom.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/bootstrap.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/ace-elements.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/ace.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'js/context.js'; ?>"></script>
 
-                    <script src="<?php echo base_url() . 'res/js/date-time/bootstrap-datepicker.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'res/js/date-time/bootstrap-timepicker.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'res/js/date-time/moment.min.js'; ?>"></script>
-                    <script src="<?php echo base_url() . 'res/js/date-time/daterangepicker.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/date-time/bootstrap-datepicker.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/date-time/bootstrap-timepicker.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/date-time/moment.min.js'; ?>"></script>
+<script src="<?php echo base_url() . 'res/js/date-time/daterangepicker.min.js'; ?>"></script>
+<script type="text/javascript">
+    // 日期控件datetime_local 设置默认值今天
+    var today = "";
+    var useDefault = "<?php echo $useDefault ?>";
 
+    // 构造符合datetime-local格式的当前日期
+    function getToday() {
+        format = "";
+        var nTime = new Date();
+        format += nTime.getFullYear() + "-";
+        format += (nTime.getMonth() + 1) < 10 ? "0" + (nTime.getMonth() + 1) : (nTime.getMonth() + 1);
+        format += "-";
+        format += nTime.getDate() < 10 ? "0" + (nTime.getDate()) : (nTime.getDate());
+        format += "T";
 
-                    <script type="text/javascript">
-                        // 日期控件datetime_local 设置默认值今天
-                        var today = "";
-                        var useDefault = "<?php echo $useDefault ?>";
+        return format;
+    }
+    today = getToday();
+    todayBegin = today + '00:00:00';
+    todayEnd = today + '23:59:59';
+    if (useDefault) {
+        document.getElementById('dateTimeBegin').value = todayBegin;
+        document.getElementById('dateTimeEnd').value = todayEnd;
+    } else {
+        document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
+        document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
+    }
 
-                        // 构造符合datetime-local格式的当前日期
-                        function getToday() {
-                            format = "";
-                            var nTime = new Date();
-                            format += nTime.getFullYear() + "-";
-                            format += (nTime.getMonth() + 1) < 10 ? "0" + (nTime.getMonth() + 1) : (nTime.getMonth() + 1);
-                            format += "-";
-                            format += nTime.getDate() < 10 ? "0" + (nTime.getDate()) : (nTime.getDate());
-                            format += "T";
+    /**
+     * 查询/导出excel
+     * @param type
+     */
+    function onSearch1(type) {
+        if (type == 1) { // 查询
+            var param = "<?php echo site_url('no3/homePage'); ?>";
+        } else { // 导出
+            var param = "<?php echo site_url('no3/homePage/exportData'); ?>";
+        }
 
-                            return format;
-                        }
-                        today = getToday();
-                        todayBegin = today + '00:00:00';
-                        todayEnd = today + '23:59:59';
-                        if (useDefault) {
-                            document.getElementById('dateTimeBegin').value = todayBegin;
-                            document.getElementById('dateTimeEnd').value = todayEnd;
-                        } else {
-                            document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
-                            document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
-                        }
+        var form = $("<form>");
+        form.attr("style", "display:none");
+        form.attr("target", "");
+        form.attr("method", "post");
+        form.attr("action", param);
 
-                        /**
-                         * 查询/导出excel
-                         * @param type
-                         */
-                        function onSearch1(type) {
-                            if (type == 1) { // 查询
-                                var param = "<?php echo site_url('no3/homePage'); ?>";
-                            } else { // 导出
-                                var param = "<?php echo site_url('no3/homePage/exportData'); ?>";
-                            }
+        var input1 = $("<input>");
+        input1.attr("type", "hidden");
+        input1.attr("name", "exportData");
+        input1.attr("value", (new Date()).getMilliseconds());
 
-                            var form = $("<form>");
-                            form.attr("style", "display:none");
-                            form.attr("target", "");
-                            form.attr("method", "post");
-                            form.attr("action", param);
+        var input2 = $("<input>");
+        input2.attr("type", "hidden");
+        input2.attr("name", "amountMin");
+        input2.attr("value", $("#amountMin").val());
 
-                            var input1 = $("<input>");
-                            input1.attr("type", "hidden");
-                            input1.attr("name", "exportData");
-                            input1.attr("value", (new Date()).getMilliseconds());
+        var input3 = $("<input>");
+        input3.attr("type", "hidden");
+        input3.attr("name", "amountMax");
+        input3.attr("value", $("#amountMax").val());
 
-                            var input2 = $("<input>");
-                            input2.attr("type", "hidden");
-                            input2.attr("name", "amountMin");
-                            input2.attr("value", $("#amountMin").val());
+        var input4 = $("<input>");
+        input4.attr("type", "hidden");
+        input4.attr("name", "dateTimeBegin");
+        input4.attr("value", $("#dateTimeBegin").val());
 
-                            var input3 = $("<input>");
-                            input3.attr("type", "hidden");
-                            input3.attr("name", "amountMax");
-                            input3.attr("value", $("#amountMax").val());
+        var input5 = $("<input>");
+        input5.attr("type", "hidden");
+        input5.attr("name", "dateTimeEnd");
+        input5.attr("value", $("#dateTimeEnd").val());
 
-                            var input4 = $("<input>");
-                            input4.attr("type", "hidden");
-                            input4.attr("name", "dateTimeBegin");
-                            input4.attr("value", $("#dateTimeBegin").val());
+        var input6 = $("<input>");
+        input6.attr("type", "hidden");
+        input6.attr("name", "searchType");
+        input6.attr("value", 2);
 
-                            var input5 = $("<input>");
-                            input5.attr("type", "hidden");
-                            input5.attr("name", "dateTimeEnd");
-                            input5.attr("value", $("#dateTimeEnd").val());
+        var input7 = $("<input>");
+        input7.attr("type", "hidden");
+        input7.attr("name", "orderStatus");
+        input7.attr("value", $("#orderStatus").val());
 
-                            var input6 = $("<input>");
-                            input6.attr("type", "hidden");
-                            input6.attr("name", "searchType");
-                            input6.attr("value", 2);
+        $("body").append(form);
+        form.append(input1, input2, input3, input4, input5, input6, input7);
+        form.submit();
+    }
 
-                            var input7 = $("<input>");
-                            input7.attr("type", "hidden");
-                            input7.attr("name", "orderStatus");
-                            input7.attr("value", $("#orderStatus").val());
+    /**
+     * 查询 - 今日, 昨日, 本周, 上周, 本月, 上月
+     * @param type
+     */
+    function onQuickSearch(type) {
+        var param = "homePage";
 
-                            $("body").append(form);
-                            form.append(input1, input2, input3, input4, input5, input6, input7);
-                            form.submit();
-                        }
+        var form = $("<form>");
+        form.attr("style", "display:none");
+        form.attr("target", "");
+        form.attr("method", "post");
+        form.attr("action", param);
 
-                        /**
-                         * 查询 - 今日, 昨日, 本周, 上周, 本月, 上月
-                         * @param type
-                         */
-                        function onQuickSearch(type) {
-                            var param = "homePage";
+        var input1 = $("<input>");
+        input1.attr("type", "hidden");
+        input1.attr("name", "type");
+        input1.attr("value", type);
 
-                            var form = $("<form>");
-                            form.attr("style", "display:none");
-                            form.attr("target", "");
-                            form.attr("method", "post");
-                            form.attr("action", param);
+        var input2 = $("<input>");
+        input2.attr("type", "hidden");
+        input2.attr("name", "searchType");
+        input2.attr("value", 3);
 
-                            var input1 = $("<input>");
-                            input1.attr("type", "hidden");
-                            input1.attr("name", "type");
-                            input1.attr("value", type);
+        $("body").append(form);
+        form.append(input1, input2);
+        form.submit();
+    }
 
-                            var input2 = $("<input>");
-                            input2.attr("type", "hidden");
-                            input2.attr("name", "searchType");
-                            input2.attr("value", 3);
+    /**
+     * 跳转到第几页
+     */
+    function onJump() {
+        var page = $("#page").val();
+        var url = "<?php echo site_url('no3/homePage/index') . '?' . http_build_query($query) ?>" + '&page=' + page;
+        location.href = url;
+    }
 
-                            $("body").append(form);
-                            form.append(input1, input2);
-                            form.submit();
-                        }
+    /**
+     * 详细
+     */
+    function onDetail() {
+        // test
+        var table = document.getElementById('sample-table-2');
+        var xx = table.getElementsByTagName('tr')[1].innerHTML;
+        alert(JSON.stringify(xx));
+        var _url = "<?php echo site_url('no3/homePage/getDetail'); ?>";
+        var _data_obj = {
+            id: id
+        };
+        $.ajax({
+            type: "POST",
+            url: _url,
+            data: _data_obj,
+            dataType: "json",
+            beforeSend: function () {
+            },
+            success: function (data) {
+                if (data.status == 0) {
+                    alert('获取详细失败');
+                } else {
+                    alert(JSON.stringify(data));
+                }
+            }
+        });
+    }
 
-                        /**
-                         * 跳转到第几页
-                         */
-                        function onJump() {
-                            var page = $("#page").val();
-                            var url = "<?php echo site_url('no3/homePage/index') . '?' . http_build_query($query) ?>" + '&page=' + page;
-                            location.href = url;
-                        }
-
-                        /**
-                         * 详细
-                         */
-                        function onDetail() {
-                            // test
-                            var table = document.getElementById('sample-table-2');
-                            var xx = table.getElementsByTagName('tr')[1].innerHTML;
-                            alert(JSON.stringify(xx));
-                            var _url = "<?php echo site_url('no3/homePage/getDetail'); ?>";
-                            var _data_obj = {
-                                id: id
-                            };
-                            $.ajax({
-                                type: "POST",
-                                url: _url,
-                                data: _data_obj,
-                                dataType: "json",
-                                beforeSend: function () {
-                                },
-                                success: function (data) {
-                                    if (data.status == 0) {
-                                        alert('获取详细失败');
-                                    } else {
-                                        alert(JSON.stringify(data));
-                                    }
-                                }
-                            });
-                        }
-
-                        /**
-                         * todo 点击详细时, 把隐藏的那个详细行显示
-                         * todo  通过 document.getElementById('dateTest').innerText = 'hahaha'; 给详细哪一行赋值
-                         */
-                        function onDetailTest(id) {
-//                            var table = document.getElementById('sample-table-2');
-//                            var tr = table.getElementsByTagName('tr')[id + 1];
-//                            tr.style = '';
-//                            var td = tr.children("td").eq(1);
-//                            alert(td);
-
-//                            alert(id);
-//                            document.getElementById('dateTest').innerText = 'hahaha';
-//                            var td = document.getElementById('dateTest').innerText;
-////                            alert(td);
-
-                            var tr = ducoment.getElementById(id + '_')
-                        }
-
-                    </script>
+</script>
 </body>
 </html>

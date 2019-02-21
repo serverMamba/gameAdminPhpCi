@@ -66,4 +66,76 @@ class Admin_model extends CI_Model {
 
         return $finalRet;
     }
+
+    /**
+     * 获取详细 - 营收
+     * @return array
+     */
+    public function getDetailRevenue() {
+
+        return [];
+    }
+
+    /**
+     * 获取详细 - 充值
+     * @return array
+     */
+    public function getDetailRecharge() {
+
+        return [];
+    }
+
+    /**
+     * 获取详细 - 兑换
+     * @return array
+     */
+    public function getDetailExchange() {
+
+        return [];
+    }
+
+    /**
+     * 获取详细 - 总金币
+     * @return array
+     */
+    public function getDetailTotalGold() {
+
+        return [];
+    }
+
+    /**
+     * 获取详细 - 注册用户数
+     * @return array
+     */
+    public function getDetailRegisterNum() {
+
+        return [];
+    }
+
+    /**
+     * 获取详细 - 登陆用户数
+     * @return array
+     */
+    public function getDetailLoginNum() {
+
+        return [];
+    }
+
+    /**
+     * 获取详细 - 总税收
+     * @return array
+     */
+    public function getDetailTotalTax() {
+
+        return [];
+    }
+
+    /**
+     * 获取详细 - 游戏记录
+     * @return array
+     */
+    public function getDetailGameRecord() {
+
+        return [];
+    }
 }

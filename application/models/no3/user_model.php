@@ -473,14 +473,6 @@ class User_model extends CI_Model {
             foreach ($content as &$row) {
                 $row['roomBaseScore'] = isset($row['roomBaseScore']) ? $row['roomBaseScore'] : baiRenBaseScore;
                 $row['roomBaseScore'] = number_format($row['roomBaseScore'] / 100, 2, '.', ' ');
-
-                $row['userGameResult'] = intval($row['userGameResult'] / 100); // todo 数据库中单位是什么, 需要精确到分
-                $row['userScoreBegin'] = intval($row['userScoreBegin'] / 100);
-                $row['userScoreEnd'] = intval($row['userScoreEnd'] / 100);
-
-//                $row['userGameResult'] = number_format($row['userGameResult'] / 100, 2, '.', ' ');
-//                $row['userScoreBegin'] = number_format($row['userScoreBegin'] / 100, 2, '.', ' ');
-//                $row['userScoreEnd'] = number_format($row['userScoreEnd'] / 100, 2, '.', ' ');
             }
             unset($row);
 
@@ -686,6 +678,10 @@ class User_model extends CI_Model {
 
         $db = $this->load->database('eus' . $dbIndex, true);
         $tableName = 'casinouser_' . $tableIndex;
+        $tableNameSafeBox = 'casinouserbaggageinfo_' . $tableIndex;
+
+        // test
+        log_message('error', 'haha, db = eus' . $dbIndex . ', table = ' . $tableIndex);
 
         /**
          * 用户基础信息 -
@@ -711,8 +707,8 @@ class User_model extends CI_Model {
          * ====
          * 账户信息 -
          *
-         * 账户余额: wallet total_total_money todo
-         * 保险箱余额:
+         * 金币: user_chips
+         * 保险箱余额: casinouserdb_ -> casinouserbaggageinfo_ -> cofferchips
          * 支付宝: alipay_account
          * 银行卡:
          * 银行名称:
@@ -742,11 +738,15 @@ class User_model extends CI_Model {
          * 地址: location
          * 行为: 比如 官方充值请求, 用户绑定实名信息, 微信登录 等
          */
-        $sql = 'select id, userIDCardName, user_email, mobile_number, registertime, last_login_time, password, wallet,';
-        $sql .= ' alipay_account, payBonusGameCount, payContribution, total_competition_times, lastLoginIp, location,';
-        $sql .= ' userTag, note';
-        $sql .= ' from ' . $tableName;
-        $sql .= ' where id = ' . $userId . ' limit 1';
+        $sql = 'select user.id, user.userIDCardName, user.user_email, user.mobile_number, user.registertime, ';
+        $sql .= ' user.last_login_time, user.password, user.wallet, user.alipay_account, user.payBonusGameCount,';
+        $sql .= ' user.payContribution, user.total_competition_times, user.lastLoginIp, user.location, user.userTag,';
+        $sql .= ' user.note, user.user_chips,';
+        $sql .= ' safeBox.cofferchips';
+        $sql .= ' from ' . $tableName . ' user';
+        $sql .= ' left join ' . $tableNameSafeBox . ' safeBox';
+        $sql .= ' on user.id = safeBox.userid';
+        $sql .= ' where user.id = ' . $userId . ' limit 1';
 
         $row = $db->query($sql)->row_array();
         // test

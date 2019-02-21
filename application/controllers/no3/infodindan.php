@@ -45,8 +45,6 @@ class Infodindan extends MY_Controller {
 
     // searchType: 1精确搜索, 2范围搜索, 3快速查询(今日, 昨日...), 100搜索条件错误返回空结果
     public function index() {
-        // test
-        log_message('error', 'index ok');
         $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
         $isShowPay = $this->input->get('isShowPay', true) ? intval($this->input->get('isShowPay', true)) : 1;
 
@@ -59,6 +57,8 @@ class Infodindan extends MY_Controller {
             'totalNum' => 0
         ];
         $query = [];
+
+        $useDefault = false; // 日期控件是否显示默认时间
 
         if ($searchType === 1) { // 精确搜索
             $userId = isset($_REQUEST['userId']) && !empty($_REQUEST['userId']) ? intval($_REQUEST['userId']) : '';
@@ -121,6 +121,12 @@ class Infodindan extends MY_Controller {
             }
             if ($dateTimeEndOriginal !== '') {
                 $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
+            }
+
+            if (empty($_GET) && empty($_POST)) { // 点击左侧进入, 按照前端显示, 获取今天数据
+                $dateTimeBegin = date('Y-m-d 00:00:00');
+                $dateTimeEnd = date('Y-m-d 23:59:59');
+                $useDefault = true;
             }
 
             $finalRet = $this->dindan_model->getOrderListByTypeTwo($payType, $payStatus, $paySituation,
@@ -248,7 +254,8 @@ class Infodindan extends MY_Controller {
             'pageInfo' => [
                 'pageNum' => ceil($totalNum / $per),
                 'page' => $page
-            ]
+            ],
+            'useDefault' => $useDefault
         );
 
         $data ['total_rows'] = $totalNum;
@@ -269,8 +276,6 @@ class Infodindan extends MY_Controller {
      * 导出
      */
     public function exportData() {
-        // test
-        log_message('error', 'exportData ok ');
         $payType = isset($_REQUEST['payType']) ? $_REQUEST['payType'] : -1;
         $payStatus = isset($_REQUEST['payStatus']) ? intval($_REQUEST['payStatus']) : -1;
         $paySituation = isset($_REQUEST['paySituation']) ? intval($_REQUEST['paySituation']) : -1;
@@ -306,8 +311,10 @@ class Infodindan extends MY_Controller {
             $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
         }
 
-        // test
-        log_message('error', __METHOD__ . ', param = ' . json_encode($_POST));
+        if (empty($_GET) && empty($_POST)) { // 点击左侧进入, 按照前端显示, 获取今天数据
+            $dateTimeBegin = date('Y-m-d 00:00:00');
+            $dateTimeEnd = date('Y-m-d 23:59:59');
+        }
 
         $finalRet = $this->dindan_model->exportData($payType, $payStatus, $paySituation,
             $payPlatform, $gameCode, $amountMin, $amountMax,
@@ -327,30 +334,115 @@ class Infodindan extends MY_Controller {
      * [170307] 查询超时订单
      */
     public function delayOrders() {
-        $query ['user_id'] = $this->input->get('user_id', true) ? intval($this->input->get('user_id', true)) : 0;
-        $query ['start_time'] = $this->input->get('start_time', true) ? $this->input->get('start_time', true) : 0;
-        $query ['start_time_time'] = $this->input->get('start_time_time', true) ? $this->input->get('start_time_time', true) : 0;
-        $query ['end_time'] = $this->input->get('end_time', true) ? $this->input->get('end_time', true) : 0;
-        $query ['end_time_time'] = $this->input->get('end_time_time', true) ? $this->input->get('end_time_time', true) : 0;
-        $query ['account'] = $this->input->get('account', true) ? $this->input->get('account', true) : '';
-        $query ['pay_platform'] = $this->input->get('pay_platform', true) ? intval($this->input->get('pay_platform', true)) : 0;
-        $query ['game_code'] = $this->input->get('game_code', true) ? $this->input->get('game_code', true) : '0';
-
-        $startTime = "";
-        if ($query['start_time'] != 0) {
-            $startTime = $query['start_time'] . " " . $query['start_time_time'];
-        }
-
-        $dateTimeEnd = "";
-        if ($query['end_time'] != 0) {
-            $dateTimeEnd = $query['end_time'] . " " . $query['end_time_time'];
-        }
+        $searchType = isset($_REQUEST['searchType']) ? intval($_REQUEST['searchType']) : 2;
+        $isShowPay = $this->input->get('isShowPay', true) ? intval($this->input->get('isShowPay', true)) : 1;
 
         $per = 20;
         $page = $this->input->get('page') ? intval($this->input->get('page')) : 1;
         $start = ($page - 1) * $per;
 
-        $delayOrderData = $this->dindan_model->get_delay_dindan_his($query ['user_id'], $startTime, $dateTimeEnd, $query ['account'], $query['pay_platform'], $start, $per, $query ['game_code']);
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+        $query = [];
+
+        if ($searchType === 1) { // 精确搜索
+            $userId = isset($_REQUEST['userId']) && !empty($_REQUEST['userId']) ? intval($_REQUEST['userId']) : '';
+            $orderId = isset($_REQUEST['orderId']) && !empty($_REQUEST['orderId']) ? trim($_REQUEST['orderId']) : '';
+            $thirdOrderId = isset($_REQUEST['thirdOrderId']) && !empty($_REQUEST['thirdOrderId']) ? trim($_REQUEST['thirdOrderId']) : '';
+            $agentId = isset($_REQUEST['agentId']) && !empty($_REQUEST['agentId']) ? intval($_REQUEST['agentId']) : '';
+
+            $operator = isset($_REQUEST['operator']) && !empty($_REQUEST['operator']) ? trim($_REQUEST['operator']) : '';
+
+            if ($userId === '' && $orderId === '' && $thirdOrderId === '' && $agentId === '' && $operator === '') {
+                log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = '
+                    . json_encode($_REQUEST));
+                $this->session->set_flashdata('error', '参数错误');
+                redirect('no3/infodindan?searchType=100'); // 参数错误, 返回空查询结果
+            }
+
+            $finalRet = $this->dindan_model->getDelayOrderListByTypeOne($userId, $orderId, $thirdOrderId, $agentId, $operator, $start, $per);
+
+            $query = [
+                'userId' => $userId,
+                'orderId' => $orderId,
+                'agentId' => $agentId,
+                'operator' => $operator,
+
+                'searchType' => $searchType,
+                'isShowPay' => $isShowPay
+            ];
+
+        } else if ($searchType === 2) {
+            $payType = isset($_REQUEST['payType']) ? $_REQUEST['payType'] : -1;
+            $payStatus = isset($_REQUEST['payStatus']) ? intval($_REQUEST['payStatus']) : -1;
+            $paySituation = isset($_REQUEST['paySituation']) ? intval($_REQUEST['paySituation']) : -1;
+
+            $payPlatform = isset($_REQUEST['pay_platform']) ? intval($_REQUEST['pay_platform']) : -1;
+            $gameCode = isset($_REQUEST['game_code']) ? intval($_REQUEST['game_code']) : 0;
+
+            $amountMinOriginal = isset($_REQUEST['amountMin']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMin']) : '';
+            $amountMaxOriginal = isset($_REQUEST['amountMax']) && !empty($_REQUEST['amountMin']) ? trim($_REQUEST['amountMax']) : '';
+            $amountMin = $amountMax = '';
+
+            if ($amountMinOriginal !== '') {
+                $amountMin = $amountMinOriginal * 100; // 数据库中钱的单位是分
+            }
+            if ($amountMaxOriginal !== '') {
+                $amountMax = $amountMaxOriginal * 100;
+            }
+
+            if ($amountMin !== '' && $amountMax !== '') {
+                if ($amountMax < $amountMin) {
+                    $this->session->set_flashdata('error', '金额范围不合法');
+                    redirect('no3/infodindan?searchType=100');
+                }
+            }
+
+            $dateTimeBeginOriginal = isset($_REQUEST['dateTimeBegin']) ? trim($_REQUEST['dateTimeBegin']) : '';
+            $dateTimeEndOriginal = isset($_REQUEST['dateTimeEnd']) ? trim($_REQUEST['dateTimeEnd']) : '';
+            $dateTimeBegin = $dateTimeEnd = '';
+            if ($dateTimeBeginOriginal !== '') {
+                $dateTimeBegin = str_replace('T', ' ', $dateTimeBeginOriginal);
+            }
+            if ($dateTimeEndOriginal !== '') {
+                $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
+            }
+
+            if (empty($_GET) && empty($_POST)) { // 点击左侧进入, 按照前端显示, 获取今天数据
+                $dateTimeBegin = date('Y-m-d 00:00:00');
+                $dateTimeEnd = date('Y-m-d 23:59:59');
+            }
+
+            $finalRet = $this->dindan_model->getDelayOrderListByTypeTwo($payType, $payStatus, $paySituation,
+                $payPlatform, $gameCode, $amountMin, $amountMax,
+                $dateTimeBegin, $dateTimeEnd, $start, $per);
+
+            $query = [
+                'payType' => $payType,
+                'payStatus' => $payStatus,
+                'paySituation' => $paySituation,
+                'pay_platform' => $payPlatform,
+
+                'game_code' => $gameCode,
+                'amountMin' => $amountMinOriginal,
+                'amountMax' => $amountMaxOriginal,
+
+                'dateTimeBegin' => $dateTimeBeginOriginal,
+                'dateTimeEnd' => $dateTimeEndOriginal,
+                'searchType' => $searchType,
+                'isShowPay' => $isShowPay,
+            ];
+        }
+
+        $orderList = $finalRet['content'];
+
+        if (!empty($orderList)) {
+            $this->dindan_model->formatOrderList($orderList);
+        }
+        $totalNum = $finalRet['totalNum'];
+
         $data = array(
             'menu' => $this->Common_model->getAdminMenuList(),
             "choose" => array(
@@ -365,12 +457,18 @@ class Infodindan extends MY_Controller {
                 "father" => "玩家订单查询",
                 "child" => "浏览玩家订单数据 "
             ),
-            'order_list' => $delayOrderData['orderList'],
-            'total_rows' => $delayOrderData['totalNum'],
-            'game_codes' => $this->config->item('game_codes'),
+            'orderList' => $orderList,
             'pay_platform_list' => $this->dindan_model->getPayList(),
+            'game_codes' => $this->config->item('game_codes'),
             'query' => $query,
             'isNormal' => false,
+            'payType' => payType,
+            'payStatus' => payStatus,
+            'paySituation' => paySituation,
+            'pageInfo' => [
+                'pageNum' => ceil($totalNum / $per),
+                'page' => $page
+            ]
         );
 
         $this->load->library('pagination');

@@ -257,7 +257,12 @@ class Order_model extends CI_Model {
             'totalNum' => 0
         ];
 
+        $db1 = $this->load->database('cashorder1_slave', true);
+        $sql1 = 'select * from smc_cash_order';
+
         $itemArr = [];
+
+        $orderIdArr = [];
 
         // 获取adminId
         if ($operator !== '') {
@@ -269,13 +274,19 @@ class Order_model extends CI_Model {
                 return $finalRet;
             }
             $adminId = intval($row['id']);
-            if ($adminId) {
-                $itemArr[] = 'refer = ' . $adminId;
+            if ($adminId <= 0) {
+                log_message('error', 'invalid adminId, operator = ' . $operator . ', adminId = ' . $adminId);
+                return $finalRet;
+            } else {
+                $sql = 'select orderId from smc_cash_operation_log where adminId = ' . $adminId;
+                $rows = $db1->query($sql)->result_array();
+                if (!empty($rows)) {
+                    $orderIdArr = array_column($rows, 'orderId');
+                } else {
+                    log_message('error', 'db select return empty, db = default_slave, sql = ' . $sql);
+                }
             }
         }
-
-        $db1 = $this->load->database('cashorder1_slave', true);
-        $sql1 = 'select * from smc_cash_order';
 
         $db2 = $this->load->database('cashorder2_slave', true);
         $sql2 = 'select * from smc_cash_order';
@@ -289,6 +300,15 @@ class Order_model extends CI_Model {
         }
         if ($orderId !== '') {
             $itemArr[] = 'order_sn = ' . $this->db->escape($orderId);
+        }
+        if (!empty($orderIdArr)) {
+            foreach ($orderIdArr as &$v) {
+                $v = '"' . $v . '"';
+            }
+            unset($v);
+            $strTmp = implode(',', $orderIdArr);
+
+            $itemArr[] = 'order_sn in (' . $strTmp . ')';
         }
 
         if (!empty($itemArr)) {
@@ -304,6 +324,9 @@ class Order_model extends CI_Model {
 
         $rows1 = $db1->query($sql1)->result_array();
         $rows2 = $db2->query($sql2)->result_array();
+
+        // test
+        log_message('error', 'sql = '  . $sql1 . ', rows1 = ' . json_encode($rows1) . ', num1 = ' . count($rows1) . ', num2 = ' . count($rows2));
 
         if (empty($rows1)) {
             $rows1 = [];
@@ -366,6 +389,15 @@ class Order_model extends CI_Model {
         }
         if ($dateTimeEnd !== '') {
             $itemArr[] = 'add_time <= ' . strtotime($dateTimeEnd);
+        }
+        if (!empty($orderIdArr)) {
+            foreach ($orderIdArr as &$v) {
+                $v = '"' . $v . '"';
+            }
+            unset($v);
+            $strTmp = implode(',', $orderIdArr);
+
+            $itemArr[] = 'order_sn in (' . $strTmp . ')';
         }
 
         if (!empty($itemArr)) {

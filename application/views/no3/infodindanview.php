@@ -118,16 +118,6 @@
                                                     <?php } ?> value="<?php echo $k; ?>"><?php echo $v; ?></option>
                                                 <?php } ?>
                                             </select>
-
-
-                                            <span style="margin-left: 15px">游戏种类</span>
-                                            <select name="game_code" id="game_code"
-                                                    style="margin-left: 0px; width: 120px; height: 34px">
-                                                <?php foreach ($game_codes as $k => $v) { ?>
-                                                    <option <?php if ($query['game_code'] == $k) { ?> selected="selected"
-                                                    <?php } ?> value="<?php echo $k; ?>"><?php echo $v; ?></option>
-                                                <?php } ?>
-                                            </select>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
                                         </div>
 
@@ -154,16 +144,23 @@
                                                     type="datetime-local"
                                                     style="margin-left:5px;height:34px;width:220px;"/>
 
-                                            <button onclick="javascript:onSearch1(1)" class="btn btn-xs btn-success "
+                                            <button onclick="javascript:onSearch1(1, false)" class="btn btn-xs btn-success "
                                                     style="margin-top:3px;">
                                                 <span class="bigger-110">查询</span>
                                                 <i class="icon-search icon-on-right"></i>
                                             </button>
-                                            <button onclick="javascript:onSearch1(2)" class="btn btn-xs btn-success "
+                                            <button onclick="javascript:onSearch1(2, false)" class="btn btn-xs btn-success "
                                                     style="margin-top:3px;">
                                                 <span class="bigger-110">导出EXCEL</span>
                                                 <i class="icon-search icon-on-right"></i>
                                             </button>
+
+                                            <a class="btn btn-xs btn-danger "
+                                               style="margin-top:3px;margin-left:5px;"
+                                               onclick="onSearch1(1, true);">
+                                                <span class="bigger-110">查询延时订单</span>
+                                                <i class="icon-search icon-on-right"></i>
+                                            </a>
                                         </div>
 
                                         <form action="<?php echo site_url('no3/infodindan/index'); ?>" id="form"
@@ -199,6 +196,13 @@
                                                     <span class="bigger-110">查询</span>
                                                     <i class="icon-search icon-on-right"></i>
                                                 </button>
+
+                                                <a class="btn btn-xs btn-danger "
+                                                   style="margin-top:3px;margin-left:5px;"
+                                                   onclick="onclickCheckDelayOrders();">
+                                                    <span class="bigger-110">查询延时订单</span>
+                                                    <i class="icon-search icon-on-right"></i>
+                                                </a>
                                             </div>
 
                                         </form>
@@ -207,17 +211,14 @@
                                             <button onclick="javascript:onQuickSearch(1)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">今日</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(2)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">昨日</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(3)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">本周</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                         </div>
 
@@ -225,27 +226,15 @@
                                             <button onclick="javascript:onQuickSearch(4)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">上周</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(5)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">本月</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(6)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">上月</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
-                                        </div>
-
-                                        <div>
-                                            <a class="btn btn-xs btn-danger "
-                                               style="margin-top:3px;margin-left:3px;margin-bottom:20px"
-                                               onclick="onclickCheckDelayOrders();">
-                                                <span class="bigger-110">查询延时订单</span>
-                                                <i class="icon-search icon-on-right"></i>
-                                            </a>
                                         </div>
 
                                         <input type="checkbox" id="hide_pay"
@@ -356,11 +345,10 @@
                                                         <?php if ($query['isShowPay'] == 1) { ?>
                                                             <th>支付平台</th>
                                                         <?php } ?>
-                                                        <th>游戏种类</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php foreach ($order_list as $v) { ?>
+                                                    <?php foreach ($orderList as $v) { ?>
                                                         <tr>
                                                             <td>
                                                                 <a href="<?php echo site_url('no3/infodetail') . '?user_id=' . $v['user_id']; ?>"><?php echo $v['user_id']; ?></a>
@@ -383,7 +371,6 @@
                                                             <?php if ($query['isShowPay'] == 1) { ?>
                                                                 <td><?php echo $v['pay_platform']; ?></td>
                                                             <?php } ?>
-                                                            <td><?php echo $game_codes[$v['game_code']]; ?></td>
                                                         </tr>
                                                     <?php } ?>
                                                     </tbody>
@@ -452,7 +439,8 @@
 <script type="text/javascript">
     // 日期控件datetime_local 设置默认值今天
     var today = "";
-    var useLast = "<?php echo $query['dateTimeBegin'] ?>";
+    var useDefault = "<?php echo $useDefault ?>";
+
     // 构造符合datetime-local格式的当前日期
     function getToday() {
         format = "";
@@ -468,12 +456,12 @@
     today = getToday();
     todayBegin = today + '00:00:00';
     todayEnd = today + '23:59:59';
-    if (useLast) {
-        document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
-        document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
-    } else {
+    if (useDefault) {
         document.getElementById('dateTimeBegin').value = todayBegin;
         document.getElementById('dateTimeEnd').value = todayEnd;
+    } else {
+        document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
+        document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
     }
 
 
@@ -567,23 +555,17 @@
     }
 
     /**
-     * 查询延时订单
-     */
-    function onclickCheckDelayOrders() {
-        // 修改form的post地址
-        $('#form').attr('action', "<?php echo site_url('no3/infodindan/delayOrders');?>");
-
-        // submit
-        $('#form').submit();
-    }
-
-    /**
      * 查询/导出excel
-     * @param type
+     * @param type - 1查询, 2导出
+     * @param delay - true查询延时订单
      */
-    function onSearch1(type) {
+    function onSearch1(type, delay) {
         if (type == 1) { // 查询
-            var param = "<?php echo site_url('no3/infodindan'); ?>";
+            if (delay) {
+                var param = "<?php echo site_url('no3/infodindan/delayOrders'); ?>";
+            } else {
+                var param = "<?php echo site_url('no3/infodindan'); ?>";
+            }
         } else { // 导出
             var param = "<?php echo site_url('no3/infodindan/exportData'); ?>";
         }
@@ -690,6 +672,18 @@
         var page = $("#page").val();
         var url = "<?php echo site_url('no3/infodindan/index') . '?' . http_build_query($query) ?>" + '&page=' + page;
         location.href = url;
+    }
+
+    /**
+     * 查询延时订单
+     */
+    function onclickCheckDelayOrders()
+    {
+        // 修改form的post地址
+        $('#form').attr('action', "<?php echo site_url('no3/infodindan/delayOrders');?>");
+
+        // submit
+        $('#form').submit();
     }
 </script>
 </body>

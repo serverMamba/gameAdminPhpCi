@@ -198,7 +198,7 @@ class dindan_model extends CI_Model {
      */
     public function formatOrderList(&$orderList) {
         if (!empty($orderList)) {
-            foreach ($orderList as &$row) { // todo 之前的做法和现在的状态定义不一致
+            foreach ($orderList as &$row) {
                 $row['money'] = $row['money'] / 100;
 
                 if ($row ['status'] == 1) {
@@ -309,6 +309,201 @@ class dindan_model extends CI_Model {
             }
             fputcsv($fp, $row);
         }
+    }
+
+    /**
+     * 获取延时订单列表 - 按查询方式1 - 超过一分钟为超时订单，超时订单都是成功的订单
+     * @param $userId
+     * @param $orderId
+     * @param $thirdOrderId
+     * @param $agentId
+     * @param $operator
+     * @param $start
+     * @param $per
+     * @return array
+     */
+    public function getDelayOrderListByTypeOne($userId, $orderId, $thirdOrderId, $agentId, $operator, $start, $per) {
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+
+        $db = $this->load->database('default_slave', true);
+
+        $itemArr = [];
+
+        // 获取adminId
+        if ($operator !== '') {
+            $sql = 'select id from smc_admin where admin_name = ' . $this->db->escape($operator);
+            $row = $db->query($sql)->row_array();
+            if (empty($row)) {
+                log_message('error', __METHOD__ . ', ' . __LINE__ . ', db select return empty, db = default_slave, sql = ' . $sql);
+                return $finalRet;
+            }
+            $adminId = intval($row['id']);
+            if ($adminId) {
+                $itemArr[] = 'refer = ' . $adminId;
+            }
+        }
+
+        $sql = 'select o.*, (o.pay_success_time - o.add_time) as delayTime, a.admin_name from smc_order o left join smc_admin a on o.refer = a.id';
+        $sqlCount = 'select count(*) as totalNum from smc_order o left join smc_admin a on o.refer = a.id';
+
+        $itemArr[] = 'o.status = 1';
+        $itemArr[] = '(o.pay_success_time - o.add_time) > 60';
+
+        if ($userId !== '') {
+            $itemArr[] = 'o.user_id = ' . $userId;
+        }
+        if ($orderId !== '') {
+            $itemArr[] = 'o.order_sn = ' . $this->db->escape($orderId);
+        }
+        if ($thirdOrderId !== '') {
+            $itemArr[] = 'o.third_order_sn = ' . $this->db->escape($thirdOrderId);
+        }
+
+        if (!empty($itemArr)) {
+            $str = implode(' and ', $itemArr);
+            $sql .= ' where ' . $str;
+            $sqlCount .= ' where ' . $str;
+        }
+        $sql .= ' limit ' . $start . ', ' . $per;
+
+        $rows = $db->query($sql)->result_array();
+
+        // test
+        log_message('error', 'sql = ' . $sql . ', rows = ' . json_encode($rows));
+
+        if (!empty($rows)) {
+            $finalRet['content'] = $rows;
+
+            $rowCount = $db->query($sqlCount)->row_array();
+            if (!empty($rowCount)) {
+                $finalRet['totalNum'] = intval($rowCount['totalNum']);
+            } else {
+                log_message('error', __METHOD__ . ', ' . __LINE__ .
+                    ', db select return empty, db = default_slave' . ', sqlCount = ' . $sqlCount);
+            }
+        } else {
+            log_message('info', __METHOD__ . ', ' . __LINE__ .
+                ', db select return empty, db = default_slave' . ', sql = ' . $sql);
+
+            return $finalRet;
+        }
+
+        return $finalRet;
+    }
+
+    /**
+     * 获取延时订单列表 - 按查询方式2
+     * @param $payType
+     * @param $payStatus
+     * @param $paySituation
+     * @param $payPlatform
+     * @param $gameCode
+     * @param $amountMin
+     * @param $amountMax
+     * @param $dateTimeBegin
+     * @param $dateTimeEnd
+     * @param int $start
+     * @param int $per
+     * @param bool $export
+     * @return array
+     */
+    public function getDelayOrderListByTypeTwo($payType, $payStatus, $paySituation, $payPlatform, $gameCode, $amountMin, $amountMax,
+                                          $dateTimeBegin, $dateTimeEnd, $start = 0, $per = 0, $export = false) {
+        $finalRet = [
+            'content' => [],
+            'totalNum' => 0
+        ];
+
+        $db = $this->load->database('default_slave', true);
+
+        // 获取首充或二次充值的user_id
+        $userIdArr = [];
+        if ($paySituation !== -1) {
+            if ($paySituation === 1) { // 首充
+                $sql = 'select a.user_id from (select user_id, count(*) as num from smc_order group by user_id) a where a.num = 1';
+            } else { // 二次充值
+                $sql = 'select a.user_id from (select user_id, count(*) as num from smc_order group by user_id) a where a.num > 1';
+            }
+            $rows = $db->query($sql)->result_array();
+            $userIdArr = array_column($rows, 'user_id');
+            if (empty($userIdArr)) {
+                return $finalRet;
+            }
+        }
+
+        $sql = 'select o.*, (o.pay_success_time - o.add_time) as delayTime, a.admin_name from smc_order o left join smc_admin a on o.refer = a.id';
+        $sqlCount = 'select count(*) as totalNum from smc_order o left join smc_admin a on o.refer = a.id';
+
+        $itemArr = [];
+
+        $itemArr[] = 'o.status = 1';
+        $itemArr[] = '(o.pay_success_time - o.add_time) > 60';
+
+        if ($payType != -1) {
+            $itemArr[] = 'o.pay_type = ' . $this->db->escape($payType);
+        }
+        if ($payStatus !== -1) {
+            $itemArr[] = 'o.status = ' . $payStatus;
+        }
+        if ($amountMin !== '') {
+            $itemArr[] = 'o.money >= ' . $amountMin;
+        }
+        if ($amountMax !== '') {
+            $itemArr[] = 'o.money <= ' . $amountMax;
+        }
+        if ($dateTimeBegin !== '') {
+            $itemArr[] = 'o.add_time >= ' . strtotime($dateTimeBegin);
+        }
+        if ($dateTimeEnd !== '') {
+            $itemArr[] = 'o.add_time <= ' . strtotime($dateTimeEnd);
+        }
+        if (!empty($userIdArr)) {
+            $str = implode(',', $userIdArr);
+            $itemArr[] = 'o.user_id in (' . $str . ')';
+        }
+        if ($payPlatform !== -1) {
+            $itemArr[] = 'o.pay_platform = ' . $payPlatform;
+        }
+        if (!empty($gameCode)) {
+            $itemArr[] = 'o.game_code = ' . $gameCode; // todo smc_order表需要增加game_code字段, 默认值设为多少
+        }
+
+        if (!empty($itemArr)) {
+            $str = implode(' and ', $itemArr);
+            $sql .= ' where ' . $str;
+            $sqlCount .= ' where ' . $str;
+        }
+
+        if (!$export) {
+            $sql .= ' limit ' . $start . ', ' . $per;
+        }
+
+        $rows = $db->query($sql)->result_array();
+
+        // test
+        log_message('error', 'sql = ' . $sql . ', rows = ' . json_encode($rows));
+
+        if (!empty($rows)) {
+            $finalRet['content'] = $rows;
+
+            $rowCount = $db->query($sqlCount)->row_array();
+            if (!empty($rowCount)) {
+                $finalRet['totalNum'] = intval($rowCount['totalNum']);
+            } else {
+                log_message('error', __METHOD__ . ', ' . __LINE__ .
+                    ', db select return empty, db = default_slave' . ', sqlCount = ' . $sqlCount);
+            }
+        } else {
+            log_message('info', __METHOD__ . ', ' . __LINE__ .
+                ', db select return empty, db = default_slave' . ', sql = ' . $sql);
+
+            return $finalRet;
+        }
+
+        return $finalRet;
     }
 
     public function getPayList() {

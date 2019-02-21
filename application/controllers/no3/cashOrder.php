@@ -40,6 +40,8 @@ class CashOrder extends CI_Controller {
         ];
         $query = [];
 
+        $useDefault = false; // 日期控件是否显示默认时间
+
         if ($searchType === 1) { // 精确搜索
             $userId = isset($_REQUEST['userId']) && !empty($_REQUEST['userId']) ? intval($_REQUEST['userId']) : '';
             $aliPayAccount = isset($_REQUEST['aliPayAccount']) && !empty($_REQUEST['aliPayAccount']) ? trim($_REQUEST['aliPayAccount']) : '';
@@ -92,6 +94,12 @@ class CashOrder extends CI_Controller {
             }
             if ($dateTimeEndOriginal !== '') {
                 $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
+            }
+
+            if (empty($_GET) && empty($_POST)) { // 点击左侧进入, 按照前端显示, 获取今天数据
+                $dateTimeBegin = date('Y-m-d 00:00:00');
+                $dateTimeEnd = date('Y-m-d 23:59:59');
+                $useDefault = true;
             }
 
             $finalRet = $this->Order_model->getCashOrderListByTypeTwo($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);
@@ -172,11 +180,9 @@ class CashOrder extends CI_Controller {
             'goto_artificial' => $goto_artificial,
             'cashOrderList' => $cashOrderList,
             'query' => $query,
-            'no_process_num' => $this->Order_model->getNoPorcessCashOrderNum()
+            'no_process_num' => $this->Order_model->getNoPorcessCashOrderNum(),
+            'useDefault' => $useDefault
         );
-
-        // test
-        log_message('error', 'query = ' . json_encode($query));
 
         $this->load->view('no3/cash_order_list_views', $data);
     }
@@ -212,6 +218,11 @@ class CashOrder extends CI_Controller {
         }
         if ($dateTimeEndOriginal !== '') {
             $dateTimeEnd = str_replace('T', ' ', $dateTimeEndOriginal);
+        }
+
+        if (empty($_GET) && empty($_POST)) { // 点击左侧进入, 按照前端显示, 获取今天数据
+            $dateTimeBegin = date('Y-m-d 00:00:00');
+            $dateTimeEnd = date('Y-m-d 23:59:59');
         }
 
         $res = $this->Order_model->exportData($orderStatus, $amountMin, $amountMax, $dateTimeBegin, $dateTimeEnd);

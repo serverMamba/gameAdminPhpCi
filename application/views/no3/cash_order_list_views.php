@@ -150,10 +150,10 @@ $statusTextColor = array(
                                                     echo $query['orderId'];
                                                 } ?>" type="text" placeholder="订单号" name="orderId"
                                                        style="margin-left:5px;height:34px;width:160px;"/>
-<!--                                                <input value="--><?php //if ($query['operator']) {
-//                                                    echo $query['operator'];
-//                                                } ?><!--" type="text" placeholder="操作员" name="operator"-->
-<!--                                                       style="margin-left:5px;height:34px;width:160px;"/>-->
+                                                <input value="<?php if ($query['operator']) {
+                                                    echo $query['operator'];
+                                                } ?>" type="text" placeholder="操作员" name="operator"
+                                                       style="margin-left:5px;height:34px;width:160px;"/>
 
                                                 <button class="btn btn-xs btn-success " style="margin-top:3px;">
                                                     <span class="bigger-110">查询</span>
@@ -167,17 +167,14 @@ $statusTextColor = array(
                                             <button onclick="javascript:onQuickSearch(1)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">今日</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(2)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">昨日</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(3)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">本周</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                         </div>
 
@@ -185,17 +182,14 @@ $statusTextColor = array(
                                             <button onclick="javascript:onQuickSearch(4)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">上周</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(5)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">本月</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                             <button onclick="javascript:onQuickSearch(6)"
                                                     class="btn btn-xs btn-success " style="margin-top:3px;">
                                                 <span class="bigger-110">上月</span>
-                                                <i class="icon-search icon-on-right"></i>
                                             </button>
                                         </div>
 
@@ -248,7 +242,7 @@ $statusTextColor = array(
                                                         <th>描述</th>
                                                         <th>操作</th>
                                                         <th>人工提现</th>
-<!--                                                        <th>操作员</th>-->
+                                                        <th>操作员</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody id="tbody">
@@ -347,7 +341,7 @@ $statusTextColor = array(
                                                                         echo "-----";
                                                                     } ?>
                                                                 </td>
-<!--                                                                <td>--><?php //echo $v['refer']; ?><!--</td>-->
+                                                                <td><?php echo $v['refer']; ?></td>
                                                             </tr>
                                                         <?php }
                                                     } ?>
@@ -413,7 +407,8 @@ $statusTextColor = array(
 <script type="text/javascript">
     // 日期控件datetime_local 设置默认值今天
     var today = "";
-    var useLast = "<?php echo $query['dateTimeBegin'] ?>";
+    var useDefault = "<?php echo $useDefault ?>";
+
     // 构造符合datetime-local格式的当前日期
     function getToday() {
         format = "";
@@ -426,16 +421,15 @@ $statusTextColor = array(
 
         return format;
     }
-    if (useLast) {
-        document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
-        document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
-    } else {
-        today = getToday();
-        todayBegin = today + '00:00:00';
-        todayEnd = today + '23:59:59';
-
+    today = getToday();
+    todayBegin = today + '00:00:00';
+    todayEnd = today + '23:59:59';
+    if (useDefault) {
         document.getElementById('dateTimeBegin').value = todayBegin;
         document.getElementById('dateTimeEnd').value = todayEnd;
+    } else {
+        document.getElementById('dateTimeBegin').value = "<?php echo $query['dateTimeBegin'] ?>";
+        document.getElementById('dateTimeEnd').value = "<?php echo $query['dateTimeEnd'] ?>";
     }
 
 

@@ -1,5 +1,9 @@
 base on codeigniter
 
+db:
+    保险箱 - casinouserdb_ -> casinouserbaggageinfo_
+
+
 20190212新增用户管理
     1. 数据库更新
         1. db_smc中新建表smc_user_lv, smc_user_tag,

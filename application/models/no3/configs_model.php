@@ -11,6 +11,19 @@ class Configs_model extends CI_Model {
     }
 
     public function get_navmenu() {
+        $nav_menu ["首页"] = array(
+            "url" => "#",
+            "ns" => "tggl",
+            "cls" => "icon-home",
+            "child" => array(
+                array(
+                    "name" => "首页",
+                    "ns" => "homePage",
+                    "url" => site_url('no3/homePage'),
+                    "cls" => "icon-double-angle-right"
+                ),
+            )
+        );
         $nav_menu ["运维管理"] = array(
             "url" => "#",
             "ns" => "ywgl",

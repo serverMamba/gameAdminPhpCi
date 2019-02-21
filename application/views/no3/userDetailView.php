@@ -273,12 +273,12 @@
 
                                                 <tr>
                                                     <td>
-                                                        <label style="height: 26px; width: 100px; margin-left: 10px; margin-top: 5px;">账户余额</label>
+                                                        <label style="height: 26px; width: 100px; margin-left: 10px; margin-top: 5px;">携带金币</label>
                                                     </td>
                                                     <td>
                                                         <input type="text" id="wallet" placeholder="" readonly
                                                                class="col-xs-10 col-sm-2"
-                                                               value="<?php echo $userDetail['wallet']; ?>"
+                                                               value="<?php echo $userDetail['user_chips']; ?>"
                                                                style="margin-left: 0px; height: 30px; width: 240px;"/>
                                                     </td>
                                                     <td>
@@ -286,7 +286,7 @@
                                                     </td>
                                                     <td>
                                                         <input type="text" id="safeBoxBalance" placeholder="" readonly
-                                                               class="col-xs-10 col-sm-2" value=""
+                                                               class="col-xs-10 col-sm-2" value="<?php echo $userDetail['cofferchips']; ?>"
                                                                style="margin-left: 0px; height: 30px; width: 240px;"/>
                                                     </td>
                                                 </tr>
@@ -418,7 +418,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <label style="height: 26px; width: 100px;  margin-left: 10px; margin-top: 0px;">账户余额</label>
+                                                        <label style="height: 26px; width: 100px;  margin-left: 10px; margin-top: 0px;">携带金币</label>
                                                     </td>
                                                     <td>
                                                         <select name="bugtype" id="accountBalance"

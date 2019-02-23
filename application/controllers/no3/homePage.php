@@ -131,17 +131,34 @@ class HomePage extends CI_Controller {
                 [
                     'date' => '2019-01-01', // 统计时间 todo 这个啥玩意
                     'revenue' => '100.00', // 营收
-//                    'revenue' => 'ERROR - 2019-02-21 14:58:45 --> Severity: Notice  --> Only variable references should be returned by reference E:\repository\i\codeIgniterAdmin\system\core\Common.php 217
-//ERROR - 2019-02-21 14:58:45 --> Severity: 8192  --> mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead E:\repository\i\codeIgniterAdmin\system\database\drivers\mysql\mysql_driver.php 70
-//ERROR - 2019-02-21 14:58:45 --> getDetail, ok11
-//ERROR - 2019-02-21 14:58:45 --> HomePage::getDetail, 222, invalid param, param = {"id":"1"}
-//ERROR - 2019-02-21 14:58:45 --> Severity: Notice  --> Only variable references should be returned by reference E:\repository\i\codeIgniterAdmin\system\core\Common.php 217
-//ERROR - 2019-02-21 14:58:45 --> Severity: 8192  --> mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead E:\repository\i\codeIgniterAdmin\system\database\drivers\mysql\mysql_driver.php 70
-//ERROR - 2019-02-21 14:58:45 --> Severity: Notice  --> Undefined variable: totalNum E:\repository\i\codeIgniterAdmin\application\controllers\no3\homePage.php 147
-//ERROR - 2019-02-21 14:58:45 --> Severity: Notice  --> Undefined index: dateTimeBegin E:\repository\i\codeIgniterAdmin\application\views\no3\homePageView.php 146
-//ERROR - 2019-02-21 14:58:45 --> Severity: Notice  --> Undefined index: dateTimeEnd E:\repository\i\codeIgniterAdmin\application\views\no3\homePageView.php 151
-//ERROR - 2019-02-21 14:58:45 --> Severity: Notice  --> Undefined index: dateTimeBegin E:\repository\i\codeIgniterAdmin\application\views\no3\homePageView.php 352
-//ERROR - 2019-02-21 14:58:45 --> Severity: Notice  --> Undefined index: dateTimeEnd E:\repository\i\codeIgniterAdmin\application\views\no3\homePageView.php 353',
+                    'recharge' => '100.00', // 充值
+                    'exchange' => '100.00', // 兑换
+
+                    'totalGold' => '100.00', // 总金币
+                    'registerNum' => '100.00', // 注册用户数
+                    'loginNum' => '100.00', // 登录用户数
+                    'totalTax' => '100.00', // 总税收
+
+                    'gameRecord' => '100.00', // 游戏记录
+                    'lastUpdateTime' => '2019-01-01', // 最后更新时间
+                ],
+                [
+                    'date' => '2019-01-01', // 统计时间 todo 这个啥玩意
+                    'revenue' => '100.00', // 营收
+                    'recharge' => '100.00', // 充值
+                    'exchange' => '100.00', // 兑换
+
+                    'totalGold' => '100.00', // 总金币
+                    'registerNum' => '100.00', // 注册用户数
+                    'loginNum' => '100.00', // 登录用户数
+                    'totalTax' => '100.00', // 总税收
+
+                    'gameRecord' => '100.00', // 游戏记录
+                    'lastUpdateTime' => '2019-01-01', // 最后更新时间
+                ],
+                [
+                    'date' => '2019-01-01', // 统计时间 todo 这个啥玩意
+                    'revenue' => '100.00', // 营收
                     'recharge' => '100.00', // 充值
                     'exchange' => '100.00', // 兑换
 
@@ -159,6 +176,17 @@ class HomePage extends CI_Controller {
                 'page' => $page
             ],
         );
+
+        $data ['total_rows'] = $totalNum;
+        $data['page'] = $page;
+
+        $this->load->library('pagination');
+        $url = site_url('no3/homePage/index') . '?' . http_build_query($query);
+        $config ['base_url'] = $url;
+        $config ['total_rows'] = $data ['total_rows'];
+        $config ['per_page'] = $per;
+
+        $this->pagination->initialize($config);
 
         $this->load->view('no3/homePageView', $data);
     }
@@ -216,62 +244,23 @@ class HomePage extends CI_Controller {
      * 获取详细
      */
     public function getDetail() {
-        // test
-        log_message('error', 'getDetail, ok11');
-        $validIdArr = [
-            1 => 1,
-            2 => 1,
-            3 => 1,
-            4 => 1,
-            5 => 1,
-            6 => 1,
-            7 => 1,
-            8 => 1
-        ];
-        if (!isset($_POST['id']) || empty($_POST['id'])
-            || !isset($_POST['date']) || empty($_POST['date'])) {
+        if (!isset($_POST['dateTime']) || empty($_POST['dateTime'])) {
             log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = ' . json_encode($_POST));
             $this->session->set_flashdata('error', '参数错误');
             redirect('no3/homePage?searchType=100'); // 参数错误, 返回空查询结果
         }
-        $id = intval($_POST['id']);
-        if (!array_key_exists($id, $validIdArr)) {
-            log_message('error', __METHOD__ . ', ' . __LINE__ . ', invalid param, param = ' . json_encode($_POST));
-            $this->session->set_flashdata('error', '参数错误');
-            redirect('no3/homePage?searchType=100'); // 参数错误, 返回空查询结果
-        }
+
+        $dateTime = $_POST['dateTime'];
+        $ts = strtotime($dateTime);
+        $dateTimeBegin = date('Y-m-d 00:00:00', $ts);
+        $dateTimeEnd = date('Y-m-d 23:59:59', $ts);
 
         $finalRet = [];
         $ret = [];
         $this->load->model('home_model');
-        switch ($id) {
-            case 1: // 营收
-                $ret = $this->home_model->getDetailRevenue();
-                break;
-            case 2: // 充值
-                $ret = $this->home_model->getDetailRecharge();
-                break;
-            case 3: // 兑换
-                $ret = $this->home_model->getDetailExchange();
-                break;
-            case 4: // 总金币
-                $ret = $this->home_model->getDetailTotalGold();
-                break;
-            case 5: // 注册用户数
-                $ret = $this->home_model->getDetailRegisterNum();
-                break;
-            case 6: // 登录用户数
-                $ret = $this->home_model->getDetailLoginNum();
-                break;
-            case 7: // 总税收
-                $ret = $this->home_model->getDetailTotalTax();
-                break;
-            case 8: // 游戏记录
-                $ret = $this->home_model->getDetailGameRecord();
-                break;
-        }
+        $ret = $this->home_model->getDetail($dateTimeBegin, $dateTimeEnd);
 
-        $flag = false;
+        $flag = true;
         if ($flag) {
             $finalRet = [
                 'status' => 1,

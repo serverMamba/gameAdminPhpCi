@@ -203,33 +203,34 @@
                                     <div class="widget-body">
                                         <div class="widget-main" style="padding: 0;">
                                             <form action="" method="post" name="of" id="of">
-                                                <table id="sample-table-2"
+                                                <table id="sample-table-2" width="100%"
                                                        class="table table-striped table-bordered table-hover"
-                                                       style="margin-bottom: 10px;">
+                                                       style="margin-bottom: 10px; text-align: center">
                                                     <thead id="targethead">
                                                     <tr>
                                                         <th></th>
-                                                        <th>统计时间</th>
-                                                        <th>营收</th>
-                                                        <th>充值</th>
-                                                        <th>兑换</th>
+                                                        <th style="text-align: center">统计时间</th>
+                                                        <th style="text-align: center">营收</th>
+                                                        <th style="text-align: center">充值</th>
+                                                        <th style="text-align: center">兑换</th>
 
-                                                        <th>总金币</th>
-                                                        <th>注册用户数</th>
-                                                        <th>登陆用户数</th>
-                                                        <th>总税收</th>
+                                                        <th style="text-align: center">总金币</th>
+                                                        <th style="text-align: center">注册用户数</th>
+                                                        <th style="text-align: center">登陆用户数</th>
+                                                        <th style="text-align: center">总税收</th>
 
-                                                        <th>游戏记录</th>
-                                                        <th>最后更新时间</th>
+                                                        <th style="text-align: center">游戏记录</th>
+                                                        <th style="text-align: center">最后更新时间</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody id="tbody">
                                                     <?php if (!empty($timeData)) {
                                                         foreach ($timeData as $k => $v) { ?>
                                                             <tr id="<?php echo $k ?>">
-                                                                <td><a
-                                                                                href="javascript:onDetailTest(<?php echo $k ?>)">详细</a></td>
-                                                                <td id="dateTest"><?php echo $v['date']; ?></td>
+                                                                <td width="50"><a
+                                                                            href="javascript:onDetail(<?php echo $k ?>)"><span
+                                                                                style="color: red" id="<?php echo $k . '_flagDetail' ?>">+</span></a></td>
+                                                                <td id="<?php echo $k . '_dateTime' ?>"><?php echo $v['date']; ?></td>
                                                                 <td>
                                                                     <?php echo $v['revenue']; ?>
                                                                 </td>
@@ -261,15 +262,207 @@
                                                                 </td>
                                                             </tr>
 
-                                                            <tr id="<?php echo $k . '_sun' ?>" style="display: none">
-                                                                <td><span style="float: right;"><a
-                                                                                href="javascript:onHideDetail()">隐藏详细</a></span></td>
+                                                            <tr id="<?php echo $k . '_son' ?>" style="display: none">
+                                                                <td></td>
+                                                                <td id="dateTest"><?php echo $v['date']; ?></td>
+                                                                <td>
+                                                                    <p>
+                                                                        总营收: <span id="<?php echo $k . '_detailRevenueTotal'?>"></span><br>
+                                                                        渠道分成: <span id="<?php echo $k . '_detailRevenueChannel' ?>"></span><br>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p>
+                                                                        充值笔数: <span id="<?php echo $k . '_detailRechargeTimes' ?>"></span><br>
+                                                                        充值总人数: <span id="<?php echo $k . '_detailRechargePersonNum' ?>"></span><br>
+                                                                        老用户充值金额: <span id="<?php echo $k . '_detailRechargeOldAmount' ?>"></span><br>
+                                                                        新用户充值金额: <span id="<?php echo $k . '_detailRechargeNewAmount' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        代理充值金额: <span id="<?php echo $k . '_detailRechargeAgentAmount' ?>"></span><br>
+                                                                        老用户充值总人数: <span id="<?php echo $k . '_detailRechargeOldPersonNum' ?>"></span><br>
+                                                                        新用户充值总人数: <span id="<?php echo $k . '_detailRechargeNewPersonNum' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        日ARPU: <span id="<?php echo $k . '_detailRechargeArpu' ?>"></span><br>
+                                                                        日ARPPU: <span id="<?php echo $k . '_detailRechargeArppu' ?>"></span><br>
+                                                                        日付费率: <span id="<?php echo $k . '_detailRechargeRate' ?>"></span>%<br>
+                                                                        活跃用户付费率: <span id="<?php echo $k . '_detailRechargeActiveRate' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        在线充值: <span id="<?php echo $k . '_detailRechargeOnline' ?>"></span><br>
+                                                                        在线充值笔数: <span id="<?php echo $k . '_detailRechargeOnlineTimes' ?>"></span><br>
+                                                                        在线充值人数: <span id="<?php echo $k . '_detailRechargePersonNum' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        代理充值: <span id="<?php echo $k . '_detailRechargeAgent' ?>"></span><br>
+                                                                        代理充值笔数: <span id="<?php echo $k . '_detailRechargeTimes' ?>"></span><br>
+                                                                        代理充值人数: <span id="<?php echo $k . '_detailRechargePersonNum' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        当日破产用户: <span id="<?php echo $k . '_detailRechargeBankruptUser' ?>"></span><br>
+                                                                        当日破产率: <span id="<?php echo $k . '_detailRechargeBankruptRate' ?>"></span><br>
+                                                                        当日破产后充值用户: <span id="<?php echo $k . '_detailRechargeBankruptRechargeUser' ?>"></span><br>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p>
+                                                                        老用户兑换金币: <span id="<?php echo $k . '_detailExchangeOldGold' ?>"></span><br>
+                                                                        新用户兑换金币: <span id="<?php echo $k . '_detailExchangeNewGold' ?>"></span><br>
+                                                                        老用户兑换总人数: <span id="<?php echo $k . '_detailExchangeOldPersonNum' ?>"></span><br>
+                                                                        新用户兑换总人数: <span id="<?php echo $k . '_detailExchangeNewPersonNum' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        <span style="color: red">代理兑换:<span id="<?php echo $k . '_detailExchangeAgent' ?>"></span></span> <br>
+                                                                        <span style="color: red">代理兑换人数:<span id="<?php echo $k . '_detailExchangeAgentPersonNum' ?>"></span></span> <br>
+                                                                        <span style="color: red">银行卡兑换:<span id="<?php echo $k . '_detailExchangeBank' ?>"></span></span> <br>
+                                                                        <span style="color: red">银行卡兑换人数:<span id="<?php echo $k . '_detailExchangeBankPersonNum' ?>"></span></span> <br>
+                                                                        <span style="color: red">支付宝兑换:<span id="<?php echo $k . '_detailExchangeAlipay' ?>"></span></span> <br>
+                                                                        <span style="color: red">支付宝兑换人数:<span id="<?php echo $k . '_detailExchangeAlipayPersonNum' ?>"></span></span> <br>
+                                                                    </p>
+                                                                </td>
+
+                                                                <td>
+                                                                    <p>
+                                                                        总现金: <span id="<?php echo $k . '_detailCashTotal' ?>"></span><br>
+                                                                        玩家现金: <span id="<?php echo $k . '_detailCashUser' ?>"></span><br>
+                                                                        代理现金: <span id="<?php echo $k . '_detailCashAgent' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        总存款: <span id="<?php echo $k . '_detailDepositTotal' ?>"></span><br>
+                                                                        玩家存款: <span id="<?php echo $k . '_detailDepositUser' ?>"></span><br>
+                                                                        代理存款: <span id="<?php echo $k . '_detailDepositAgent' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        系统赠送金币数: <span id="<?php echo $k . '_detailGoldSystemGive' ?>"></span><br>
+                                                                        金币增长: <span id="<?php echo $k . '_detailGoldIncrease' ?>"></span><br>
+                                                                        (去代理金币)<br>
+                                                                        金币增长率: <span id="<?php echo $k . '_detailGoldIncreaseRate' ?>"></span>%<br>
+                                                                        (去代理金币)<br>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p>
+                                                                        注册新用户去重量: <span id="<?php echo $k . '_detailRegisterUserNoDup' ?>"></span><br>
+                                                                        游客账号: <span id="<?php echo $k . '_detailRegisterTourist' ?>"></span><br>
+                                                                        正式账号: <span id="<?php echo $k . '_detailRegisterNormal' ?>"></span><br>
+                                                                        新进入IP: <span id="<?php echo $k . '_detailRegisterNewIp' ?>"></span><br>
+
+                                                                        IOS: <span id="<?php echo $k . '_detailRegisterIos' ?>"></span><br>
+                                                                        Android: <span id="<?php echo $k . '_detailRegisterAndroid' ?>"></span><br>
+                                                                        WIN: <span id="<?php echo $k . '_detailRegisterWin' ?>"></span><br>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p>
+                                                                        登录用户去重: <span id="<?php echo $k . '_detailLoginUserNoDup' ?>"></span><br>
+                                                                        游客账号: <span id="<?php echo $k . '_detailLoginTourist' ?>"></span><br>
+                                                                        正式账号: <span id="<?php echo $k . '_detailLoginNormal' ?>"></span><br>
+
+                                                                        新用户: <span id="<?php echo $k . '_detailLoginNewUser' ?>"></span><br>
+                                                                        老用户: <span id="<?php echo $k . '_detailLoginOldUser' ?>"></span><br>
+                                                                        登录IP: <span id="<?php echo $k . '_detailLoginIp' ?>"></span><br>
+
+                                                                        IOS: <span id="<?php echo $k . '_detailLoginIos' ?>"></span>
+                                                                        Android: <span id="<?php echo $k . '_detailLoginAndroid' ?>"></span><br>
+                                                                        WIN: <span id="<?php echo $k . '_detailLoginWin' ?>"></span><br>
+
+                                                                        玩过游戏的人数: <span id="<?php echo $k . '_detailLoginPlayPersonNum' ?>"></span><br>
+                                                                        昨日留存: <span id="<?php echo $k . '_detailLoginYes' ?>"></span>%<br>
+                                                                        3日留存: <span id="<?php echo $k . '_detailLogin3Day' ?>"></span>%<br>
+                                                                        7日留存: <span id="<?php echo $k . '_detailLogin7Day' ?>"></span>%<br>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <p>
+                                                                        兑换税收: <span id="<?php echo $k . '_detailTaxTotal' ?>"></span><br>
+                                                                        炸金花: <span id="<?php echo $k . '_detailTaxZjh' ?>"></span><br>
+                                                                        炸金花人数: <span id="<?php echo $k . '_detailTaxZjhPersonNum' ?>"></span><br>
+                                                                        炸金花税收占比: <span id="<?php echo $k . '_detailTaxZjhRate' ?>"></span>%<br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        斗地主: <span id="<?php echo $k . '_detailTaxDdz' ?>"></span><br>
+                                                                        斗地主人数: <span id="<?php echo $k . '_detailTaxDdzPersonNum' ?>"></span><br>
+                                                                        斗地主税收占比: <span id="<?php echo $k . '_detailTaxDdzRate' ?>"></span>%<br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        癞子斗地主: <span id="<?php echo $k . '_detailTaxDdzLz' ?>"></span><br>
+                                                                        癞子斗地主人数: <span id="<?php echo $k . '_detailTaxDdzLzPersonNum' ?>"></span><br>
+                                                                        癞子斗地主税收占比: <span id="<?php echo $k . '_detailTaxDdzLzRate' ?>"></span>%<br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        经典牛牛: <span id="<?php echo $k . '_detailTaxNiuniuJd' ?>"></span><br>
+                                                                        经典牛牛人数: <span id="<?php echo $k . '_detailTaxNiuniuJdPersonNum' ?>"></span><br>
+                                                                        经典牛牛税收占比: <span id="<?php echo $k . '_detailTaxNiuniuJdRate' ?>"></span>%<br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        抢庄牛牛: <span id="<?php echo $k . '_detailTaxNiuniuQz' ?>"></span><br>
+                                                                        抢庄牛牛人数: <span id="<?php echo $k . '_detailTaxNiuniuQzPersonNum' ?>"></span><br>
+                                                                        抢庄牛牛税收占比: <span id="<?php echo $k . '_detailTaxNiuniuQzRate' ?>"></span>%<br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        百人牛牛: <span id="<?php echo $k . '_detailTaxNiuniuBr' ?>"></span><br>
+                                                                        百人牛牛人数: <span id="<?php echo $k . '_detailTaxNiuniuBrPersonNum' ?>"></span><br>
+                                                                        百人牛牛税收占比: <span id="<?php echo $k . '_detailTaxNiuniuBrRate' ?>"></span>%<br>
+                                                                        百人牛牛系统输赢: <span id="<?php echo $k . '_detailTaxNiuniuBrSystemWinLose' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        捕鱼系统输赢: <span id="<?php echo $k . '_detailTaxBuyuSystemWinLose' ?>"></span><br>
+                                                                        捕鱼人数: <span id="<?php echo $k . '_detailTaxBuyuPersonNum' ?>"></span><br>
+                                                                    </p>
+
+                                                                    <p>
+                                                                        炸金花机器人输赢: <span id="<?php echo $k . '_detailTaxRobotWinLose' ?>"></span><br>
+                                                                        炸金花机器人牌局数: <span id="<?php echo $k . '_detailTaxRobotPlayTimes' ?>"></span><br>
+                                                                        炸金花机器人均赢: <span id="<?php echo $k . '_detailTaxRobotAverageWin' ?>"></span><br>
+                                                                        捕鱼系统均赢: <span id="<?php echo $k . '_detailTaxBuyuAverageWin' ?>"></span><br>
+                                                                    </p>
+                                                                </td>
+
+                                                                <td>
+                                                                    <p>
+                                                                        炸金花局数: <span id="<?php echo $k . '_detailGameZjhTimes' ?>"></span><br>
+                                                                        炸金花平均时长: <span id="<?php echo $k . '_detailGameZjhAverageTime' ?>"></span>秒<br>
+                                                                        斗地主局数: <span id="<?php echo $k . '_detailGameDdzTimes' ?>"></span><br>
+                                                                        斗地主平均时长: <span id="<?php echo $k . '_detailGameDdzAverageTime' ?>"></span>秒<br>
+                                                                    </p>
+                                                                    <p>
+                                                                        经典牛牛局数: <span id="<?php echo $k . '_detailGameNiuniuJdTimes' ?>"></span><br>
+                                                                        经典牛牛平均时长: <span id="<?php echo $k . '_detailGameNiuniuJdAverageTime' ?>"></span>秒<br>
+                                                                        抢庄牛牛: <span id="<?php echo $k . '_detailGameNiuniuQz' ?>"></span><br>
+                                                                        抢庄牛牛平均时长: <span id="<?php echo $k . '_detailGameNiuniuQzAverangeTime' ?>"></span>秒<br>
+                                                                    </p>
+                                                                    <p>
+                                                                        百人牛牛局数: <span id="<?php echo $k . '_detailGameNiuniuBrTimes' ?>"></span><br>
+                                                                        百人牛牛平均时长: <span id="<?php echo $k . '_detailGameNiuniuBrAverageTime' ?>"></span>秒<br>
+                                                                        德州扑克局数: <span id="<?php echo $k . '_detailGameTexasTimes' ?>"></span><br>
+                                                                        德州扑克平均时长: <span id="<?php echo $k . '_detailGameTexasAverageTime' ?>"></span>秒<br>
+                                                                    </p>
+                                                                </td>
+                                                                <td>
+                                                                    <?php echo $v['lastUpdateTime']; ?>
+                                                                </td>
                                                             </tr>
                                                         <?php }
                                                     } ?>
 
                                                     <tr>
-                                                        <td>合计:</td>
+                                                        <td>合计</td>
+                                                        <td>1</td>
                                                         <td>1</td>
                                                         <td>1</td>
                                                         <td>1</td>
@@ -285,47 +478,18 @@
                                             </form>
 
                                             <div class="modal-footer no-margin-top">
-                                                <?php //echo $this->pagination->create_links();?>
+                                                <div class="dataTables_info pull-left" id="sample-table-2_info">
+                                                    第<span><?php echo $pageInfo['page'] ?></span>页,
+                                                    共<span><?php echo $pageInfo['pageNum'] ?></span>页,
+                                                    跳转到第<input type="text" id="page"
+                                                               style="margin-left:5px;height:34px;width:100px;"/>页
+                                                    <button onclick="javascript:onJump()"
+                                                            class="btn btn-xs btn-success " style="margin-top:3px;">
+                                                        跳转
+                                                    </button>
+                                                </div>
+                                                <?php echo $this->pagination->create_links(); ?>
                                             </div>
-                                        </div>
-<!--                                        <table id="sample-table-2"-->
-<!--                                               class="table table-striped table-bordered table-hover"-->
-<!--                                               style="margin-bottom: 10px;">-->
-<!--                                            <thead>-->
-<!--                                            <tr>-->
-<!--                                                <td>姓名</td>-->
-<!--                                                <td>日期</td>-->
-<!--                                                <td>金额</td>-->
-<!--                                                <td>说明</td>-->
-<!--                                            </tr>-->
-<!--                                            </thead>-->
-<!--                                            <tbody>-->
-<!--                                            <tr id="s1">-->
-<!--                                                <td>张1</td>-->
-<!--                                                <td>2009-01-02</td>-->
-<!--                                                <td>12.35</td>-->
-<!--                                                <td>A股</td>-->
-<!--                                                <td>abc</td>-->
-<!--                                            </tr>-->
-<!--                                            <tr id="c1">-->
-<!--                                                <td>张2</td>-->
-<!--                                                <td>2009-02-02</td>-->
-<!--                                                <td>122.35</td>-->
-<!--                                                <td>B股</td>-->
-<!--                                                <td>abc</td>-->
-<!--                                            </tr>-->
-<!--                                            <tr id="c3">-->
-<!--                                                <td>张4</td>-->
-<!--                                                <td>2009-04-02</td>-->
-<!--                                                <td>142.35</td>-->
-<!--                                                <td>港股</td>-->
-<!--                                                <td>abc</td>-->
-<!--                                            </tr>-->
-<!---->
-<!--                                            </tbody>-->
-<!--                                        </table>-->
-                                        <!-- /.col -->
-                                    </div>
                                     <!-- /.row -->
                                 </div>
                                 <!-- /.page-content -->
@@ -473,51 +637,196 @@
                         }
 
                         /**
-                         * 详细
+                         * 获取详细
+                         * 点击详细时, 把隐藏的那个详细行显示
+                         * 通过 document.getElementById('dateTest').innerText = 'hahaha'; 给详细哪一行赋值
                          */
-                        function onDetail() {
-                            // test
-                            var table = document.getElementById('sample-table-2');
-                            var xx = table.getElementsByTagName('tr')[1].innerHTML;
-                            alert(JSON.stringify(xx));
-                            var _url = "<?php echo site_url('no3/homePage/getDetail'); ?>";
-                            var _data_obj = {
-                                id: id
-                            };
-                            $.ajax({
-                                type: "POST",
-                                url: _url,
-                                data: _data_obj,
-                                dataType: "json",
-                                beforeSend: function () {
-                                },
-                                success: function (data) {
-                                    if (data.status == 0) {
-                                        alert('获取详细失败');
-                                    } else {
-                                        alert(JSON.stringify(data));
+                        function onDetail(id) {
+                            var idSon = id + '_son';
+                            var idFlagDetail = id + '_flagDetail';
+                            var idDateTime = id + '_dateTime';
+
+                            // 判断是显示详细还是隐藏详细
+                            var flagDetail = document.getElementById(idFlagDetail).innerText;
+                            if (flagDetail == '+') { // 显示详细
+                                // 获取该行数据
+                                var dateTime = document.getElementById(idDateTime).innerText;
+                                var _url = "<?php echo site_url('no3/homePage/getDetail'); ?>";
+                                var _data_obj = {
+                                    dateTime: dateTime
+                                };
+                                $.ajax({
+                                    type: "POST",
+                                    url: _url,
+                                    data: _data_obj,
+                                    dataType: "json",
+                                    beforeSend: function () {
+                                    },
+                                    success: function (data) {
+                                        if (data.status == 0) {
+                                            alert('获取详细失败');
+                                            return false;
+                                        } else {
+//                                            alert(JSON.stringify(data));
+
+                                            // 给该行赋值
+                                            if (data === undefined || data.length === 0) {
+                                                // 营收
+                                                document.getElementById(id + '_detailRevenueTotal').innerText = data.detailRevenueTotal; // 总营收
+                                                document.getElementById(id + '_detailRevenueChannel').innerText = data.detailRevenueChannel; // 渠道分成
+
+
+                                                // 充值
+                                                document.getElementById(id + '_detailRechargeTimes').innerText = data.detailRechargeTimes; // 充值笔数
+                                                document.getElementById(id + '_detailRechargePersonNum').innerText = data.detailRechargePersonNum; // 充值总人数
+                                                document.getElementById(id + '_detailRechargeOldAmount').innerText = data.detailRechargeOldAmount; // 老用户充值金额
+                                                document.getElementById(id + '_detailRechargeNewAmount').innerText = data.detailRechargeNewAmount; // 新用户充值金额
+
+                                                document.getElementById(id + '_detailRechargeAgentAmount').innerText = data.detailRechargeAgentAmount; // 代理充值金额
+                                                document.getElementById(id + '_detailRechargeOldPersonNum').innerText = data.detailRechargeOldPersonNum; // 老用户充值总人数
+                                                document.getElementById(id + '_detailRechargeNewPersonNum').innerText = data.detailRechargeNewPersonNum; // 新用户充值总人数
+
+                                                document.getElementById(id + '_detailRechargeArpu').innerText = data.detailRechargeArpu; // 日ARPU
+                                                document.getElementById(id + '_detailRechargeArppu').innerText = data.detailRechargeArppu; // 日ARPPU
+                                                document.getElementById(id + '_detailRechargeRate').innerText = data.detailRechargeRate; // 日付费率
+                                                document.getElementById(id + '_detailRechargeActiveRate').innerText = data.detailRechargeActiveRate; // 活跃用户付费率
+
+                                                document.getElementById(id + '_detailRechargeOnline').innerText = data.detailRechargeOnline; // 在线充值
+                                                document.getElementById(id + '_detailRechargeOnlineTimes').innerText = data.detailRechargeOnlineTimes; // 在线充值笔数
+                                                document.getElementById(id + '_detailRechargePersonNum').innerText = data.detailRechargePersonNum; // 在线充值人数
+
+                                                document.getElementById(id + '_detailRechargeAgent').innerText = data.detailRechargeAgent; // 代理充值
+                                                document.getElementById(id + '_detailRechargeTimes').innerText = data.detailRechargeTimes; // 代理充值笔数
+                                                document.getElementById(id + '_detailRechargePersonNum').innerText = data.detailRechargePersonNum; // 代理充值人数
+
+                                                document.getElementById(id + '_detailRechargeBankruptUser').innerText = data.detailRechargeBankruptUser; // 当日破产用户
+                                                document.getElementById(id + '_detailRechargeBankruptRate').innerText = data.detailRechargeBankruptRate; // 当日破产率
+                                                document.getElementById(id + '_detailRechargeBankruptRechargeUser').innerText = data.detailRechargeBankruptRechargeUser; // 当日破产后充值用户
+
+
+                                                // 兑换
+                                                document.getElementById(id + '_detailExchangeOldGold').innerText = data.detailExchangeOldGold; // 老用户兑换金币
+                                                document.getElementById(id + '_detailExchangeNewGold').innerText = data.detailExchangeNewGold; // 新用户兑换金币
+                                                document.getElementById(id + '_detailExchangeOldPersonNum').innerText = data.detailExchangeOldPersonNum; // 老用户兑换总人数
+                                                document.getElementById(id + '_detailExchangeNewPersonNum').innerText = data.detailExchangeNewPersonNum; // 新用户兑换总人数
+
+                                                document.getElementById(id + '_detailExchangeAgent').innerText = data.detailExchangeAgent; // 代理兑换
+                                                document.getElementById(id + '_detailExchangeAgentPersonNum').innerText = data.detailExchangeAgentPersonNum; // 代理兑换人数
+                                                document.getElementById(id + '_detailExchangeBank').innerText = data.detailExchangeBank; // 银行卡兑换
+                                                document.getElementById(id + '_detailExchangeBankPersonNum').innerText = data.detailExchangeBankPersonNum; // 银行卡兑换人数
+                                                document.getElementById(id + '_detailExchangeAlipay').innerText = data.detailExchangeAlipay; // 支付宝兑换
+                                                document.getElementById(id + '_detailExchangeAlipayPersonNum').innerText = data.detailExchangeAlipayPersonNum; // 支付宝兑换人数
+
+
+                                                // 总金币
+                                                document.getElementById(id + '_detailCashTotal').innerText = data.detailCashTotal; // 总现金
+                                                document.getElementById(id + '_detailCashUser').innerText = data.detailCashUser; // 玩家现金
+                                                document.getElementById(id + '_detailCashAgent').innerText = data.detailCashAgent; // 代理现金
+
+                                                document.getElementById(id + '_detailDepositTotal').innerText = data.detailDepositTotal; // 总存款
+                                                document.getElementById(id + '_detailDepositUser').innerText = data.detailDepositUser; // 玩家存款
+                                                document.getElementById(id + '_detailDepositAgent').innerText = data.detailDepositAgent; // 代理存款
+
+                                                document.getElementById(id + '_detailGoldSystemGive').innerText = data.detailGoldSystemGive; // 系统赠送金币数
+                                                document.getElementById(id + '_detailGoldIncrease').innerText = data.detailGoldIncrease; // 金币增长(去代理金币)
+                                                document.getElementById(id + '_detailGoldIncreaseRate').innerText = data.detailGoldIncreaseRate; // 金币增长率(去代理金币)
+
+
+                                                // 注册用户数
+                                                document.getElementById(id + '_detailRegisterUserNoDup').innerText = data.detailRegisterUserNoDup; // 注册新用户去重量
+                                                document.getElementById(id + '_detailRegisterTourist').innerText = data.detailRegisterTourist; // 游客账号
+                                                document.getElementById(id + '_detailRegisterNormal').innerText = data.detailRegisterNormal; // 正式账号
+                                                document.getElementById(id + '_detailRegisterNewIp').innerText = data.detailRegisterNewIp; // 新进入IP
+
+                                                document.getElementById(id + '_detailRegisterIos').innerText = data.detailRegisterIos; // IOS
+                                                document.getElementById(id + '_detailRegisterAndroid').innerText = data.detailRegisterAndroid; // Android
+                                                document.getElementById(id + '_detailRegisterWin').innerText = data.detailRegisterWin; // WIN
+
+                                                document.getElementById(id + '_detailLoginUserNoDup').innerText = data.detailLoginUserNoDup; // 登录用户去重
+                                                document.getElementById(id + '_detailLoginTourist').innerText = data.detailLoginTourist; // 游客账号
+                                                document.getElementById(id + '_detailLoginNormal').innerText = data.detailLoginNormal; // 正式账号
+
+                                                document.getElementById(id + '_detailLoginNewUser').innerText = data.detailLoginNewUser; // 新用户
+                                                document.getElementById(id + '_detailLoginOldUser').innerText = data.detailLoginOldUser; // 老用户
+                                                document.getElementById(id + '_detailLoginIp').innerText = data.detailLoginIp; // 登录IP
+
+                                                document.getElementById(id + '_detailLoginIos').innerText = data.detailLoginIos; // IOS
+                                                document.getElementById(id + '_detailLoginAndroid').innerText = data.detailLoginAndroid; // Android
+                                                document.getElementById(id + '_detailLoginWin').innerText = data.detailLoginWin; // WIN
+
+                                                document.getElementById(id + '_detailLoginPlayPersonNum').innerText = data.detailLoginPlayPersonNum; // 玩过游戏的人数
+                                                document.getElementById(id + '_detailLoginYes').innerText = data.detailLoginYes; // 昨日留存
+                                                document.getElementById(id + '_detailLogin3Day').innerText = data.detailLogin3Day; // 3日留存
+                                                document.getElementById(id + '_detailLogin7Day').innerText = data.detailLogin7Day; // 7日留存
+
+
+                                                // 总税收
+                                                document.getElementById(id + '_detailTaxTotal').innerText = data.detailTaxTotal; // 兑换税收
+                                                document.getElementById(id + '_detailTaxZjh').innerText = data.detailTaxZjh; // 炸金花
+                                                document.getElementById(id + '_detailTaxZjhPersonNum').innerText = data.detailTaxZjhPersonNum; // 炸金花人数
+                                                document.getElementById(id + '_detailTaxZjhRate').innerText = data.detailTaxZjhRate; // 炸金花税收占比
+
+                                                document.getElementById(id + '_detailTaxDdz').innerText = data.detailTaxDdz; // 斗地主
+                                                document.getElementById(id + '_detailTaxDdzPersonNum').innerText = data.detailTaxDdzPersonNum; // 斗地主人数
+                                                document.getElementById(id + '_detailTaxDdzRate').innerText = data.detailTaxDdzRate; // 斗地主税收占比
+
+                                                document.getElementById(id + '_detailTaxDdzLz').innerText = data.detailTaxDdzLz; // 癞子斗地主
+                                                document.getElementById(id + '_detailTaxDdzLzPersonNum').innerText = data.detailTaxDdzLzPersonNum; // 癞子斗地主人数
+                                                document.getElementById(id + '_detailTaxDdzLzRate').innerText = data.detailTaxDdzLzRate; // 癞子斗地主税收占比
+
+                                                document.getElementById(id + '_detailTaxNiuniuJd').innerText = data.detailTaxNiuniuJd; // 经典牛牛
+                                                document.getElementById(id + '_detailTaxNiuniuJdPersonNum').innerText = data.detailTaxNiuniuJdPersonNum; // 经典牛牛人数
+                                                document.getElementById(id + '_detailTaxNiuniuJdRate').innerText = data.detailTaxNiuniuJdRate; // 经典牛牛税收占比
+
+                                                document.getElementById(id + '_detailTaxNiuniuQz').innerText = data.detailTaxNiuniuQz; // 抢庄牛牛
+                                                document.getElementById(id + '_detailTaxNiuniuQzPersonNum').innerText = data.detailTaxNiuniuQzPersonNum; // 抢庄牛牛人数
+                                                document.getElementById(id + '_detailTaxNiuniuQzRate').innerText = data.detailTaxNiuniuQzRate; // 抢庄牛牛税收占比
+
+                                                document.getElementById(id + '_detailTaxNiuniuBr').innerText = data.detailTaxNiuniuBr; // 百人牛牛
+                                                document.getElementById(id + '_detailTaxNiuniuBrPersonNum').innerText = data.detailTaxNiuniuBrPersonNum; // 百人牛牛人数
+                                                document.getElementById(id + '_detailTaxNiuniuBrRate').innerText = data.detailTaxNiuniuBrRate; // 百人牛牛税收占比
+                                                document.getElementById(id + '_detailTaxNiuniuBrSystemWinLose').innerText = data.detailTaxNiuniuBrSystemWinLose; // 百人牛牛系统输赢
+
+                                                document.getElementById(id + '_detailTaxBuyuSystemWinLose').innerText = data.detailTaxBuyuSystemWinLose; // 捕鱼系统输赢
+                                                document.getElementById(id + '_detailTaxBuyuPersonNum').innerText = data.detailTaxBuyuPersonNum; // 捕鱼人数
+
+                                                document.getElementById(id + '_detailTaxRobotWinLose').innerText = data.detailTaxRobotWinLose; // 炸金花机器人输赢
+                                                document.getElementById(id + '_detailTaxRobotPlayTimes').innerText = data.detailTaxRobotPlayTimes; // 炸金花机器人牌局数
+                                                document.getElementById(id + '_detailTaxRobotAverageWin').innerText = data.detailTaxRobotAverageWin; // 炸金花机器人均赢
+                                                document.getElementById(id + '_detailTaxBuyuAverageWin').innerText = data.detailTaxBuyuAverageWin; // 捕鱼系统均赢
+
+
+                                                // 游戏记录
+                                                document.getElementById(id + '_detailGameZjhTimes').innerText = data.detailGameZjhTimes; // 炸金花局数
+                                                document.getElementById(id + '_detailGameZjhAverageTime').innerText = data.detailGameZjhAverageTime; // 炸金花平均时长
+                                                document.getElementById(id + '_detailGameDdzTimes').innerText = data.detailGameDdzTimes; // 斗地主局数
+                                                document.getElementById(id + '_detailGameDdzAverageTime').innerText = data.detailGameDdzAverageTime; // 斗地主平均时长
+
+                                                document.getElementById(id + '_detailGameNiuniuJdTimes').innerText = data.detailGameNiuniuJdTimes; // 经典牛牛局数
+                                                document.getElementById(id + '_detailGameNiuniuJdAverageTime').innerText = data.detailGameNiuniuJdAverageTime; // 经典牛牛平均时长
+                                                document.getElementById(id + '_detailGameNiuniuQz').innerText = data.detailGameNiuniuQz; // 抢庄牛牛
+                                                document.getElementById(id + '_detailGameNiuniuQzAverangeTime').innerText = data.detailGameNiuniuQzAverangeTime; // 抢庄牛牛平均时长
+
+                                                document.getElementById(id + '_detailGameNiuniuBrTimes').innerText = data.detailGameNiuniuBrTimes; // 百人牛牛局数
+                                                document.getElementById(id + '_detailGameNiuniuBrAverageTime').innerText = data.detailGameNiuniuBrAverageTime; // 百人牛牛平均时长
+                                                document.getElementById(id + '_detailGameTexasTimes').innerText = data.detailGameTexasTimes; // 德州扑克局数
+                                                document.getElementById(id + '_detailGameTexasAverageTime').innerText = data.detailGameTexasAverageTime; // 德州扑克平均时长
+                                            }
+                                        }
                                     }
-                                }
-                            });
-                        }
+                                });
 
-                        /**
-                         * todo 点击详细时, 把隐藏的那个详细行显示
-                         * todo  通过 document.getElementById('dateTest').innerText = 'hahaha'; 给详细哪一行赋值
-                         */
-                        function onDetailTest(id) {
-//                            var table = document.getElementById('sample-table-2');
-//                            var tr = table.getElementsByTagName('tr')[id + 1];
-//                            tr.style = '';
-//                            var td = tr.children("td").eq(1);
-//                            alert(td);
+                                // 显示该行
+                                var tr = document.getElementById(idSon).style;
+                                tr.display = '';
 
-//                            alert(id);
-//                            document.getElementById('dateTest').innerText = 'hahaha';
-//                            var td = document.getElementById('dateTest').innerText;
-////                            alert(td);
+                                document.getElementById(idFlagDetail).innerText = '-';
+                            } else { // 隐藏详细
+                                var tr = document.getElementById(idSon).style;
+                                tr.display = 'none';
 
-                            var tr = ducoment.getElementById(id + '_')
+                                document.getElementById(idFlagDetail).innerText = '+';
+                            }
                         }
 
                     </script>

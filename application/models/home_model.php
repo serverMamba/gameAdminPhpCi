@@ -2,7 +2,7 @@
 if (!defined('BASEPATH'))
     exit ('No direct script access allowed');
 
-class Admin_model extends CI_Model {
+class Home_model extends CI_Model {
     public function __construct() {
         parent::__construct();
     }
@@ -68,10 +68,25 @@ class Admin_model extends CI_Model {
     }
 
     /**
+     * 获取详细
+     * @param $dateTimeBegin
+     * @param $dateTimeEnd
+     * @return array
+     */
+    public function getDetail($dateTimeBegin, $dateTimeEnd) {
+
+        return [];
+    }
+
+    /**
      * 获取详细 - 营收
      * @return array
      */
     public function getDetailRevenue() {
+        $finalRet = [
+            'detailRevenueTotal' => '0.00',
+            'detailRevenueChannel' => '0.00'
+        ];
 
         return [];
     }

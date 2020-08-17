@@ -1,4 +1,6 @@
-base on codeigniter
+棋牌游戏后台 
+
+base on php codeigniter
 
 db:
     保险箱 - casinouserdb_ -> casinouserbaggageinfo_
